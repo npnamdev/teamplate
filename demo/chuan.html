@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AXON — CRM Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#050509;--sidebar:#09090f;--surface:#0c0c14;--raised:#111119;--raised2:#16161f;--border:rgba(130,90,255,.06);--border-s:rgba(130,90,255,.1);--border-h:rgba(130,90,255,.2);--v1:#7c3aed;--v2:#8b5cf6;--v3:#a78bfa;--v4:#c4b5fd;--v5:#6d28d9;--indigo:#818cf8;--blue:#60a5fa;--cyan:#22d3ee;--green:#34d399;--emerald:#6ee7b7;--yellow:#fbbf24;--orange:#fb923c;--pink:#f472b6;--red:#f87171;--text:#e0dced;--text2:#c4bdd8;--dim:#706a82;--faint:#3d3856;--mute:#2a2640}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;overflow:hidden}
+.heading{font-family:'Lexend',sans-serif}.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--faint);border-radius:10px}
+
+/* SIDEBAR */
+.sidebar{width:260px;height:100vh;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:relative;z-index:100}
+.sidebar-header{padding:1.5rem 1.25rem;display:flex;align-items:center;gap:.65rem;border-bottom:1px solid var(--border)}
+.sidebar-logo{width:34px;height:34px;background:linear-gradient(135deg,var(--v2),var(--indigo));border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(139,92,246,.25)}
+.sidebar-logo span{color:#fff;font-weight:900;font-size:.7rem;font-family:'Lexend';letter-spacing:.05em}
+.sidebar-brand{font-family:'Lexend';font-weight:800;font-size:1.05rem;color:#fff;letter-spacing:.04em}
+.sidebar-nav{flex:1;padding:1rem .75rem;overflow-y:auto;display:flex;flex-direction:column;gap:.15rem}
+.nav-group-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--faint);padding:1rem .75rem .4rem}
+.nav-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .75rem;border-radius:10px;font-size:.84rem;font-weight:500;color:var(--dim);cursor:pointer;transition:all .2s;position:relative;user-select:none}
+.nav-item:hover{background:rgba(139,92,246,.04);color:var(--text2)}
+.nav-item.active{background:rgba(139,92,246,.08);color:var(--v3)}
+.nav-item.active::before{content:'';position:absolute;left:-.75rem;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:0 3px 3px 0;background:var(--v2)}
+.nav-item .ico{width:20px;text-align:center;font-size:1rem;flex-shrink:0}
+.nav-item .badge{margin-left:auto;padding:.1rem .5rem;border-radius:6px;font-size:.62rem;font-weight:700}
+.sidebar-footer{padding:1rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:.7rem}
+.sidebar-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--v5),var(--v2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.7rem;color:#fff;flex-shrink:0}
+.sidebar-user-name{font-weight:700;font-size:.82rem;color:var(--text)}
+.sidebar-user-role{font-size:.68rem;color:var(--dim)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:64px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:1rem;flex-shrink:0;background:rgba(5,5,9,.6);backdrop-filter:blur(20px)}
+.topbar-title{font-family:'Lexend';font-weight:800;font-size:1.1rem;color:#fff;margin-right:auto}
+.topbar-search{display:flex;align-items:center;gap:.5rem;padding:.45rem .9rem;background:var(--raised);border:1px solid var(--border);border-radius:10px;color:var(--dim);font-size:.78rem;cursor:pointer;transition:border-color .2s;min-width:220px}
+.topbar-search:hover{border-color:var(--border-h)}
+.topbar-search .key{margin-left:auto;padding:.1rem .4rem;border-radius:4px;background:var(--mute);font-size:.62rem;font-family:'JetBrains Mono';color:var(--faint)}
+.topbar-icon{width:36px;height:36px;border-radius:10px;background:var(--raised);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:all .2s;position:relative}
+.topbar-icon:hover{border-color:var(--border-h);background:var(--raised2)}
+.topbar-icon .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid var(--bg)}
+.topbar-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--v5),var(--v2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.65rem;color:#fff;cursor:pointer;box-shadow:0 0 12px rgba(139,92,246,.2)}
+.content{flex:1;overflow-y:auto;padding:1.75rem 2rem 3rem}
+
+/* PAGES */
+.page{display:none}.page.active{display:block;animation:page-in .35s ease both}
+@keyframes page-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bar-grow{from{height:0}}
+@keyframes row-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+
+/* SHARED COMPONENTS */
+.pg-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.pg-header-left h2{font-family:'Lexend';font-weight:800;font-size:1.35rem;color:#fff}
+.pg-header-left p{font-size:.82rem;color:var(--dim);margin-top:.25rem}
+.pg-actions{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;border-radius:10px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,var(--v1),var(--v2));color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.25)}
+.btn-primary:hover{box-shadow:0 6px 24px rgba(124,58,237,.35);transform:translateY(-1px)}
+.btn-ghost{background:var(--raised);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--border-h);background:var(--raised2)}
+.btn-sm{padding:.4rem .8rem;font-size:.72rem}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)}
+.card-title{font-family:'Lexend';font-weight:700;font-size:.92rem;color:#fff}
+.card-body{padding:1.5rem}
+.card-tabs{display:flex;gap:.25rem}
+.card-tab{padding:.3rem .75rem;border-radius:8px;font-size:.72rem;font-weight:600;color:var(--dim);cursor:pointer;transition:all .2s}
+.card-tab:hover{color:var(--text)}.card-tab.active{background:rgba(139,92,246,.1);color:var(--v3)}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;position:relative;overflow:hidden;transition:all .3s;animation:fade-in .5s ease both}
+.kpi-card:hover{border-color:var(--border-h);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.kpi-card:nth-child(1){animation-delay:.05s}.kpi-card:nth-child(2){animation-delay:.1s}.kpi-card:nth-child(3){animation-delay:.15s}.kpi-card:nth-child(4){animation-delay:.2s}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.kpi-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--dim)}
+.kpi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.kpi-value{font-family:'Lexend';font-size:1.85rem;font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:.3rem}
+.kpi-change{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:6px}
+.kpi-change.up{color:var(--green);background:rgba(52,211,153,.08)}
+.kpi-change.down{color:var(--red);background:rgba(248,113,113,.08)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+
+/* Mini KPI */
+.mkpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem;transition:all .25s}
+.mkpi:hover{border-color:var(--border-h)}
+.mkpi-label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.5rem}
+.mkpi-val{font-family:'Lexend';font-size:1.5rem;font-weight:900;color:#fff}
+
+/* Status dot */
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* Tag */
+.tag{display:inline-block;padding:.15rem .55rem;border-radius:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+
+/* Filter chips */
+.filters-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.filter-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.4rem .85rem;border-radius:8px;font-size:.72rem;font-weight:600;background:var(--raised);border:1px solid var(--border);color:var(--dim);cursor:pointer;transition:all .2s;user-select:none}
+.filter-chip:hover{border-color:var(--border-h);color:var(--text2)}
+.filter-chip.active{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.2);color:var(--v3)}
+.search-input{flex:1;min-width:200px;padding:.45rem .9rem;background:var(--raised);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.8rem;font-family:inherit;outline:none;transition:border-color .2s}
+.search-input::placeholder{color:var(--faint)}.search-input:focus{border-color:var(--border-h)}
+
+/* TABLE */
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.5rem}
+.tbl{width:100%;border-collapse:collapse}
+.tbl thead th{text-align:left;padding:.9rem 1.25rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);border-bottom:1px solid var(--border);background:var(--raised);position:sticky;top:0}
+.tbl tbody tr{transition:background .15s;cursor:pointer}.tbl tbody tr:hover{background:rgba(139,92,246,.02)}
+.tbl tbody tr:not(:last-child) td{border-bottom:1px solid var(--border)}
+.tbl td{padding:.85rem 1.25rem;font-size:.82rem;vertical-align:middle}
+.tbl-footer{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-top:1px solid var(--border);background:var(--raised)}
+.tbl-footer-info{font-size:.72rem;color:var(--dim)}
+
+/* KANBAN */
+.kanban{display:flex;gap:.75rem;overflow-x:auto;padding-bottom:1rem;min-height:500px}
+.kanban-col{min-width:260px;width:260px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;max-height:70vh}
+.kanban-col-head{padding:1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem}
+.kanban-col-dot{width:10px;height:10px;border-radius:3px}
+.kanban-col-title{font-weight:700;font-size:.82rem;color:var(--text)}
+.kanban-col-count{margin-left:auto;font-size:.65rem;color:var(--dim);font-weight:600;background:var(--raised);padding:.15rem .45rem;border-radius:5px}
+.kanban-col-body{padding:.6rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:.5rem}
+.kanban-card{background:var(--raised);border:1px solid var(--border);border-radius:12px;padding:.85rem;cursor:pointer;transition:all .2s}
+.kanban-card:hover{border-color:var(--border-h);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.kanban-card-title{font-weight:700;font-size:.82rem;color:var(--text);margin-bottom:.3rem}
+.kanban-card-company{font-size:.7rem;color:var(--dim);margin-bottom:.5rem}
+.kanban-card-bottom{display:flex;align-items:center;justify-content:space-between}
+.kanban-card-value{font-family:'Lexend';font-weight:800;font-size:.82rem;color:#fff}
+.kanban-card-av{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;color:#fff}
+
+/* ITEM CARD (for forms, landing, automation, integrations) */
+.item-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.25rem;transition:all .25s;cursor:pointer}
+.item-card:hover{border-color:var(--border-h);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.item-card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:.85rem}
+.item-card-name{font-family:'Lexend';font-weight:700;font-size:.92rem;color:#fff;margin-bottom:.3rem}
+.item-card-desc{font-size:.75rem;color:var(--dim);line-height:1.5;margin-bottom:.85rem}
+.item-card-stats{display:flex;gap:1rem}
+.item-card-stat{display:flex;flex-direction:column}
+.item-card-stat-label{font-size:.6rem;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.item-card-stat-val{font-family:'Lexend';font-weight:800;font-size:.88rem;color:#fff}
+.item-card-bar{width:100%;height:4px;background:var(--mute);border-radius:2px;margin-top:.75rem;overflow:hidden}
+.item-card-bar-fill{height:100%;border-radius:2px}
+
+/* CHART */
+.chart-area{display:flex;align-items:flex-end;gap:6px;height:200px;padding-top:1rem}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;height:100%;justify-content:flex-end}
+.chart-bar-wrap{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;flex:1}
+.chart-bar{width:70%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--v2),var(--v5));min-height:4px;transition:all .4s;opacity:.55;animation:bar-grow .8s cubic-bezier(.4,0,.2,1) both}
+.chart-bar.highlight{opacity:1;background:linear-gradient(180deg,var(--v3),var(--v1));box-shadow:0 0 20px rgba(139,92,246,.2)}
+.chart-bar:hover{opacity:1;box-shadow:0 0 16px rgba(139,92,246,.25)}
+.chart-label{font-size:.6rem;color:var(--faint);font-weight:600}
+.chart-legend{display:flex;gap:1.5rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+.chart-legend-item{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--dim)}
+.chart-legend-dot{width:8px;height:8px;border-radius:3px}
+
+/* PIPELINE stages (dashboard) */
+.pipeline-stages{display:flex;flex-direction:column;gap:.6rem}
+.pipeline-stage{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;background:var(--raised);border:1px solid var(--border);border-radius:12px;transition:all .25s;cursor:pointer}
+.pipeline-stage:hover{border-color:var(--border-h);background:var(--raised2)}
+.stage-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.stage-info{flex:1}.stage-name{font-size:.82rem;font-weight:600;color:var(--text)}.stage-count{font-size:.68rem;color:var(--dim);margin-top:.1rem}
+.stage-value{font-family:'Lexend';font-weight:800;font-size:.88rem;color:#fff}
+.stage-bar-track{width:60px;height:4px;background:var(--mute);border-radius:2px;overflow:hidden;margin-left:.5rem}
+.stage-bar-fill{height:100%;border-radius:2px}
+
+/* BOTTOM GRID */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.main-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;margin-bottom:1.75rem}
+
+/* CONTACTS list (dashboard widget) */
+.contact-list{display:flex;flex-direction:column;gap:.15rem}
+.contact-row{display:flex;align-items:center;gap:.75rem;padding:.7rem .5rem;border-radius:10px;transition:background .2s;cursor:pointer}
+.contact-row:hover{background:rgba(139,92,246,.03)}
+.contact-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.65rem;color:#fff;flex-shrink:0}
+.contact-name{font-weight:600;font-size:.82rem;color:var(--text)}
+.contact-email{font-size:.68rem;color:var(--dim)}
+.contact-score{margin-left:auto;font-family:'JetBrains Mono';font-size:.72rem;font-weight:700;padding:.2rem .5rem;border-radius:6px}
+
+/* ACTIVITY */
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity-item{display:flex;gap:.85rem;padding:.75rem .25rem;position:relative}
+.activity-item:not(:last-child)::after{content:'';position:absolute;left:15px;top:36px;bottom:-6px;width:1px;background:var(--border-s)}
+.activity-dot-wrap{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;position:relative;z-index:2}
+.activity-text{font-size:.8rem;color:var(--text2);line-height:1.5}
+.activity-text strong{color:#fff;font-weight:600}
+.activity-time{font-size:.65rem;color:var(--faint);margin-top:.2rem}
+
+/* CAMPAIGN CARDS */
+.campaign-list{display:flex;flex-direction:column;gap:.6rem}
+.campaign-card{padding:1rem;background:var(--raised);border:1px solid var(--border);border-radius:12px;transition:all .25s;cursor:pointer}
+.campaign-card:hover{border-color:var(--border-h)}
+.campaign-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.campaign-name{font-weight:700;font-size:.82rem;color:var(--text)}
+.campaign-status{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.15rem .5rem;border-radius:5px}
+.campaign-stats{display:flex;gap:1.25rem}
+.campaign-stat-label{font-size:.6rem;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.campaign-stat-value{font-family:'Lexend';font-size:.95rem;font-weight:800;color:#fff}
+.campaign-bar-track{width:100%;height:4px;background:var(--mute);border-radius:2px;margin-top:.75rem;overflow:hidden}
+.campaign-bar-fill{height:100%;border-radius:2px}
+
+/* CONTACTS PAGE TABLE */
+.ct-user{display:flex;align-items:center;gap:.75rem}
+.ct-avatar{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.65rem;color:#fff;flex-shrink:0}
+.ct-name{font-weight:600;color:var(--text)}.ct-email{font-size:.7rem;color:var(--dim);margin-top:.1rem}
+.ct-company{color:var(--text2);font-weight:500}
+.ct-score{font-family:'JetBrains Mono';font-weight:700;font-size:.78rem}
+.ct-score-bar{width:50px;height:4px;background:var(--mute);border-radius:2px;margin-top:.3rem;overflow:hidden}
+.ct-score-fill{height:100%;border-radius:2px}
+.ct-last-active{color:var(--dim);font-size:.78rem}
+.ct-actions{display:flex;gap:.35rem}
+.ct-action-btn{width:30px;height:30px;border-radius:8px;background:var(--raised);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;cursor:pointer;transition:all .15s}
+.ct-action-btn:hover{border-color:var(--border-h);background:var(--raised2)}
+
+/* DRAWER */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;right:-480px;top:0;width:460px;max-width:90vw;height:100vh;background:var(--sidebar);border-left:1px solid var(--border);z-index:600;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow-y:auto}
+.drawer.open{right:0}
+.drawer-head{padding:1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:1rem}
+.drawer-close{width:32px;height:32px;border-radius:8px;background:var(--raised);border:1px solid var(--border);color:var(--dim);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;margin-left:auto;flex-shrink:0;transition:all .15s}
+.drawer-close:hover{color:var(--text);border-color:var(--border-h)}
+.drawer-av{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;color:#fff;flex-shrink:0}
+.drawer-name{font-family:'Lexend';font-weight:800;font-size:1.1rem;color:#fff}
+.drawer-email{font-size:.78rem;color:var(--dim);margin-top:.15rem}
+.drawer-body{padding:1.5rem;flex:1}
+.drawer-section-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--faint);margin-bottom:.75rem;margin-top:1.25rem}
+.drawer-section-label:first-child{margin-top:0}
+.drawer-field{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0}
+.drawer-field:not(:last-child){border-bottom:1px solid var(--border)}
+.drawer-field-label{font-size:.78rem;color:var(--dim)}
+.drawer-field-value{font-size:.82rem;font-weight:600;color:var(--text)}
+.drawer-timeline{display:flex;flex-direction:column}
+.drawer-tl-item{display:flex;gap:.75rem;padding:.65rem 0;position:relative}
+.drawer-tl-item:not(:last-child)::after{content:'';position:absolute;left:11px;top:34px;bottom:-4px;width:1px;background:var(--border-s)}
+.drawer-tl-dot{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0}
+.drawer-tl-text{font-size:.78rem;color:var(--text2)}
+.drawer-tl-time{font-size:.62rem;color:var(--faint);margin-top:.15rem}
+
+/* SETTINGS */
+.settings-layout{display:grid;grid-template-columns:200px 1fr;gap:1.5rem}
+.settings-tabs{display:flex;flex-direction:column;gap:.25rem}
+.settings-tab{padding:.6rem .85rem;border-radius:10px;font-size:.82rem;font-weight:500;color:var(--dim);cursor:pointer;transition:all .2s}
+.settings-tab:hover{background:rgba(139,92,246,.04);color:var(--text2)}
+.settings-tab.active{background:rgba(139,92,246,.08);color:var(--v3)}
+.settings-form{display:flex;flex-direction:column;gap:1.25rem}
+.form-group label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.45rem}
+.form-input{width:100%;padding:.6rem 1rem;background:var(--raised);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.85rem;font-family:inherit;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--border-h)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.toggle-row-label{font-size:.85rem;color:var(--text)}
+.toggle-row-desc{font-size:.72rem;color:var(--dim)}
+.toggle{width:40px;height:22px;border-radius:11px;background:var(--mute);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--v2)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:8px;background:#fff;transition:left .2s}
+.toggle.on::after{left:21px}
+
+/* SCORING */
+.score-dist{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:1rem}
+.score-dist-bar{flex:1;border-radius:4px 4px 0 0;min-height:2px;transition:all .3s}
+.score-dist-bar:hover{opacity:.8}
+.scoring-rule{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:var(--raised);border:1px solid var(--border);border-radius:12px;margin-bottom:.5rem;transition:all .2s}
+.scoring-rule:hover{border-color:var(--border-h)}
+.scoring-rule-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.scoring-rule-info{flex:1}
+.scoring-rule-name{font-size:.82rem;font-weight:600;color:var(--text)}
+.scoring-rule-desc{font-size:.7rem;color:var(--dim)}
+.scoring-rule-pts{font-family:'Lexend';font-weight:800;font-size:.88rem;padding:.2rem .6rem;border-radius:6px}
+
+/* RESPONSIVE */
+@media(max-width:1200px){.main-grid{grid-template-columns:1fr}.bottom-grid,.grid-3{grid-template-columns:1fr 1fr}.kpi-row,.grid-4{grid-template-columns:repeat(2,1fr)}.settings-layout{grid-template-columns:1fr}}
+@media(max-width:860px){.sidebar{display:none}.kpi-row{grid-template-columns:repeat(2,1fr)}.bottom-grid,.grid-3,.grid-2{grid-template-columns:1fr}.grid-4{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"><span>AX</span></div>
+    <span class="sidebar-brand">AXON</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <div class="nav-item active" data-page="dashboard"><span class="ico">◆</span> Dashboard</div>
+    <div class="nav-item" data-page="pipeline"><span class="ico">☰</span> Pipeline<span class="badge" style="background:rgba(139,92,246,.1);color:var(--v3)">24</span></div>
+    <div class="nav-item" data-page="contacts"><span class="ico">👥</span> Contacts<span class="badge" style="background:rgba(52,211,153,.08);color:var(--green)">1.8K</span></div>
+    <div class="nav-item" data-page="companies"><span class="ico">🏢</span> Companies</div>
+    <div class="nav-group-label">Marketing</div>
+    <div class="nav-item" data-page="campaigns"><span class="ico">✉️</span> Campaigns<span class="badge" style="background:rgba(96,165,250,.08);color:var(--blue)">3</span></div>
+    <div class="nav-item" data-page="automation"><span class="ico">⚡</span> Automation</div>
+    <div class="nav-item" data-page="forms"><span class="ico">📋</span> Forms</div>
+    <div class="nav-item" data-page="landing"><span class="ico">📄</span> Landing Pages</div>
+    <div class="nav-group-label">Analytics</div>
+    <div class="nav-item" data-page="reports"><span class="ico">📊</span> Reports</div>
+    <div class="nav-item" data-page="scoring"><span class="ico">🎯</span> Lead Scoring</div>
+    <div class="nav-item" data-page="forecasting"><span class="ico">📈</span> Forecasting</div>
+    <div class="nav-group-label">System</div>
+    <div class="nav-item" data-page="integrations"><span class="ico">🔗</span> Integrations</div>
+    <div class="nav-item" data-page="settings"><span class="ico">⚙️</span> Settings</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-avatar">HN</div>
+    <div><div class="sidebar-user-name">Hoàng Nam</div><div class="sidebar-user-role">Admin · Pro Plan</div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-search"><span>🔍</span><span>Tìm kiếm...</span><span class="key">⌘K</span></div>
+    <div class="topbar-icon">🔔<div class="notif-dot"></div></div>
+    <div class="topbar-icon">💬</div>
+    <div class="topbar-avatar">HN</div>
+  </header>
+  <div class="content">
+
+<!-- ======================== DASHBOARD ======================== -->
+<div class="page active" id="page-dashboard">
+  <div class="kpi-row">
+    <div class="kpi-card"><div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:.06;background:var(--v2)"></div><div class="kpi-top"><span class="kpi-label mono">Doanh thu</span><div class="kpi-icon" style="background:rgba(139,92,246,.08)">💰</div></div><div class="kpi-value">₫2.47B</div><span class="kpi-change up">↑ 24.5% vs tháng trước</span></div>
+    <div class="kpi-card"><div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:.06;background:var(--blue)"></div><div class="kpi-top"><span class="kpi-label mono">Leads mới</span><div class="kpi-icon" style="background:rgba(96,165,250,.08)">👥</div></div><div class="kpi-value">1,847</div><span class="kpi-change up">↑ 18.2% vs tháng trước</span></div>
+    <div class="kpi-card"><div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:.06;background:var(--green)"></div><div class="kpi-top"><span class="kpi-label mono">Conversion Rate</span><div class="kpi-icon" style="background:rgba(52,211,153,.08)">📈</div></div><div class="kpi-value">34.2%</div><span class="kpi-change up">↑ 5.7% vs tháng trước</span></div>
+    <div class="kpi-card"><div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:.06;background:var(--orange)"></div><div class="kpi-top"><span class="kpi-label mono">Active Flows</span><div class="kpi-icon" style="background:rgba(251,146,60,.08)">⚡</div></div><div class="kpi-value">23</div><span class="kpi-change up" style="color:var(--v3);background:rgba(139,92,246,.08)">● Đang chạy</span></div>
+  </div>
+  <div class="main-grid">
+    <div class="card"><div class="card-header"><span class="card-title">Doanh thu theo tháng</span><div class="card-tabs"><div class="card-tab">6 tháng</div><div class="card-tab active">12 tháng</div><div class="card-tab">YTD</div></div></div><div class="card-body"><div class="chart-area"><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:30%"></div></div><span class="chart-label">T1</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:42%"></div></div><span class="chart-label">T2</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:38%"></div></div><span class="chart-label">T3</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:55%"></div></div><span class="chart-label">T4</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:48%"></div></div><span class="chart-label">T5</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:62%"></div></div><span class="chart-label">T6</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:58%"></div></div><span class="chart-label">T7</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:72%"></div></div><span class="chart-label">T8</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:68%"></div></div><span class="chart-label">T9</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:80%"></div></div><span class="chart-label">T10</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:88%"></div></div><span class="chart-label">T11</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar highlight" style="height:100%"></div></div><span class="chart-label" style="color:var(--v3)">T12</span></div></div><div class="chart-legend"><div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--v2)"></div>Doanh thu</div><div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--v3)"></div>Tháng hiện tại</div><div class="chart-legend-item" style="margin-left:auto"><span class="mono" style="font-size:.72rem;color:var(--green)">+24.5% YoY</span></div></div></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Pipeline Overview</span><span class="mono" style="font-size:.72rem;color:var(--v3)">₫8.2B total</span></div><div class="card-body"><div class="pipeline-stages"><div class="pipeline-stage"><div class="stage-dot" style="background:var(--indigo)"></div><div class="stage-info"><div class="stage-name">New Leads</div><div class="stage-count">12 deals</div></div><div class="stage-value">₫1.8B</div><div class="stage-bar-track"><div class="stage-bar-fill" style="width:22%;background:var(--indigo)"></div></div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--v3)"></div><div class="stage-info"><div class="stage-name">Contacted</div><div class="stage-count">8 deals</div></div><div class="stage-value">₫2.1B</div><div class="stage-bar-track"><div class="stage-bar-fill" style="width:26%;background:var(--v3)"></div></div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--blue)"></div><div class="stage-info"><div class="stage-name">Proposal Sent</div><div class="stage-count">5 deals</div></div><div class="stage-value">₫2.4B</div><div class="stage-bar-track"><div class="stage-bar-fill" style="width:30%;background:var(--blue)"></div></div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--yellow)"></div><div class="stage-info"><div class="stage-name">Negotiation</div><div class="stage-count">3 deals</div></div><div class="stage-value">₫1.2B</div><div class="stage-bar-track"><div class="stage-bar-fill" style="width:15%;background:var(--yellow)"></div></div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--green)"></div><div class="stage-info"><div class="stage-name">Won</div><div class="stage-count">6 deals</div></div><div class="stage-value" style="color:var(--green)">₫0.7B</div><div class="stage-bar-track"><div class="stage-bar-fill" style="width:7%;background:var(--green)"></div></div></div></div></div></div>
+  </div>
+  <div class="bottom-grid">
+    <div class="card"><div class="card-header"><span class="card-title">Contacts gần đây</span><span style="font-size:.72rem;color:var(--dim);cursor:pointer" onclick="navigate('contacts')">Xem tất cả →</span></div><div class="card-body" style="padding:1rem 1.25rem"><div class="contact-list"><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--v1),var(--v5))">NT</div><div><div class="contact-name">Nguyễn Thảo</div><div class="contact-email">thao@techviet.com</div></div><div class="contact-score" style="color:var(--green);background:rgba(52,211,153,.08)">92</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--indigo),var(--blue))">TH</div><div><div class="contact-name">Trần Hùng</div><div class="contact-email">hung@shopbase.vn</div></div><div class="contact-score" style="color:var(--green);background:rgba(52,211,153,.08)">87</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--pink),var(--v1))">LM</div><div><div class="contact-name">Lê Minh</div><div class="contact-email">minh@greenfinance.vn</div></div><div class="contact-score" style="color:var(--yellow);background:rgba(251,191,36,.08)">64</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--cyan),var(--indigo))">PD</div><div><div class="contact-name">Phạm Dũng</div><div class="contact-email">dung@mediviet.com</div></div><div class="contact-score" style="color:var(--orange);background:rgba(251,146,60,.08)">45</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--green),var(--cyan))">VA</div><div><div class="contact-name">Vũ An</div><div class="contact-email">an@dataweb.vn</div></div><div class="contact-score" style="color:var(--green);background:rgba(52,211,153,.08)">78</div></div></div></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Hoạt động gần đây</span><span style="font-size:.72rem;color:var(--dim);cursor:pointer">Tất cả →</span></div><div class="card-body" style="padding:1rem 1.25rem"><div class="activity-list"><div class="activity-item"><div class="activity-dot-wrap" style="background:rgba(52,211,153,.08)">✅</div><div><div class="activity-text"><strong>Deal Won</strong> — MegaCorp ₫1.2B đã chốt</div><div class="activity-time mono">2 phút trước</div></div></div><div class="activity-item"><div class="activity-dot-wrap" style="background:rgba(139,92,246,.08)">✉️</div><div><div class="activity-text"><strong>Email sent</strong> — Campaign "Black Friday" gửi 12K contacts</div><div class="activity-time mono">15 phút trước</div></div></div><div class="activity-item"><div class="activity-dot-wrap" style="background:rgba(96,165,250,.08)">👤</div><div><div class="activity-text"><strong>New lead</strong> — Vũ An từ DataWeb đăng ký form</div><div class="activity-time mono">32 phút trước</div></div></div><div class="activity-item"><div class="activity-dot-wrap" style="background:rgba(251,191,36,.08)">⚡</div><div><div class="activity-text"><strong>Flow triggered</strong> — Onboarding sequence cho 8 leads mới</div><div class="activity-time mono">1 giờ trước</div></div></div><div class="activity-item"><div class="activity-dot-wrap" style="background:rgba(244,114,182,.08)">📊</div><div><div class="activity-text"><strong>Report ready</strong> — Báo cáo tuần đã tự động gửi email</div><div class="activity-time mono">3 giờ trước</div></div></div></div></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Campaigns</span><span style="font-size:.72rem;color:var(--dim);cursor:pointer" onclick="navigate('campaigns')">Xem tất cả →</span></div><div class="card-body" style="padding:1rem 1.25rem"><div class="campaign-list"><div class="campaign-card"><div class="campaign-top"><span class="campaign-name">Black Friday 2025</span><span class="campaign-status" style="color:var(--green);background:rgba(52,211,153,.08)">Active</span></div><div class="campaign-stats"><div><div class="campaign-stat-label mono">Sent</div><div class="campaign-stat-value">12,847</div></div><div><div class="campaign-stat-label mono">Open</div><div class="campaign-stat-value">42.3%</div></div><div><div class="campaign-stat-label mono">Click</div><div class="campaign-stat-value">8.7%</div></div></div><div class="campaign-bar-track"><div class="campaign-bar-fill" style="width:42%;background:linear-gradient(90deg,var(--v2),var(--indigo))"></div></div></div><div class="campaign-card"><div class="campaign-top"><span class="campaign-name">Nurture Sequence Q4</span><span class="campaign-status" style="color:var(--yellow);background:rgba(251,191,36,.08)">Running</span></div><div class="campaign-stats"><div><div class="campaign-stat-label mono">Sent</div><div class="campaign-stat-value">5,230</div></div><div><div class="campaign-stat-label mono">Open</div><div class="campaign-stat-value">38.1%</div></div><div><div class="campaign-stat-label mono">Click</div><div class="campaign-stat-value">6.2%</div></div></div><div class="campaign-bar-track"><div class="campaign-bar-fill" style="width:38%;background:linear-gradient(90deg,var(--yellow),var(--orange))"></div></div></div><div class="campaign-card"><div class="campaign-top"><span class="campaign-name">Welcome Series</span><span class="campaign-status" style="color:var(--v3);background:rgba(139,92,246,.08)">Auto</span></div><div class="campaign-stats"><div><div class="campaign-stat-label mono">Sent</div><div class="campaign-stat-value">890</div></div><div><div class="campaign-stat-label mono">Open</div><div class="campaign-stat-value">56.8%</div></div><div><div class="campaign-stat-label mono">Click</div><div class="campaign-stat-value">12.4%</div></div></div><div class="campaign-bar-track"><div class="campaign-bar-fill" style="width:57%;background:linear-gradient(90deg,var(--v2),var(--cyan))"></div></div></div></div></div></div>
+  </div>
+</div>
+
+<!-- ======================== PIPELINE ======================== -->
+<div class="page" id="page-pipeline">
+  <div class="pg-header">
+    <div class="pg-header-left"><h2>Pipeline</h2><p>Kanban board quản lý deals — kéo thả deal giữa các giai đoạn</p></div>
+    <div class="pg-actions"><button class="btn btn-ghost">📊 Báo cáo</button><button class="btn btn-primary">+ Thêm Deal</button></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="mkpi"><div class="mkpi-label mono">Tổng Pipeline</div><div class="mkpi-val">₫8.2B</div></div>
+    <div class="mkpi"><div class="mkpi-label mono">New Leads</div><div class="mkpi-val" style="color:var(--indigo)">₫1.8B</div></div>
+    <div class="mkpi"><div class="mkpi-label mono">Proposal</div><div class="mkpi-val" style="color:var(--blue)">₫2.4B</div></div>
+    <div class="mkpi"><div class="mkpi-label mono">Negotiation</div><div class="mkpi-val" style="color:var(--yellow)">₫1.2B</div></div>
+    <div class="mkpi"><div class="mkpi-label mono">Won (tháng)</div><div class="mkpi-val" style="color:var(--green)">₫2.1B</div></div>
+  </div>
+  <div class="kanban" id="kanbanBoard"></div>
+</div>
+
+<!-- ======================== CONTACTS ======================== -->
+<div class="page" id="page-contacts">
+  <div class="pg-header"><div class="pg-header-left"><h2>Contacts</h2><p>Quản lý tất cả liên hệ và lead scoring</p></div><div class="pg-actions"><button class="btn btn-ghost">📥 Import CSV</button><button class="btn btn-ghost">📤 Export</button><button class="btn btn-primary">+ Thêm Contact</button></div></div>
+  <div class="kpi-row"><div class="mkpi"><div class="mkpi-label mono">Tổng contacts</div><div class="mkpi-val">1,847</div></div><div class="mkpi"><div class="mkpi-label mono">Hot leads</div><div class="mkpi-val" style="color:var(--green)">312</div></div><div class="mkpi"><div class="mkpi-label mono">Warm leads</div><div class="mkpi-val" style="color:var(--yellow)">584</div></div><div class="mkpi"><div class="mkpi-label mono">Cold leads</div><div class="mkpi-val" style="color:var(--dim)">951</div></div></div>
+  <div class="filters-bar"><input type="text" class="search-input" placeholder="🔍  Tìm theo tên, email, công ty..." id="contactSearch" oninput="renderContacts()"/><div class="filter-chip active" data-filter="all" onclick="setFilter(this)">Tất cả</div><div class="filter-chip" data-filter="hot" onclick="setFilter(this)">🔥 Hot</div><div class="filter-chip" data-filter="warm" onclick="setFilter(this)">🟡 Warm</div><div class="filter-chip" data-filter="cold" onclick="setFilter(this)">🔵 Cold</div><div class="filter-chip" data-filter="customer" onclick="setFilter(this)">✅ Customer</div></div>
+  <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Contact</th><th>Công ty</th><th>Trạng thái</th><th>Lead Score</th><th>Hoạt động cuối</th><th style="width:90px"></th></tr></thead><tbody id="contactsBody"></tbody></table><div class="tbl-footer"><div class="tbl-footer-info">Hiển thị <strong id="showCount">0</strong> / <strong id="totalCount">0</strong> contacts</div></div></div>
+</div>
+
+<!-- ======================== COMPANIES ======================== -->
+<div class="page" id="page-companies">
+  <div class="pg-header"><div class="pg-header-left"><h2>Companies</h2><p>Danh sách công ty và tổ chức đối tác</p></div><div class="pg-actions"><button class="btn btn-ghost">📤 Export</button><button class="btn btn-primary">+ Thêm Company</button></div></div>
+  <div class="kpi-row"><div class="mkpi"><div class="mkpi-label mono">Tổng công ty</div><div class="mkpi-val">247</div></div><div class="mkpi"><div class="mkpi-label mono">Customers</div><div class="mkpi-val" style="color:var(--green)">89</div></div><div class="mkpi"><div class="mkpi-label mono">Prospects</div><div class="mkpi-val" style="color:var(--blue)">142</div></div><div class="mkpi"><div class="mkpi-label mono">Tổng deal value</div><div class="mkpi-val" style="color:var(--v3)">₫18.5B</div></div></div>
+  <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Công ty</th><th>Ngành</th><th>Contacts</th><th>Deal Value</th><th>Trạng thái</th><th>Last Activity</th></tr></thead><tbody id="companiesBody"></tbody></table></div>
+</div>
+
+<!-- ======================== CAMPAIGNS ======================== -->
+<div class="page" id="page-campaigns">
+  <div class="pg-header"><div class="pg-header-left"><h2>Campaigns</h2><p>Quản lý chiến dịch email marketing</p></div><div class="pg-actions"><button class="btn btn-ghost">📊 Analytics</button><button class="btn btn-primary">+ Tạo Campaign</button></div></div>
+  <div class="kpi-row"><div class="mkpi"><div class="mkpi-label mono">Tổng campaigns</div><div class="mkpi-val">12</div></div><div class="mkpi"><div class="mkpi-label mono">Email gửi (tháng)</div><div class="mkpi-val" style="color:var(--blue)">48.2K</div></div><div class="mkpi"><div class="mkpi-label mono">Avg Open Rate</div><div class="mkpi-val" style="color:var(--green)">41.8%</div></div><div class="mkpi"><div class="mkpi-label mono">Avg Click Rate</div><div class="mkpi-val" style="color:var(--v3)">8.4%</div></div></div>
+  <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Campaign</th><th>Trạng thái</th><th>Sent</th><th>Open Rate</th><th>Click Rate</th><th>Conversions</th></tr></thead><tbody id="campaignsBody"></tbody></table></div>
+</div>
+
+<!-- ======================== AUTOMATION ======================== -->
+<div class="page" id="page-automation">
+  <div class="pg-header"><div class="pg-header-left"><h2>Automation</h2><p>Luồng tự động hoá marketing & sales</p></div><div class="pg-actions"><button class="btn btn-ghost">📖 Templates</button><button class="btn btn-primary">+ Tạo Flow</button></div></div>
+  <div class="kpi-row"><div class="mkpi"><div class="mkpi-label mono">Active Flows</div><div class="mkpi-val" style="color:var(--green)">23</div></div><div class="mkpi"><div class="mkpi-label mono">Contacts in flows</div><div class="mkpi-val" style="color:var(--blue)">4,521</div></div><div class="mkpi"><div class="mkpi-label mono">Emails auto/tháng</div><div class="mkpi-val" style="color:var(--v3)">18.7K</div></div><div class="mkpi"><div class="mkpi-label mono">Conversion Rate</div><div class="mkpi-val" style="color:var(--yellow)">12.3%</div></div></div>
+  <div class="grid-3" id="automationGrid"></div>
+</div>
+
+<!-- ======================== FORMS ======================== -->
+<div class="page" id="page-forms">
+  <div class="pg-header"><div class="pg-header-left"><h2>Forms</h2><p>Form thu thập lead từ website và landing page</p></div><div class="pg-actions"><button class="btn btn-primary">+ Tạo Form</button></div></div>
+  <div class="kpi-row"><div class="mkpi"><div class="mkpi-label mono">Tổng forms</div><div class="mkpi-val">8</div></div><div class="mkpi"><div class="mkpi-label mono">Submissions (tháng)</div><div class="mkpi-val" style="color:var(--green)">1,243</div></div><div class="mkpi"><div class="mkpi-label mono">Conversion Rate</div><div class="mkpi-val" style="color:var(--v3)">28.5%</div></div><div class="mkpi"><div class="mkpi-label mono">Top Form</div><div class="mkpi-val" style="font-size:1rem">Request Demo</div></div></div>
+  <div class="grid-3" id="formsGrid"></div>
+</div>
+
+<!-- ======================== LANDING PAGES ======================== -->
+<div class="page" id="page-landing">
+  <div class="pg-header"><div class="pg-header-left"><h2>Landing Pages</h2><p>Thiết kế và quản lý landing page chuyên nghiệp</p></div><div class="pg-actions"><button class="btn btn-ghost">📖 Templates</button><button class="btn btn-primary">+ Tạo Page</button></div></div>
+  <div class="kpi-row"><div class="mkpi"><div class="mkpi-label mono">Tổng pages</div><div class="mkpi-val">6</div></div><div class="mkpi"><div class="mkpi-label mono">Visits (tháng)</div><div class="mkpi-val" style="color:var(--blue)">24.8K</div></div><div class="mkpi"><div class="mkpi-label mono">Avg Conv Rate</div><div class="mkpi-val" style="color:var(--green)">5.2%</div></div><div class="mkpi"><div class="mkpi-label mono">Leads generated</div><div class="mkpi-val" style="color:var(--v3)">1,290</div></div></div>
+  <div class="grid-3" id="landingGrid"></div>
+</div>
+
+<!-- ======================== REPORTS ======================== -->
+<div class="page" id="page-reports">
+  <div class="pg-header"><div class="pg-header-left"><h2>Reports</h2><p>Báo cáo và phân tích dữ liệu tổng hợp</p></div><div class="pg-actions"><div class="card-tabs"><div class="card-tab">Tuần</div><div class="card-tab active">Tháng</div><div class="card-tab">Quý</div></div><button class="btn btn-ghost">📤 Export PDF</button></div></div>
+  <div class="kpi-row"><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Doanh thu</span><div class="kpi-icon" style="background:rgba(139,92,246,.08)">💰</div></div><div class="kpi-value">₫2.47B</div><span class="kpi-change up">↑ 24.5%</span></div><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Deals Won</span><div class="kpi-icon" style="background:rgba(52,211,153,.08)">🏆</div></div><div class="kpi-value">34</div><span class="kpi-change up">↑ 12.3%</span></div><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Avg Deal Size</span><div class="kpi-icon" style="background:rgba(96,165,250,.08)">📊</div></div><div class="kpi-value">₫72.6M</div><span class="kpi-change up">↑ 8.1%</span></div><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Win Rate</span><div class="kpi-icon" style="background:rgba(251,191,36,.08)">🎯</div></div><div class="kpi-value">34.2%</div><span class="kpi-change down">↓ 2.1%</span></div></div>
+  <div class="grid-2">
+    <div class="card"><div class="card-header"><span class="card-title">Doanh thu theo nguồn</span></div><div class="card-body"><div class="chart-area" style="height:180px"><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar highlight" style="height:100%"></div></div><span class="chart-label">Google</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:72%"></div></div><span class="chart-label">Referral</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:58%"></div></div><span class="chart-label">Direct</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"></div></div><span class="chart-label">Social</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:32%"></div></div><span class="chart-label">Email</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:20%"></div></div><span class="chart-label">Events</span></div></div></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Top Sales Reps</span></div><div class="card-body" style="padding:1rem 1.25rem"><div class="contact-list"><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--green),var(--cyan))">HN</div><div><div class="contact-name">Hoàng Nam</div><div class="contact-email">₫890M · 12 deals</div></div><div class="contact-score" style="color:var(--green);background:rgba(52,211,153,.08)">🥇</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--blue),var(--indigo))">ML</div><div><div class="contact-name">Mai Linh</div><div class="contact-email">₫720M · 9 deals</div></div><div class="contact-score" style="color:var(--blue);background:rgba(96,165,250,.08)">🥈</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">QT</div><div><div class="contact-name">Quang Trung</div><div class="contact-email">₫540M · 8 deals</div></div><div class="contact-score" style="color:var(--yellow);background:rgba(251,191,36,.08)">🥉</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--v1),var(--pink))">TM</div><div><div class="contact-name">Thuỳ Minh</div><div class="contact-email">₫320M · 5 deals</div></div><div class="contact-score" style="color:var(--dim);background:var(--raised)">#4</div></div></div></div></div>
+  </div>
+</div>
+
+<!-- ======================== LEAD SCORING ======================== -->
+<div class="page" id="page-scoring">
+  <div class="pg-header"><div class="pg-header-left"><h2>Lead Scoring</h2><p>Cấu hình quy tắc chấm điểm lead tự động</p></div><div class="pg-actions"><button class="btn btn-primary">+ Thêm Rule</button></div></div>
+  <div class="grid-2" style="margin-bottom:1.5rem">
+    <div class="card"><div class="card-header"><span class="card-title">Phân bố Lead Score</span></div><div class="card-body"><div class="score-dist" id="scoreDist"></div><div style="display:flex;justify-content:space-between;margin-top:.5rem"><span class="chart-label">0</span><span class="chart-label">25</span><span class="chart-label">50</span><span class="chart-label">75</span><span class="chart-label">100</span></div><div class="chart-legend" style="margin-top:1rem"><div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--red)"></div>Cold (0-39)</div><div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--yellow)"></div>Warm (40-69)</div><div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--green)"></div>Hot (70-100)</div></div></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Scoring Summary</span></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:.6rem"><div class="pipeline-stage"><div class="stage-dot" style="background:var(--green)"></div><div class="stage-info"><div class="stage-name">Hot Leads (70-100)</div><div class="stage-count">312 contacts · 16.9%</div></div><div class="stage-value" style="color:var(--green)">312</div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--yellow)"></div><div class="stage-info"><div class="stage-name">Warm Leads (40-69)</div><div class="stage-count">584 contacts · 31.6%</div></div><div class="stage-value" style="color:var(--yellow)">584</div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--red)"></div><div class="stage-info"><div class="stage-name">Cold Leads (0-39)</div><div class="stage-count">951 contacts · 51.5%</div></div><div class="stage-value" style="color:var(--red)">951</div></div></div></div></div>
+  </div>
+  <div class="card"><div class="card-header"><span class="card-title">Scoring Rules</span><span style="font-size:.72rem;color:var(--dim)">12 rules active</span></div><div class="card-body" id="scoringRules"></div></div>
+</div>
+
+<!-- ======================== FORECASTING ======================== -->
+<div class="page" id="page-forecasting">
+  <div class="pg-header"><div class="pg-header-left"><h2>Forecasting</h2><p>Dự báo doanh thu và xu hướng kinh doanh</p></div><div class="pg-actions"><div class="card-tabs"><div class="card-tab active">Q4 2025</div><div class="card-tab">Q1 2026</div><div class="card-tab">Năm 2026</div></div></div></div>
+  <div class="kpi-row"><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Forecast Q4</span><div class="kpi-icon" style="background:rgba(139,92,246,.08)">🎯</div></div><div class="kpi-value">₫8.4B</div><span class="kpi-change up">↑ 15.2% vs Q3</span></div><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Committed</span><div class="kpi-icon" style="background:rgba(52,211,153,.08)">✅</div></div><div class="kpi-value">₫5.1B</div><span class="kpi-change up">60.7% of target</span></div><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Best Case</span><div class="kpi-icon" style="background:rgba(96,165,250,.08)">🚀</div></div><div class="kpi-value">₫9.8B</div><span class="kpi-change up">116.7% of target</span></div><div class="kpi-card"><div class="kpi-top"><span class="kpi-label mono">Gap to Target</span><div class="kpi-icon" style="background:rgba(251,191,36,.08)">⚠️</div></div><div class="kpi-value">₫3.3B</div><span class="kpi-change down">↓ 39.3% remaining</span></div></div>
+  <div class="grid-2">
+    <div class="card"><div class="card-header"><span class="card-title">Dự báo theo tháng</span></div><div class="card-body"><div class="chart-area" style="height:200px"><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar highlight" style="height:70%"></div></div><span class="chart-label">T10</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar highlight" style="height:85%"></div></div><span class="chart-label">T11</span></div><div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:100%;opacity:.35;border:1px dashed var(--v3);background:transparent"></div></div><span class="chart-label" style="color:var(--v3)">T12*</span></div></div><div class="chart-legend"><div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--v2)"></div>Thực tế</div><div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--v3);opacity:.4"></div>Dự báo</div></div></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Pipeline to Forecast</span></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:.6rem"><div class="pipeline-stage"><div class="stage-dot" style="background:var(--green)"></div><div class="stage-info"><div class="stage-name">Closed Won</div><div class="stage-count">34 deals</div></div><div class="stage-value" style="color:var(--green)">₫2.47B</div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--blue)"></div><div class="stage-info"><div class="stage-name">Commit (>80%)</div><div class="stage-count">12 deals</div></div><div class="stage-value">₫2.63B</div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--yellow)"></div><div class="stage-info"><div class="stage-name">Best Case (50-80%)</div><div class="stage-count">18 deals</div></div><div class="stage-value">₫1.9B</div></div><div class="pipeline-stage"><div class="stage-dot" style="background:var(--orange)"></div><div class="stage-info"><div class="stage-name">Upside (<50%)</div><div class="stage-count">24 deals</div></div><div class="stage-value" style="color:var(--dim)">₫2.8B</div></div></div></div></div>
+  </div>
+</div>
+
+<!-- ======================== INTEGRATIONS ======================== -->
+<div class="page" id="page-integrations">
+  <div class="pg-header"><div class="pg-header-left"><h2>Integrations</h2><p>Kết nối AXON với các công cụ yêu thích</p></div><div class="pg-actions"><button class="btn btn-ghost">🔍 Browse All</button></div></div>
+  <div class="grid-4" id="integrationsGrid"></div>
+</div>
+
+<!-- ======================== SETTINGS ======================== -->
+<div class="page" id="page-settings">
+  <div class="pg-header"><div class="pg-header-left"><h2>Settings</h2><p>Cấu hình tài khoản và hệ thống</p></div></div>
+  <div class="settings-layout">
+    <div class="settings-tabs">
+      <div class="settings-tab active" onclick="setSettingsTab(this,'stab-profile')">👤 Profile</div>
+      <div class="settings-tab" onclick="setSettingsTab(this,'stab-team')">👥 Team</div>
+      <div class="settings-tab" onclick="setSettingsTab(this,'stab-billing')">💳 Billing</div>
+      <div class="settings-tab" onclick="setSettingsTab(this,'stab-notif')">🔔 Notifications</div>
+      <div class="settings-tab" onclick="setSettingsTab(this,'stab-security')">🔒 Security</div>
+    </div>
+    <div>
+      <div class="card" id="stab-profile">
+        <div class="card-header"><span class="card-title">Profile Settings</span></div>
+        <div class="card-body">
+          <div class="settings-form">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.5rem">
+              <div class="sidebar-avatar" style="width:56px;height:56px;font-size:1rem;border-radius:14px">HN</div>
+              <div><div style="font-family:'Lexend';font-weight:700;color:#fff">Hoàng Nam</div><div style="font-size:.78rem;color:var(--dim)">Admin · Pro Plan</div></div>
+              <button class="btn btn-ghost btn-sm" style="margin-left:auto">Đổi ảnh</button>
+            </div>
+            <div class="form-row"><div class="form-group"><label>Họ tên</label><input class="form-input" value="Hoàng Nam"/></div><div class="form-group"><label>Email</label><input class="form-input" value="nam@axon.vn"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Số điện thoại</label><input class="form-input" value="+84 912 345 678"/></div><div class="form-group"><label>Chức vụ</label><input class="form-input" value="Admin"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Timezone</label><input class="form-input" value="Asia/Ho_Chi_Minh (UTC+7)"/></div><div class="form-group"><label>Ngôn ngữ</label><input class="form-input" value="Tiếng Việt"/></div></div>
+            <div style="display:flex;gap:.5rem;margin-top:.5rem"><button class="btn btn-primary">💾 Lưu thay đổi</button><button class="btn btn-ghost">Huỷ</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="stab-team" style="display:none">
+        <div class="card-header"><span class="card-title">Team Members</span><button class="btn btn-primary btn-sm">+ Mời thành viên</button></div>
+        <div class="card-body" style="padding:1rem 1.25rem"><div class="contact-list"><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--v5),var(--v2))">HN</div><div><div class="contact-name">Hoàng Nam</div><div class="contact-email">nam@axon.vn · Admin</div></div><div class="tag" style="color:var(--v3);background:rgba(139,92,246,.08);margin-left:auto">Admin</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--blue),var(--indigo))">ML</div><div><div class="contact-name">Mai Linh</div><div class="contact-email">linh@axon.vn · Sales Manager</div></div><div class="tag" style="color:var(--green);background:rgba(52,211,153,.08);margin-left:auto">Manager</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">QT</div><div><div class="contact-name">Quang Trung</div><div class="contact-email">trung@axon.vn · Sales Rep</div></div><div class="tag" style="color:var(--blue);background:rgba(96,165,250,.08);margin-left:auto">Member</div></div><div class="contact-row"><div class="contact-av" style="background:linear-gradient(135deg,var(--pink),var(--v1))">TM</div><div><div class="contact-name">Thuỳ Minh</div><div class="contact-email">minh@axon.vn · Marketing</div></div><div class="tag" style="color:var(--blue);background:rgba(96,165,250,.08);margin-left:auto">Member</div></div></div></div>
+      </div>
+      <div class="card" id="stab-billing" style="display:none">
+        <div class="card-header"><span class="card-title">Billing & Subscription</span></div>
+        <div class="card-body">
+          <div style="padding:1.25rem;background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(129,140,248,.06));border:1px solid var(--border-h);border-radius:14px;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem"><div><div style="font-family:'Lexend';font-weight:800;color:#fff;font-size:1.1rem">Pro Plan</div><div style="font-size:.78rem;color:var(--dim);margin-top:.2rem">₫2,490,000/tháng · Gia hạn 15/01/2026</div></div><button class="btn btn-ghost btn-sm" style="margin-left:auto">Nâng cấp</button></div>
+          <div class="settings-form"><div class="form-row"><div class="form-group"><label>Phương thức thanh toán</label><input class="form-input" value="•••• •••• •••• 4242 (Visa)"/></div><div class="form-group"><label>Billing Email</label><input class="form-input" value="billing@axon.vn"/></div></div></div>
+        </div>
+      </div>
+      <div class="card" id="stab-notif" style="display:none">
+        <div class="card-header"><span class="card-title">Notification Preferences</span></div>
+        <div class="card-body"><div class="toggle-row"><div><div class="toggle-row-label">Email notifications</div><div class="toggle-row-desc">Nhận thông báo qua email</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><div><div class="toggle-row-label">Deal won alerts</div><div class="toggle-row-desc">Thông báo khi deal được chốt</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><div><div class="toggle-row-label">New lead alerts</div><div class="toggle-row-desc">Thông báo khi có lead mới</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><div><div class="toggle-row-label">Weekly reports</div><div class="toggle-row-desc">Báo cáo tổng hợp mỗi tuần</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><div><div class="toggle-row-label">Marketing updates</div><div class="toggle-row-desc">Cập nhật về campaigns</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><div><div class="toggle-row-label">System alerts</div><div class="toggle-row-desc">Thông báo lỗi hệ thống</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div></div>
+      </div>
+      <div class="card" id="stab-security" style="display:none">
+        <div class="card-header"><span class="card-title">Security</span></div>
+        <div class="card-body"><div class="settings-form"><div class="form-group"><label>Mật khẩu hiện tại</label><input class="form-input" type="password" value="••••••••"/></div><div class="form-row"><div class="form-group"><label>Mật khẩu mới</label><input class="form-input" type="password" placeholder="Nhập mật khẩu mới"/></div><div class="form-group"><label>Xác nhận</label><input class="form-input" type="password" placeholder="Nhập lại mật khẩu"/></div></div><div class="toggle-row"><div><div class="toggle-row-label">Two-factor authentication</div><div class="toggle-row-desc">Bảo mật 2 lớp cho tài khoản</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><div><div class="toggle-row-label">Session timeout</div><div class="toggle-row-desc">Tự động đăng xuất sau 30 phút không hoạt động</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div style="margin-top:.75rem"><button class="btn btn-primary">💾 Cập nhật bảo mật</button></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head"><div class="drawer-av" id="drawerAvatar" style="background:linear-gradient(135deg,var(--v1),var(--v5))">NT</div><div><div class="drawer-name" id="drawerName">Nguyễn Thảo</div><div class="drawer-email" id="drawerEmail">thao@techviet.com</div></div><div class="drawer-close" onclick="closeDrawer()">✕</div></div>
+  <div class="drawer-body">
+    <div class="drawer-section-label">Thông tin</div>
+    <div class="drawer-field"><span class="drawer-field-label">Công ty</span><span class="drawer-field-value" id="drawerCompany">TechViet JSC</span></div>
+    <div class="drawer-field"><span class="drawer-field-label">Chức vụ</span><span class="drawer-field-value" id="drawerRole">Marketing Director</span></div>
+    <div class="drawer-field"><span class="drawer-field-label">Điện thoại</span><span class="drawer-field-value" id="drawerPhone">+84 912 345 678</span></div>
+    <div class="drawer-field"><span class="drawer-field-label">Lead Score</span><span class="drawer-field-value" id="drawerScore" style="color:var(--green)">92</span></div>
+    <div class="drawer-field"><span class="drawer-field-label">Trạng thái</span><span class="drawer-field-value" id="drawerStatus">Hot Lead</span></div>
+    <div class="drawer-field"><span class="drawer-field-label">Nguồn</span><span class="drawer-field-value" id="drawerSource">Webinar</span></div>
+    <div class="drawer-section-label">Hoạt động gần đây</div>
+    <div class="drawer-timeline"><div class="drawer-tl-item"><div class="drawer-tl-dot" style="background:rgba(52,211,153,.08)">✉️</div><div><div class="drawer-tl-text">Mở email "Black Friday 2025"</div><div class="drawer-tl-time mono">2 giờ trước</div></div></div><div class="drawer-tl-item"><div class="drawer-tl-dot" style="background:rgba(139,92,246,.08)">🖱️</div><div><div class="drawer-tl-text">Click link pricing page</div><div class="drawer-tl-time mono">5 giờ trước</div></div></div><div class="drawer-tl-item"><div class="drawer-tl-dot" style="background:rgba(96,165,250,.08)">📋</div><div><div class="drawer-tl-text">Submit form "Request Demo"</div><div class="drawer-tl-time mono">1 ngày trước</div></div></div><div class="drawer-tl-item"><div class="drawer-tl-dot" style="background:rgba(251,191,36,.08)">🌐</div><div><div class="drawer-tl-text">Truy cập trang landing page</div><div class="drawer-tl-time mono">2 ngày trước</div></div></div></div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const contacts=[
+  {initials:'NT',name:'Nguyễn Thảo',email:'thao@techviet.com',company:'TechViet JSC',role:'Marketing Director',phone:'+84 912 345 678',status:'hot',tag:'Hot Lead',score:92,lastActive:'2 giờ trước',source:'Webinar',grad:'var(--v1),var(--v5)'},
+  {initials:'TH',name:'Trần Hùng',email:'hung@shopbase.vn',company:'ShopBase VN',role:'CEO',phone:'+84 903 456 789',status:'hot',tag:'Hot Lead',score:87,lastActive:'4 giờ trước',source:'Referral',grad:'var(--indigo),var(--blue)'},
+  {initials:'LM',name:'Lê Minh',email:'minh@greenfinance.vn',company:'Green Finance',role:'CFO',phone:'+84 908 111 222',status:'warm',tag:'Warm Lead',score:64,lastActive:'1 ngày trước',source:'Google Ads',grad:'var(--pink),var(--v1)'},
+  {initials:'PD',name:'Phạm Dũng',email:'dung@mediviet.com',company:'MediViet',role:'Product Manager',phone:'+84 909 333 444',status:'cold',tag:'Cold Lead',score:45,lastActive:'3 ngày trước',source:'LinkedIn',grad:'var(--cyan),var(--indigo)'},
+  {initials:'VA',name:'Vũ An',email:'an@dataweb.vn',company:'DataWeb Corp',role:'CTO',phone:'+84 906 555 666',status:'warm',tag:'Warm Lead',score:78,lastActive:'6 giờ trước',source:'Form',grad:'var(--green),var(--cyan)'},
+  {initials:'HG',name:'Hoàng Giang',email:'giang@megacorp.vn',company:'MegaCorp',role:'VP Sales',phone:'+84 901 777 888',status:'customer',tag:'Customer',score:95,lastActive:'30 phút trước',source:'Direct',grad:'var(--green),var(--emerald)'},
+  {initials:'BT',name:'Bùi Trang',email:'trang@cloudvn.io',company:'CloudVN',role:'Head of Growth',phone:'+84 907 999 000',status:'hot',tag:'Hot Lead',score:88,lastActive:'1 giờ trước',source:'Content',grad:'var(--v2),var(--pink)'},
+  {initials:'ĐK',name:'Đặng Khoa',email:'khoa@finstart.vn',company:'FinStart',role:'Co-Founder',phone:'+84 902 222 333',status:'warm',tag:'Warm Lead',score:71,lastActive:'12 giờ trước',source:'Event',grad:'var(--yellow),var(--orange)'},
+  {initials:'NL',name:'Ngô Linh',email:'linh@edusmart.vn',company:'EduSmart',role:'Marketing Lead',phone:'+84 905 444 555',status:'cold',tag:'Cold Lead',score:32,lastActive:'5 ngày trước',source:'Facebook Ads',grad:'var(--blue),var(--cyan)'},
+  {initials:'TT',name:'Trương Tùng',email:'tung@logistics360.vn',company:'Logistics 360',role:'Operations Dir',phone:'+84 904 666 777',status:'warm',tag:'Warm Lead',score:59,lastActive:'2 ngày trước',source:'Cold Email',grad:'var(--orange),var(--red)'},
+  {initials:'HH',name:'Huỳnh Hạnh',email:'hanh@beautyvn.com',company:'BeautyVN',role:'Brand Manager',phone:'+84 911 888 999',status:'hot',tag:'Hot Lead',score:84,lastActive:'3 giờ trước',source:'Webinar',grad:'var(--pink),var(--v3)'},
+  {initials:'CV',name:'Cao Việt',email:'viet@steelmax.vn',company:'SteelMax',role:'Purchasing Mgr',phone:'+84 913 111 000',status:'cold',tag:'Cold Lead',score:28,lastActive:'1 tuần trước',source:'Trade Show',grad:'var(--dim),var(--faint)'},
+  {initials:'DP',name:'Dương Phương',email:'phuong@agritech.vn',company:'AgriTech VN',role:'Founder',phone:'+84 910 222 111',status:'customer',tag:'Customer',score:91,lastActive:'45 phút trước',source:'Referral',grad:'var(--green),var(--v2)'},
+  {initials:'LT',name:'Lương Tuấn',email:'tuan@proptech.vn',company:'PropTech JSC',role:'Sales Director',phone:'+84 914 333 222',status:'warm',tag:'Warm Lead',score:67,lastActive:'8 giờ trước',source:'Google Ads',grad:'var(--indigo),var(--v2)'},
+  {initials:'MH',name:'Mai Hương',email:'huong@retailplus.vn',company:'RetailPlus',role:'CMO',phone:'+84 915 444 333',status:'hot',tag:'Hot Lead',score:90,lastActive:'20 phút trước',source:'Direct',grad:'var(--v1),var(--indigo)'},
+  {initials:'QN',name:'Quách Ngọc',email:'ngoc@foodchain.vn',company:'FoodChain',role:'HR Director',phone:'+84 916 555 444',status:'cold',tag:'Cold Lead',score:38,lastActive:'4 ngày trước',source:'LinkedIn',grad:'var(--cyan),var(--blue)'},
+  {initials:'ST',name:'Sơn Tùng',email:'tung@autovn.com',company:'AutoVN',role:'General Manager',phone:'+84 917 666 555',status:'warm',tag:'Warm Lead',score:73,lastActive:'10 giờ trước',source:'Content',grad:'var(--yellow),var(--v2)'},
+  {initials:'KA',name:'Kiều Anh',email:'anh@pharmalife.vn',company:'PharmaLife',role:'Business Dev',phone:'+84 918 777 666',status:'customer',tag:'Customer',score:96,lastActive:'10 phút trước',source:'Referral',grad:'var(--green),var(--blue)'}
+];
+
+const deals=[
+  {title:'ERP Implementation',company:'MegaCorp',value:'₫1.2B',stage:'won',owner:'HN',grad:'var(--green),var(--emerald)',prob:100},
+  {title:'CRM Migration',company:'TechViet JSC',value:'₫480M',stage:'negotiation',owner:'ML',grad:'var(--yellow),var(--orange)',prob:75},
+  {title:'Marketing Suite',company:'ShopBase VN',value:'₫320M',stage:'proposal',owner:'HN',grad:'var(--blue),var(--indigo)',prob:50},
+  {title:'Data Analytics Platform',company:'DataWeb Corp',value:'₫650M',stage:'contacted',owner:'QT',grad:'var(--v3),var(--v1)',prob:30},
+  {title:'Cloud Migration',company:'CloudVN',value:'₫890M',stage:'new',owner:'ML',grad:'var(--indigo),var(--blue)',prob:15},
+  {title:'E-commerce Platform',company:'RetailPlus',value:'₫540M',stage:'proposal',owner:'HN',grad:'var(--v2),var(--pink)',prob:55},
+  {title:'HR System',company:'FoodChain',value:'₫210M',stage:'new',owner:'TM',grad:'var(--cyan),var(--blue)',prob:10},
+  {title:'Financial Dashboard',company:'Green Finance',value:'₫380M',stage:'contacted',owner:'QT',grad:'var(--green),var(--cyan)',prob:25},
+  {title:'Supply Chain Tool',company:'Logistics 360',value:'₫720M',stage:'negotiation',owner:'ML',grad:'var(--orange),var(--red)',prob:70},
+  {title:'Telemedicine App',company:'MediViet',value:'₫450M',stage:'proposal',owner:'TM',grad:'var(--pink),var(--v1)',prob:45},
+  {title:'AgriTech Platform',company:'AgriTech VN',value:'₫580M',stage:'won',owner:'HN',grad:'var(--green),var(--v2)',prob:100},
+  {title:'Auto Fleet Manager',company:'AutoVN',value:'₫340M',stage:'new',owner:'QT',grad:'var(--yellow),var(--v2)',prob:20},
+  {title:'Pharma CRM',company:'PharmaLife',value:'₫290M',stage:'won',owner:'ML',grad:'var(--green),var(--blue)',prob:100},
+  {title:'Beauty E-Shop',company:'BeautyVN',value:'₫180M',stage:'contacted',owner:'TM',grad:'var(--pink),var(--v3)',prob:35},
+  {title:'PropTech Portal',company:'PropTech JSC',value:'₫410M',stage:'negotiation',owner:'HN',grad:'var(--indigo),var(--v2)',prob:65},
+  {title:'Steel Inventory Sys',company:'SteelMax',value:'₫150M',stage:'new',owner:'QT',grad:'var(--dim),var(--faint)',prob:5},
+  {title:'EduTech LMS',company:'EduSmart',value:'₫260M',stage:'contacted',owner:'ML',grad:'var(--blue),var(--cyan)',prob:20},
+  {title:'FinStart Banking',company:'FinStart',value:'₫670M',stage:'proposal',owner:'HN',grad:'var(--yellow),var(--orange)',prob:40},
+  {title:'Logistics AI',company:'Logistics 360',value:'₫520M',stage:'proposal',owner:'QT',grad:'var(--orange),var(--v2)',prob:50},
+  {title:'MegaCorp Phase 2',company:'MegaCorp',value:'₫1.8B',stage:'contacted',owner:'HN',grad:'var(--green),var(--emerald)',prob:40},
+  {title:'Retail Analytics',company:'RetailPlus',value:'₫310M',stage:'lost',owner:'ML',grad:'var(--red),var(--orange)',prob:0},
+  {title:'Cloud Security',company:'CloudVN',value:'₫420M',stage:'lost',owner:'QT',grad:'var(--red),var(--pink)',prob:0},
+  {title:'DataWeb Expansion',company:'DataWeb Corp',value:'₫280M',stage:'new',owner:'TM',grad:'var(--v3),var(--blue)',prob:15},
+  {title:'ShopBase Plus',company:'ShopBase VN',value:'₫490M',stage:'won',owner:'HN',grad:'var(--indigo),var(--green)',prob:100}
+];
+
+const companies=[
+  {name:'MegaCorp',industry:'Enterprise Tech',contacts:12,value:'₫3.2B',status:'customer',grad:'var(--green),var(--emerald)',last:'30 phút trước'},
+  {name:'TechViet JSC',industry:'SaaS',contacts:8,value:'₫1.4B',status:'prospect',grad:'var(--v1),var(--v5)',last:'2 giờ trước'},
+  {name:'ShopBase VN',industry:'E-commerce',contacts:6,value:'₫810M',status:'customer',grad:'var(--indigo),var(--blue)',last:'4 giờ trước'},
+  {name:'CloudVN',industry:'Cloud Services',contacts:5,value:'₫1.3B',status:'prospect',grad:'var(--v2),var(--pink)',last:'1 giờ trước'},
+  {name:'Green Finance',industry:'FinTech',contacts:4,value:'₫380M',status:'prospect',grad:'var(--green),var(--cyan)',last:'1 ngày trước'},
+  {name:'DataWeb Corp',industry:'Data & Analytics',contacts:7,value:'₫930M',status:'prospect',grad:'var(--cyan),var(--indigo)',last:'6 giờ trước'},
+  {name:'RetailPlus',industry:'Retail',contacts:5,value:'₫850M',status:'customer',grad:'var(--v1),var(--indigo)',last:'20 phút trước'},
+  {name:'Logistics 360',industry:'Logistics',contacts:4,value:'₫1.24B',status:'prospect',grad:'var(--orange),var(--red)',last:'2 ngày trước'},
+  {name:'MediViet',industry:'Healthcare',contacts:3,value:'₫450M',status:'prospect',grad:'var(--cyan),var(--blue)',last:'3 ngày trước'},
+  {name:'PharmaLife',industry:'Pharma',contacts:4,value:'₫290M',status:'customer',grad:'var(--green),var(--blue)',last:'10 phút trước'},
+  {name:'AgriTech VN',industry:'Agriculture',contacts:3,value:'₫580M',status:'customer',grad:'var(--green),var(--v2)',last:'45 phút trước'},
+  {name:'AutoVN',industry:'Automotive',contacts:3,value:'₫340M',status:'prospect',grad:'var(--yellow),var(--v2)',last:'10 giờ trước'}
+];
+
+const campaignsData=[
+  {name:'Black Friday 2025',status:'Active',statusColor:'var(--green)',sent:'12,847',open:'42.3%',click:'8.7%',conv:'324'},
+  {name:'Nurture Sequence Q4',status:'Running',statusColor:'var(--yellow)',sent:'5,230',open:'38.1%',click:'6.2%',conv:'187'},
+  {name:'Welcome Series',status:'Auto',statusColor:'var(--v3)',sent:'890',open:'56.8%',click:'12.4%',conv:'98'},
+  {name:'Product Launch — AXON 3.0',status:'Scheduled',statusColor:'var(--blue)',sent:'—',open:'—',click:'—',conv:'—'},
+  {name:'Re-engagement Q3',status:'Completed',statusColor:'var(--dim)',sent:'8,430',open:'28.5%',click:'4.1%',conv:'112'},
+  {name:'Webinar Invite — AI Trends',status:'Active',statusColor:'var(--green)',sent:'3,210',open:'45.2%',click:'15.8%',conv:'201'},
+  {name:'Holiday Season 2025',status:'Draft',statusColor:'var(--faint)',sent:'—',open:'—',click:'—',conv:'—'},
+  {name:'Case Study Series',status:'Running',statusColor:'var(--yellow)',sent:'2,145',open:'41.0%',click:'9.3%',conv:'76'}
+];
+
+const automations=[
+  {name:'Welcome Onboarding',desc:'Chuỗi 5 email chào mừng khách hàng mới đăng ký',status:'Active',statusColor:'var(--green)',contacts:890,emails:'4.2K',rate:'56.8%',icon:'👋',grad:'var(--green),var(--cyan)',pct:72},
+  {name:'Lead Nurture — MQL',desc:'Nuôi dưỡng lead MQL qua 8 bước tự động',status:'Active',statusColor:'var(--green)',contacts:1240,emails:'8.1K',rate:'38.1%',icon:'🌱',grad:'var(--v2),var(--indigo)',pct:61},
+  {name:'Deal Follow-up',desc:'Tự động follow-up sau khi gửi proposal',status:'Active',statusColor:'var(--green)',contacts:340,emails:'1.8K',rate:'44.5%',icon:'📩',grad:'var(--blue),var(--cyan)',pct:55},
+  {name:'Re-engagement',desc:'Kích hoạt lại contacts không hoạt động 30 ngày',status:'Paused',statusColor:'var(--yellow)',contacts:520,emails:'2.4K',rate:'18.2%',icon:'🔄',grad:'var(--yellow),var(--orange)',pct:32},
+  {name:'Upsell — Pro Plan',desc:'Cross-sell Pro Plan cho khách hàng Basic',status:'Active',statusColor:'var(--green)',contacts:380,emails:'1.5K',rate:'28.7%',icon:'⭐',grad:'var(--pink),var(--v1)',pct:45},
+  {name:'Birthday Greeting',desc:'Gửi email chúc mừng sinh nhật tự động',status:'Active',statusColor:'var(--green)',contacts:1847,emails:'412',rate:'68.3%',icon:'🎂',grad:'var(--orange),var(--pink)',pct:88}
+];
+
+const forms=[
+  {name:'Request Demo',desc:'Form đăng ký demo sản phẩm',submissions:487,rate:'34.2%',icon:'🎯',grad:'var(--v2),var(--indigo)',pct:78},
+  {name:'Contact Us',desc:'Form liên hệ chung trên website',submissions:312,rate:'22.8%',icon:'✉️',grad:'var(--blue),var(--cyan)',pct:62},
+  {name:'Newsletter Signup',desc:'Đăng ký nhận bản tin hàng tuần',submissions:234,rate:'48.5%',icon:'📰',grad:'var(--green),var(--cyan)',pct:85},
+  {name:'Webinar Registration',desc:'Đăng ký tham gia webinar',submissions:156,rate:'52.1%',icon:'🎥',grad:'var(--pink),var(--v1)',pct:70},
+  {name:'Feedback Survey',desc:'Khảo sát ý kiến khách hàng',submissions:89,rate:'15.3%',icon:'📋',grad:'var(--yellow),var(--orange)',pct:42},
+  {name:'Partner Application',desc:'Đăng ký làm đối tác',submissions:42,rate:'8.7%',icon:'🤝',grad:'var(--indigo),var(--v2)',pct:28},
+  {name:'Free Trial',desc:'Đăng ký dùng thử miễn phí',submissions:178,rate:'41.2%',icon:'🚀',grad:'var(--cyan),var(--blue)',pct:75},
+  {name:'Job Application',desc:'Ứng tuyển vị trí công việc',submissions:67,rate:'12.4%',icon:'💼',grad:'var(--orange),var(--red)',pct:35}
+];
+
+const landings=[
+  {name:'AXON — Homepage',desc:'Trang chủ giới thiệu sản phẩm AXON CRM',visits:'12.4K',conv:'4.8%',leads:595,icon:'🏠',grad:'var(--v2),var(--indigo)',pct:82},
+  {name:'Product Tour',desc:'Interactive product tour cho khách tiềm năng',visits:'4.2K',conv:'8.2%',leads:344,icon:'🎬',grad:'var(--blue),var(--cyan)',pct:68},
+  {name:'Black Friday LP',desc:'Landing page chiến dịch Black Friday 2025',visits:'3.8K',conv:'6.5%',leads:247,icon:'🏷️',grad:'var(--pink),var(--v1)',pct:72},
+  {name:'Webinar — AI Trends',desc:'Trang đăng ký webinar AI Trends 2026',visits:'2.1K',conv:'12.4%',leads:260,icon:'🎤',grad:'var(--green),var(--cyan)',pct:90},
+  {name:'Case Studies',desc:'Trang tổng hợp case study khách hàng',visits:'1.8K',conv:'3.2%',leads:58,icon:'📖',grad:'var(--yellow),var(--orange)',pct:55},
+  {name:'Pricing Page',desc:'Trang bảng giá và so sánh gói',visits:'5.2K',conv:'2.8%',leads:146,icon:'💰',grad:'var(--indigo),var(--v2)',pct:48}
+];
+
+const integrations=[
+  {name:'Gmail',desc:'Đồng bộ email và theo dõi giao tiếp',icon:'✉️',grad:'var(--red),var(--orange)',connected:true},
+  {name:'Google Calendar',desc:'Tự động đặt lịch và nhắc nhở',icon:'📅',grad:'var(--blue),var(--cyan)',connected:true},
+  {name:'Slack',desc:'Nhận thông báo deal và lead mới',icon:'💬',grad:'var(--yellow),var(--green)',connected:true},
+  {name:'Zapier',desc:'Kết nối với 5000+ ứng dụng khác',icon:'⚡',grad:'var(--orange),var(--red)',connected:true},
+  {name:'Google Sheets',desc:'Xuất dữ liệu báo cáo tự động',icon:'📊',grad:'var(--green),var(--cyan)',connected:false},
+  {name:'Facebook Ads',desc:'Đồng bộ leads từ Facebook Lead Ads',icon:'📘',grad:'var(--blue),var(--indigo)',connected:true},
+  {name:'Google Ads',desc:'Import leads từ Google Ads campaigns',icon:'🔍',grad:'var(--yellow),var(--orange)',connected:false},
+  {name:'Stripe',desc:'Theo dõi thanh toán và subscription',icon:'💳',grad:'var(--v2),var(--indigo)',connected:true},
+  {name:'Zoom',desc:'Tích hợp cuộc họp video',icon:'📹',grad:'var(--blue),var(--cyan)',connected:false},
+  {name:'HubSpot',desc:'Import/Export contacts từ HubSpot',icon:'🔶',grad:'var(--orange),var(--red)',connected:false},
+  {name:'Notion',desc:'Đồng bộ notes và tài liệu',icon:'📝',grad:'var(--dim),var(--faint)',connected:false},
+  {name:'WhatsApp',desc:'Gửi tin nhắn tự động qua WhatsApp',icon:'📱',grad:'var(--green),var(--emerald)',connected:true}
+];
+
+const scoringRules=[
+  {name:'Mở email',desc:'Contact mở email marketing',pts:'+5',color:'var(--blue)',icon:'✉️'},
+  {name:'Click link email',desc:'Click vào link trong email',pts:'+10',color:'var(--v3)',icon:'🖱️'},
+  {name:'Truy cập website',desc:'Visit website hoặc landing page',pts:'+3',color:'var(--cyan)',icon:'🌐'},
+  {name:'Xem trang pricing',desc:'Truy cập trang bảng giá',pts:'+15',color:'var(--green)',icon:'💰'},
+  {name:'Submit form',desc:'Điền và gửi form trên website',pts:'+20',color:'var(--green)',icon:'📋'},
+  {name:'Tham gia webinar',desc:'Đăng ký và tham gia webinar',pts:'+25',color:'var(--v2)',icon:'🎥'},
+  {name:'Request demo',desc:'Yêu cầu demo sản phẩm',pts:'+30',color:'var(--green)',icon:'🎯'},
+  {name:'Không hoạt động 14 ngày',desc:'Không có tương tác trong 14 ngày',pts:'-10',color:'var(--red)',icon:'⏰'},
+  {name:'Không hoạt động 30 ngày',desc:'Không có tương tác trong 30 ngày',pts:'-20',color:'var(--red)',icon:'😴'},
+  {name:'Unsubscribe',desc:'Huỷ đăng ký nhận email',pts:'-30',color:'var(--red)',icon:'🚫'},
+  {name:'Job title match',desc:'Chức vụ phù hợp ICP (C-level, Director)',pts:'+15',color:'var(--yellow)',icon:'👔'},
+  {name:'Company size match',desc:'Quy mô công ty phù hợp (50-500 NV)',pts:'+10',color:'var(--yellow)',icon:'🏢'}
+];
+
+const pageTitles={dashboard:'Dashboard',pipeline:'Pipeline',contacts:'Contacts',companies:'Companies',campaigns:'Campaigns',automation:'Automation',forms:'Forms',landing:'Landing Pages',reports:'Reports',scoring:'Lead Scoring',forecasting:'Forecasting',integrations:'Integrations',settings:'Settings'};
+
+let currentFilter='all';
+
+// ===================== NAVIGATION =====================
+function navigate(pageId){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const nav=document.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if(nav)nav.classList.add('active');
+  document.getElementById('topbarTitle').textContent=pageTitles[pageId]||pageId;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById(`page-${pageId}`);
+  if(pg)pg.classList.add('active');
+  document.querySelector('.content').scrollTop=0;
+}
+document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
+  item.addEventListener('click',()=>navigate(item.dataset.page));
+});
+
+// ===================== HELPERS =====================
+function scoreColor(s){return s>=80?'var(--green)':s>=60?'var(--yellow)':s>=40?'var(--orange)':'var(--red)'}
+function tagStyle(st){return{hot:{c:'var(--red)',b:'rgba(248,113,113,.08)'},warm:{c:'var(--yellow)',b:'rgba(251,191,36,.08)'},cold:{c:'var(--blue)',b:'rgba(96,165,250,.08)'},customer:{c:'var(--green)',b:'rgba(52,211,153,.08)'},prospect:{c:'var(--blue)',b:'rgba(96,165,250,.08)'}}[st]||{c:'var(--dim)',b:'var(--raised)'}}
+
+// ===================== CONTACTS TABLE =====================
+function renderContacts(){
+  const s=(document.getElementById('contactSearch')?.value||'').toLowerCase();
+  let f=contacts;
+  if(currentFilter!=='all')f=f.filter(c=>c.status===currentFilter);
+  if(s)f=f.filter(c=>c.name.toLowerCase().includes(s)||c.email.toLowerCase().includes(s)||c.company.toLowerCase().includes(s));
+  document.getElementById('contactsBody').innerHTML=f.map((c,i)=>{
+    const t=tagStyle(c.status),sc=scoreColor(c.score);
+    return`<tr onclick="openDrawer(${contacts.indexOf(c)})" style="animation:row-in .3s ease ${i*.03}s both"><td><div class="ct-user"><div class="ct-avatar" style="background:linear-gradient(135deg,${c.grad})">${c.initials}</div><div><div class="ct-name">${c.name}</div><div class="ct-email">${c.email}</div></div></div></td><td><span class="ct-company">${c.company}</span></td><td><span class="tag" style="color:${t.c};background:${t.b}">${c.tag}</span></td><td><div class="ct-score" style="color:${sc}">${c.score}</div><div class="ct-score-bar"><div class="ct-score-fill" style="width:${c.score}%;background:${sc}"></div></div></td><td><span class="ct-last-active">${c.lastActive}</span></td><td><div class="ct-actions"><div class="ct-action-btn" onclick="event.stopPropagation()">✉️</div><div class="ct-action-btn" onclick="event.stopPropagation()">📞</div></div></td></tr>`;
+  }).join('');
+  document.getElementById('showCount').textContent=f.length;
+  document.getElementById('totalCount').textContent=contacts.length;
+}
+function setFilter(el){document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');currentFilter=el.dataset.filter;renderContacts()}
+
+// ===================== DRAWER =====================
+function openDrawer(idx){
+  const c=contacts[idx];
+  document.getElementById('drawerAvatar').style.background=`linear-gradient(135deg,${c.grad})`;
+  document.getElementById('drawerAvatar').textContent=c.initials;
+  document.getElementById('drawerName').textContent=c.name;
+  document.getElementById('drawerEmail').textContent=c.email;
+  document.getElementById('drawerCompany').textContent=c.company;
+  document.getElementById('drawerRole').textContent=c.role;
+  document.getElementById('drawerPhone').textContent=c.phone;
+  document.getElementById('drawerScore').textContent=c.score;
+  document.getElementById('drawerScore').style.color=scoreColor(c.score);
+  document.getElementById('drawerStatus').textContent=c.tag;
+  document.getElementById('drawerSource').textContent=c.source;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+
+// ===================== KANBAN =====================
+function renderKanban(){
+  const stages=[
+    {id:'new',name:'New Leads',color:'var(--indigo)'},
+    {id:'contacted',name:'Contacted',color:'var(--v3)'},
+    {id:'proposal',name:'Proposal Sent',color:'var(--blue)'},
+    {id:'negotiation',name:'Negotiation',color:'var(--yellow)'},
+    {id:'won',name:'Won',color:'var(--green)'},
+    {id:'lost',name:'Lost',color:'var(--red)'}
+  ];
+  document.getElementById('kanbanBoard').innerHTML=stages.map(st=>{
+    const stDeals=deals.filter(d=>d.stage===st.id);
+    return`<div class="kanban-col"><div class="kanban-col-head"><div class="kanban-col-dot" style="background:${st.color}"></div><div class="kanban-col-title">${st.name}</div><div class="kanban-col-count">${stDeals.length}</div></div><div class="kanban-col-body">${stDeals.map(d=>`<div class="kanban-card"><div class="kanban-card-title">${d.title}</div><div class="kanban-card-company">${d.company}</div><div class="kanban-card-bottom"><div class="kanban-card-value">${d.value}</div><div class="kanban-card-av" style="background:linear-gradient(135deg,${d.grad})">${d.owner}</div></div></div>`).join('')}</div></div>`;
+  }).join('');
+}
+
+// ===================== COMPANIES TABLE =====================
+function renderCompanies(){
+  document.getElementById('companiesBody').innerHTML=companies.map((c,i)=>{
+    const t=tagStyle(c.status);
+    return`<tr style="animation:row-in .3s ease ${i*.03}s both"><td><div class="ct-user"><div class="ct-avatar" style="background:linear-gradient(135deg,${c.grad})">${c.name.substring(0,2).toUpperCase()}</div><div><div class="ct-name">${c.name}</div></div></div></td><td>${c.industry}</td><td>${c.contacts}</td><td style="font-family:'Lexend';font-weight:700;color:#fff">${c.value}</td><td><span class="tag" style="color:${t.c};background:${t.b}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span></td><td class="ct-last-active">${c.last}</td></tr>`;
+  }).join('');
+}
+
+// ===================== CAMPAIGNS TABLE =====================
+function renderCampaigns(){
+  document.getElementById('campaignsBody').innerHTML=campaignsData.map((c,i)=>`<tr style="animation:row-in .3s ease ${i*.03}s both"><td style="font-weight:600;color:var(--text)">${c.name}</td><td><span class="tag" style="color:${c.statusColor};background:${c.statusColor}14">${c.status}</span></td><td>${c.sent}</td><td>${c.open}</td><td>${c.click}</td><td>${c.conv}</td></tr>`).join('');
+}
+
+// ===================== ITEM CARD GRIDS =====================
+function renderItemGrid(containerId,items,statLabels){
+  document.getElementById(containerId).innerHTML=items.map(it=>`<div class="item-card"><div class="item-card-icon" style="background:linear-gradient(135deg,${it.grad}20,${it.grad.split(',')[0]}10)">${it.icon}</div><div class="item-card-name">${it.name}</div><div class="item-card-desc">${it.desc}</div><div class="item-card-stats">${statLabels.map(sl=>`<div class="item-card-stat"><div class="item-card-stat-label mono">${sl.label}</div><div class="item-card-stat-val">${it[sl.key]}</div></div>`).join('')}</div>${it.pct!==undefined?`<div class="item-card-bar"><div class="item-card-bar-fill" style="width:${it.pct}%;background:linear-gradient(90deg,${it.grad})"></div></div>`:''}</div>`).join('');
+}
+
+// ===================== SCORING =====================
+function renderScoring(){
+  // Distribution bars
+  const dist=[8,12,18,25,35,42,58,72,85,65,48,38,30,22,18,14,10,8,6,5];
+  document.getElementById('scoreDist').innerHTML=dist.map((h,i)=>{
+    const c=i<8?'var(--red)':i<14?'var(--yellow)':'var(--green)';
+    return`<div class="score-dist-bar" style="height:${h}%;background:${c};flex:1"></div>`;
+  }).join('');
+  // Rules
+  document.getElementById('scoringRules').innerHTML=scoringRules.map(r=>`<div class="scoring-rule"><div class="scoring-rule-icon" style="background:${r.color}14">${r.icon}</div><div class="scoring-rule-info"><div class="scoring-rule-name">${r.name}</div><div class="scoring-rule-desc">${r.desc}</div></div><div class="scoring-rule-pts" style="color:${r.color};background:${r.color}14">${r.pts}</div></div>`).join('');
+}
+
+// ===================== INTEGRATIONS =====================
+function renderIntegrations(){
+  document.getElementById('integrationsGrid').innerHTML=integrations.map(it=>`<div class="item-card" style="text-align:center"><div class="item-card-icon" style="background:linear-gradient(135deg,${it.grad}20,${it.grad.split(',')[0]}10);margin:0 auto .85rem">${it.icon}</div><div class="item-card-name" style="font-size:.88rem">${it.name}</div><div class="item-card-desc" style="font-size:.72rem">${it.desc}</div><button class="btn ${it.connected?'btn-ghost':'btn-primary'} btn-sm" style="margin-top:.5rem;width:100%;justify-content:center">${it.connected?'✅ Connected':'Connect'}</button></div>`).join('');
+}
+
+// ===================== SETTINGS TABS =====================
+function setSettingsTab(el,tabId){
+  document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['stab-profile','stab-team','stab-billing','stab-notif','stab-security'].forEach(id=>{
+    document.getElementById(id).style.display=id===tabId?'block':'none';
+  });
+}
+
+// ===================== INIT =====================
+renderContacts();
+renderKanban();
+renderCompanies();
+renderCampaigns();
+renderItemGrid('automationGrid',automations,[{label:'Contacts',key:'contacts'},{label:'Emails',key:'emails'},{label:'Open Rate',key:'rate'}]);
+renderItemGrid('formsGrid',forms,[{label:'Submissions',key:'submissions'},{label:'Conv Rate',key:'rate'}]);
+renderItemGrid('landingGrid',landings,[{label:'Visits',key:'visits'},{label:'Conv Rate',key:'conv'},{label:'Leads',key:'leads'}]);
+renderScoring();
+renderIntegrations();
+</script>
+</body>
+</html>

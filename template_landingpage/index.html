@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VORTEX — Marketing Agency</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #111111;
+            --color-surface-2: #1a1a1a;
+            --color-text: #f0ece4;
+            --color-text-muted: #8a8680;
+            --color-accent: #e8ff47;
+            --color-accent-2: #ff6b35;
+            --color-accent-3: #47e8c8;
+            --font-display: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-accent) var(--color-bg);
+        }
+
+        body {
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        /* ═══════════════ NOISE OVERLAY ═══════════════ */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ═══════════════ NAVIGATION ═══════════════ */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 10, 0.6);
+            border-bottom: 1px solid rgba(240, 236, 228, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.7; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta {
+            padding: 12px 28px;
+            background: var(--color-accent);
+            color: var(--color-bg);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 12px 100%);
+        }
+
+        .nav-cta:hover {
+            background: var(--color-accent-2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ═══════════════ HERO ═══════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 140px 60px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-shapes {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .hero-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+        }
+
+        .hero-shape-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--color-accent);
+            top: -100px;
+            right: -100px;
+            animation: float-1 12s ease-in-out infinite;
+        }
+
+        .hero-shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--color-accent-2);
+            bottom: -50px;
+            left: 20%;
+            animation: float-2 15s ease-in-out infinite;
+        }
+
+        .hero-shape-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--color-accent-3);
+            top: 30%;
+            left: -100px;
+            animation: float-3 10s ease-in-out infinite;
+        }
+
+        @keyframes float-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-60px, 40px) scale(1.1); }
+        }
+
+        @keyframes float-2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(40px, -30px) rotate(20deg); }
+        }
+
+        @keyframes float-3 {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -20px); }
+            66% { transform: translate(-20px, 30px); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            border: 1px solid rgba(232, 255, 71, 0.3);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 40px;
+            width: fit-content;
+            animation: slideUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 9vw, 8rem);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -3px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title span {
+            display: block;
+            animation: slideUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .hero-title span:nth-child(1) { animation-delay: 0.1s; }
+        .hero-title span:nth-child(2) { animation-delay: 0.2s; }
+        .hero-title span:nth-child(3) { animation-delay: 0.3s; }
+
+        .hero-title .accent { color: var(--color-accent); }
+        .hero-title .outline {
+            -webkit-text-stroke: 2px var(--color-text);
+            color: transparent;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-desc {
+            max-width: 450px;
+            font-size: 1.1rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            animation: slideUp 0.8s ease 0.5s forwards;
+            opacity: 0;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 50px;
+            animation: slideUp 0.8s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--color-accent);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-text-muted);
+            margin-top: 8px;
+        }
+
+        /* ═══════════════ MARQUEE ═══════════════ */
+        .marquee-section {
+            padding: 25px 0;
+            background: var(--color-accent);
+            overflow: hidden;
+            transform: rotate(-1deg) scale(1.02);
+        }
+
+        .marquee-track {
+            display: flex;
+            animation: marquee 20s linear infinite;
+            width: max-content;
+        }
+
+        .marquee-item {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--color-bg);
+            white-space: nowrap;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .marquee-item::after {
+            content: '◆';
+            font-size: 0.6rem;
+        }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ═══════════════ ABOUT ═══════════════ */
+        .about {
+            padding: 140px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .section-tag {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-tag::before {
+            content: '';
+            width: 30px;
+            height: 2px;
+            background: var(--color-accent);
+        }
+
+        .about-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 30px;
+        }
+
+        .about-text {
+            color: var(--color-text-muted);
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 40px;
+        }
+
+        .about-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .about-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            background: var(--color-surface);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .about-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--color-accent), var(--color-accent-3));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .about-visual {
+            position: relative;
+            height: 550px;
+        }
+
+        .about-card {
+            position: absolute;
+            background: var(--color-surface);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .about-card-1 {
+            width: 320px;
+            height: 400px;
+            top: 0;
+            left: 40px;
+            background: linear-gradient(135deg, var(--color-surface), var(--color-surface-2));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .about-card-1 .growth-chart {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            border-radius: 6px 6px 0 0;
+            transition: height 1s ease;
+        }
+
+        .chart-bar:nth-child(1) { height: 30%; background: var(--color-text-muted); }
+        .chart-bar:nth-child(2) { height: 45%; background: var(--color-text-muted); }
+        .chart-bar:nth-child(3) { height: 55%; background: var(--color-accent-3); }
+        .chart-bar:nth-child(4) { height: 70%; background: var(--color-accent-3); }
+        .chart-bar:nth-child(5) { height: 60%; background: var(--color-accent); }
+        .chart-bar:nth-child(6) { height: 85%; background: var(--color-accent); }
+        .chart-bar:nth-child(7) { height: 95%; background: var(--color-accent-2); }
+
+        .about-card-1 .card-label {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .about-card-2 {
+            width: 260px;
+            padding: 25px;
+            bottom: 20px;
+            right: 0;
+            background: linear-gradient(135deg, rgba(232,255,71,0.1), rgba(71,232,200,0.1));
+            border: 1px solid rgba(232,255,71,0.2);
+        }
+
+        .about-card-2 .metric-big {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--color-accent);
+            line-height: 1;
+        }
+
+        .about-card-2 .metric-label {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-top: 8px;
+        }
+
+        .about-card-2 .metric-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--color-surface);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .about-card-2 .metric-bar-fill {
+            width: 87%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-3));
+            border-radius: 3px;
+            animation: fillBar 2s ease 1s forwards;
+        }
+
+        @keyframes fillBar {
+            from { width: 0; }
+            to { width: 87%; }
+        }
+
+        /* ═══════════════ SERVICES ═══════════════ */
+        .services {
+            padding: 140px 60px;
+            background: var(--color-surface);
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .services-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+
+        .services-subtitle {
+            color: var(--color-text-muted);
+            max-width: 550px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--color-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 45px 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-3));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .service-card:hover::before { transform: scaleX(1); }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(232, 255, 71, 0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+        }
+
+        .service-card:nth-child(1) .service-icon { background: rgba(232,255,71,0.12); }
+        .service-card:nth-child(2) .service-icon { background: rgba(255,107,53,0.12); }
+        .service-card:nth-child(3) .service-icon { background: rgba(71,232,200,0.12); }
+        .service-card:nth-child(4) .service-icon { background: rgba(167,71,232,0.12); }
+        .service-card:nth-child(5) .service-icon { background: rgba(232,71,120,0.12); }
+        .service-card:nth-child(6) .service-icon { background: rgba(71,160,232,0.12); }
+
+        .service-number {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.03);
+            line-height: 1;
+        }
+
+        .service-name {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .service-desc {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .service-tag {
+            padding: 5px 14px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* ═══════════════ PORTFOLIO ═══════════════ */
+        .portfolio {
+            padding: 140px 60px;
+        }
+
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+        }
+
+        .portfolio-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: auto auto;
+            gap: 25px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: auto;
+            min-height: 350px;
+        }
+
+        .portfolio-item:nth-child(1) { grid-column: 1 / 8; }
+        .portfolio-item:nth-child(2) { grid-column: 8 / 13; }
+        .portfolio-item:nth-child(3) { grid-column: 1 / 5; }
+        .portfolio-item:nth-child(4) { grid-column: 5 / 13; }
+
+        .portfolio-bg {
+            position: absolute;
+            inset: 0;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .portfolio-item:nth-child(1) .portfolio-bg {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        }
+        .portfolio-item:nth-child(2) .portfolio-bg {
+            background: linear-gradient(135deg, #2d1b38, #44216b, #6b2fa0);
+        }
+        .portfolio-item:nth-child(3) .portfolio-bg {
+            background: linear-gradient(135deg, #1b3a2d, #216b44, #2fa06b);
+        }
+        .portfolio-item:nth-child(4) .portfolio-bg {
+            background: linear-gradient(135deg, #3a1b1b, #6b2121, #a02f2f);
+        }
+
+        .portfolio-item:hover .portfolio-bg { transform: scale(1.05); }
+
+        .portfolio-content {
+            position: absolute;
+            inset: 0;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            z-index: 2;
+        }
+
+        .portfolio-cat {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-accent);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .portfolio-name {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .portfolio-meta {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .portfolio-arrow {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .portfolio-item:hover .portfolio-arrow {
+            background: var(--color-accent);
+            color: var(--color-bg);
+            border-color: var(--color-accent);
+            transform: rotate(-45deg);
+        }
+
+        /* ═══════════════ PROCESS ═══════════════ */
+        .process {
+            padding: 140px 60px;
+            background: var(--color-surface);
+        }
+
+        .process-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .process-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            position: relative;
+        }
+
+        .process-steps::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 12.5%;
+            width: 75%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2), var(--color-accent-3), var(--color-accent));
+            opacity: 0.3;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 0 30px;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid rgba(232,255,71,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            position: relative;
+            background: var(--color-bg);
+            transition: all 0.4s ease;
+        }
+
+        .step-circle:hover {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 40px rgba(232,255,71,0.15);
+        }
+
+        .step-number {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-accent);
+        }
+
+        .step-name {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+
+        /* ═══════════════ TESTIMONIALS ═══════════════ */
+        .testimonials {
+            padding: 140px 60px;
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .testimonials-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--color-surface);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            border-color: rgba(232,255,71,0.15);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-card:nth-child(2) {
+            transform: translateY(30px);
+        }
+
+        .testimonial-card:nth-child(2):hover {
+            transform: translateY(25px);
+        }
+
+        .testimonial-quote {
+            font-size: 3rem;
+            color: var(--color-accent);
+            font-family: var(--font-display);
+            line-height: 1;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .testimonial-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-text-muted);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--color-bg);
+        }
+
+        .testimonial-card:nth-child(1) .testimonial-avatar { background: var(--color-accent); }
+        .testimonial-card:nth-child(2) .testimonial-avatar { background: var(--color-accent-2); }
+        .testimonial-card:nth-child(3) .testimonial-avatar { background: var(--color-accent-3); }
+
+        .testimonial-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .testimonial-role {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .testimonial-stars {
+            position: absolute;
+            top: 35px;
+            right: 35px;
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+        }
+
+        /* ═══════════════ TEAM ═══════════════ */
+        .team {
+            padding: 140px 60px;
+            background: var(--color-surface);
+        }
+
+        .team-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .team-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .team-member {
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .team-photo {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .team-photo-inner {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .team-member:nth-child(1) .team-photo-inner { background: linear-gradient(135deg, #1a2a3a, #2a4a6a); }
+        .team-member:nth-child(2) .team-photo-inner { background: linear-gradient(135deg, #3a1a2a, #6a2a4a); }
+        .team-member:nth-child(3) .team-photo-inner { background: linear-gradient(135deg, #1a3a2a, #2a6a4a); }
+        .team-member:nth-child(4) .team-photo-inner { background: linear-gradient(135deg, #3a2a1a, #6a4a2a); }
+
+        .team-member:hover .team-photo-inner { transform: scale(1.05); }
+
+        .team-photo-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 800;
+            opacity: 0.15;
+        }
+
+        .team-socials {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover .team-socials {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .team-social-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: background 0.2s ease;
+        }
+
+        .team-social-btn:hover { background: var(--color-accent); color: var(--color-bg); }
+
+        .team-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .team-role {
+            font-size: 0.85rem;
+            color: var(--color-accent);
+        }
+
+        /* ═══════════════ CLIENTS / LOGOS ═══════════════ */
+        .clients {
+            padding: 100px 60px;
+            text-align: center;
+        }
+
+        .clients-label {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 50px;
+        }
+
+        .clients-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 70px;
+            flex-wrap: wrap;
+        }
+
+        .client-logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text-muted);
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            letter-spacing: -1px;
+        }
+
+        .client-logo:hover {
+            opacity: 1;
+            color: var(--color-accent);
+        }
+
+        /* ═══════════════ PRICING ═══════════════ */
+        .pricing {
+            padding: 140px 60px;
+            background: var(--color-surface);
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .pricing-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--color-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 45px 35px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--color-accent);
+            transform: scale(1.05);
+            box-shadow: 0 0 60px rgba(232,255,71,0.08);
+        }
+
+        .pricing-card:hover:not(.featured) {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-accent);
+            color: var(--color-bg);
+            padding: 5px 20px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .pricing-plan {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-bottom: 8px;
+        }
+
+        .pricing-desc {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-bottom: 25px;
+        }
+
+        .pricing-price {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-text-muted);
+        }
+
+        .pricing-period {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 35px;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        .pricing-btn {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--color-accent);
+            background: transparent;
+            color: var(--color-accent);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-btn:hover, .pricing-card.featured .pricing-btn {
+            background: var(--color-accent);
+            color: var(--color-bg);
+        }
+
+        .pricing-card.featured .pricing-btn:hover {
+            background: transparent;
+            color: var(--color-accent);
+        }
+
+        /* ═══════════════ BLOG ═══════════════ */
+        .blog {
+            padding: 140px 60px;
+        }
+
+        .blog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+        }
+
+        .blog-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .blog-card {
+            background: var(--color-surface);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(232,255,71,0.15);
+        }
+
+        .blog-image {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-card:nth-child(1) .blog-image { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+        .blog-card:nth-child(2) .blog-image { background: linear-gradient(135deg, #360033, #640064, #0b0033); }
+        .blog-card:nth-child(3) .blog-image { background: linear-gradient(135deg, #134e5e, #71b280, #134e5e); }
+
+        .blog-image-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 800;
+            opacity: 0.08;
+        }
+
+        .blog-body {
+            padding: 30px;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .blog-tag {
+            padding: 4px 12px;
+            background: rgba(232,255,71,0.1);
+            border-radius: 50px;
+            font-size: 0.7rem;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .blog-date {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            display: flex;
+            align-items: center;
+        }
+
+        .blog-heading {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .blog-excerpt {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+
+        /* ═══════════════ CTA ═══════════════ */
+        .cta {
+            padding: 120px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(232,255,71,0.05), rgba(255,107,53,0.05), rgba(71,232,200,0.05));
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            letter-spacing: -3px;
+            line-height: 1.1;
+            margin-bottom: 30px;
+        }
+
+        .cta-text {
+            max-width: 550px;
+            margin: 0 auto 50px;
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            padding: 18px 45px;
+            background: var(--color-accent);
+            color: var(--color-bg);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-2);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(232,255,71,0.2);
+        }
+
+        .btn-outline {
+            padding: 18px 45px;
+            background: transparent;
+            color: var(--color-text);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 2px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            transform: translateY(-3px);
+        }
+
+        /* ═══════════════ FOOTER ═══════════════ */
+        .footer {
+            padding: 80px 60px 40px;
+            background: var(--color-surface);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 20px;
+        }
+
+        .footer-brand-text {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            max-width: 350px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-social-btn {
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .footer-social-btn:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-bg);
+        }
+
+        .footer-col-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .footer-links a {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent);
+            padding-left: 8px;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-bottom-links a {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .footer-bottom-links a:hover { color: var(--color-accent); }
+
+        /* ═══════════════ RESPONSIVE ═══════════════ */
+        @media (max-width: 1024px) {
+            nav { padding: 15px 30px; }
+            .nav-links { display: none; }
+            .hero { padding: 120px 30px 60px; }
+            .hero-bottom { flex-direction: column; gap: 40px; align-items: flex-start; }
+            .about { grid-template-columns: 1fr; padding: 80px 30px; }
+            .about-visual { display: none; }
+            .services { padding: 80px 30px; }
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .portfolio { padding: 80px 30px; }
+            .portfolio-grid { grid-template-columns: 1fr; }
+            .portfolio-item { grid-column: auto !important; }
+            .process { padding: 80px 30px; }
+            .process-steps { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+            .process-steps::before { display: none; }
+            .testimonials { padding: 80px 30px; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .testimonial-card:nth-child(2) { transform: none; }
+            .team { padding: 80px 30px; }
+            .team-grid { grid-template-columns: repeat(2, 1fr); }
+            .pricing { padding: 80px 30px; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .pricing-card.featured { transform: none; }
+            .blog { padding: 80px 30px; }
+            .blog-grid { grid-template-columns: 1fr; }
+            .cta { padding: 80px 30px; }
+            .footer { padding: 60px 30px 30px; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 640px) {
+            .hero-title { letter-spacing: -1px; }
+            .hero-stats { flex-direction: column; gap: 20px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .process-steps { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .clients-logos { gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════ NAVIGATION ═══════════ -->
+    <nav>
+        <div class="logo">
+            <div class="logo-dot"></div>
+            VORTEX
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about">Giới thiệu</a></li>
+            <li><a href="#services">Dịch vụ</a></li>
+            <li><a href="#portfolio">Dự án</a></li>
+            <li><a href="#pricing">Bảng giá</a></li>
+            <li><a href="#blog">Blog</a></li>
+        </ul>
+        <button class="nav-cta">Liên hệ ngay</button>
+    </nav>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero">
+        <div class="hero-bg-shapes">
+            <div class="hero-shape hero-shape-1"></div>
+            <div class="hero-shape hero-shape-2"></div>
+            <div class="hero-shape hero-shape-3"></div>
+        </div>
+
+        <div class="hero-badge">
+            <div class="hero-badge-dot"></div>
+            Top Marketing Agency 2026
+        </div>
+
+        <h1 class="hero-title">
+            <span>Chiến lược</span>
+            <span><span class="accent">sáng tạo.</span></span>
+            <span><span class="outline">Kết quả</span> vượt trội.</span>
+        </h1>
+
+        <div class="hero-bottom">
+            <p class="hero-desc">
+                Chúng tôi giúp thương hiệu của bạn bứt phá trên mọi nền tảng số. Từ chiến lược, sáng tạo nội dung đến quảng cáo hiệu suất — tất cả trong một hệ sinh thái marketing toàn diện.
+            </p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">Dự án</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Hài lòng</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5x</div>
+                    <div class="stat-label">ROI trung bình</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ MARQUEE ═══════════ -->
+    <div class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-item">Branding</div>
+            <div class="marquee-item">Social Media</div>
+            <div class="marquee-item">Performance Ads</div>
+            <div class="marquee-item">SEO Strategy</div>
+            <div class="marquee-item">Content Marketing</div>
+            <div class="marquee-item">Email Automation</div>
+            <div class="marquee-item">Video Production</div>
+            <div class="marquee-item">Influencer Marketing</div>
+            <div class="marquee-item">Branding</div>
+            <div class="marquee-item">Social Media</div>
+            <div class="marquee-item">Performance Ads</div>
+            <div class="marquee-item">SEO Strategy</div>
+            <div class="marquee-item">Content Marketing</div>
+            <div class="marquee-item">Email Automation</div>
+            <div class="marquee-item">Video Production</div>
+            <div class="marquee-item">Influencer Marketing</div>
+        </div>
+    </div>
+
+    <!-- ═══════════ ABOUT ═══════════ -->
+    <section class="about" id="about">
+        <div>
+            <div class="section-tag">Về chúng tôi</div>
+            <h2 class="about-title">Đối tác marketing<br>đáng tin cậy của bạn</h2>
+            <p class="about-text">
+                Với hơn 8 năm kinh nghiệm, VORTEX là agency marketing hàng đầu chuyên cung cấp giải pháp toàn diện cho doanh nghiệp. Chúng tôi kết hợp dữ liệu, sáng tạo và công nghệ để mang đến chiến lược marketing hiệu quả nhất.
+            </p>
+            <div class="about-features">
+                <div class="about-feature">
+                    <div class="about-feature-icon">📊</div>
+                    Data-Driven
+                </div>
+                <div class="about-feature">
+                    <div class="about-feature-icon">🎯</div>
+                    Mục tiêu rõ ràng
+                </div>
+                <div class="about-feature">
+                    <div class="about-feature-icon">🚀</div>
+                    Tăng trưởng nhanh
+                </div>
+                <div class="about-feature">
+                    <div class="about-feature-icon">💡</div>
+                    Sáng tạo đột phá
+                </div>
+            </div>
+        </div>
+        <div class="about-visual">
+            <div class="about-card about-card-1">
+                <div class="card-label">Tăng trưởng doanh thu</div>
+                <div class="growth-chart">
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                </div>
+            </div>
+            <div class="about-card about-card-2">
+                <div class="metric-big">87%</div>
+                <div class="metric-label">Tỷ lệ giữ chân khách hàng</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ SERVICES ═══════════ -->
+    <section class="services" id="services">
+        <div class="services-header">
+            <div class="section-tag" style="justify-content:center;">Dịch vụ</div>
+            <h2 class="services-title">Giải pháp marketing<br>toàn diện</h2>
+            <p class="services-subtitle">Từ chiến lược đến thực thi, chúng tôi cung cấp đầy đủ dịch vụ để thương hiệu của bạn tỏa sáng.</p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-number">01</div>
+                <div class="service-icon">🎨</div>
+                <h3 class="service-name">Branding & Thiết kế</h3>
+                <p class="service-desc">Xây dựng bộ nhận diện thương hiệu mạnh mẽ, logo, brand guideline và hệ thống hình ảnh nhất quán trên mọi điểm chạm.</p>
+                <div class="service-tags">
+                    <span class="service-tag">Logo Design</span>
+                    <span class="service-tag">Brand Identity</span>
+                    <span class="service-tag">Guideline</span>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-number">02</div>
+                <div class="service-icon">📱</div>
+                <h3 class="service-name">Social Media Marketing</h3>
+                <p class="service-desc">Quản lý và phát triển kênh social media chuyên nghiệp. Tăng tương tác, xây dựng cộng đồng và chuyển đổi khách hàng.</p>
+                <div class="service-tags">
+                    <span class="service-tag">Facebook</span>
+                    <span class="service-tag">Instagram</span>
+                    <span class="service-tag">TikTok</span>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-number">03</div>
+                <div class="service-icon">📈</div>
+                <h3 class="service-name">Performance Marketing</h3>
+                <p class="service-desc">Quảng cáo hiệu suất trên Google, Facebook, TikTok Ads. Tối ưu chi phí, tối đa chuyển đổi với chiến lược dựa trên dữ liệu.</p>
+                <div class="service-tags">
+                    <span class="service-tag">Google Ads</span>
+                    <span class="service-tag">Facebook Ads</span>
+                    <span class="service-tag">ROI</span>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-number">04</div>
+                <div class="service-icon">🔍</div>
+                <h3 class="service-name">SEO & Content</h3>
+                <p class="service-desc">Tối ưu hóa công cụ tìm kiếm và chiến lược nội dung giúp website của bạn vươn lên top Google một cách bền vững.</p>
+                <div class="service-tags">
+                    <span class="service-tag">On-page SEO</span>
+                    <span class="service-tag">Blog</span>
+                    <span class="service-tag">Copywriting</span>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-number">05</div>
+                <div class="service-icon">🎬</div>
+                <h3 class="service-name">Video & Production</h3>
+                <p class="service-desc">Sản xuất video quảng cáo, TVC, motion graphic chuyên nghiệp. Kể chuyện thương hiệu qua hình ảnh sống động.</p>
+                <div class="service-tags">
+                    <span class="service-tag">TVC</span>
+                    <span class="service-tag">Reels</span>
+                    <span class="service-tag">Motion</span>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-number">06</div>
+                <div class="service-icon">🤝</div>
+                <h3 class="service-name">Influencer & KOL</h3>
+                <p class="service-desc">Kết nối thương hiệu với hệ thống KOL, KOC phù hợp. Triển khai chiến dịch influencer marketing đo lường được.</p>
+                <div class="service-tags">
+                    <span class="service-tag">KOL</span>
+                    <span class="service-tag">KOC</span>
+                    <span class="service-tag">Seeding</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ PORTFOLIO ═══════════ -->
+    <section class="portfolio" id="portfolio">
+        <div class="portfolio-header">
+            <div>
+                <div class="section-tag">Dự án nổi bật</div>
+                <h2 class="portfolio-title">Case Studies</h2>
+            </div>
+            <a href="#" class="btn-outline" style="padding:12px 30px; font-size:0.85rem;">Xem tất cả →</a>
+        </div>
+
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <div class="portfolio-bg"></div>
+                <div class="portfolio-content">
+                    <div class="portfolio-cat">Branding + Social Media</div>
+                    <h3 class="portfolio-name">VinCoffee — Tái định vị thương hiệu</h3>
+                    <p class="portfolio-meta">Tăng 320% nhận diện thương hiệu trong 6 tháng</p>
+                </div>
+                <div class="portfolio-arrow">↗</div>
+            </div>
+
+            <div class="portfolio-item">
+                <div class="portfolio-bg"></div>
+                <div class="portfolio-content">
+                    <div class="portfolio-cat">Performance Ads</div>
+                    <h3 class="portfolio-name">TechViet — Lead Gen Campaign</h3>
+                    <p class="portfolio-meta">Giảm 45% CPA, tăng 5x leads</p>
+                </div>
+                <div class="portfolio-arrow">↗</div>
+            </div>
+
+            <div class="portfolio-item">
+                <div class="portfolio-bg"></div>
+                <div class="portfolio-content">
+                    <div class="portfolio-cat">SEO</div>
+                    <h3 class="portfolio-name">GreenLife Organic</h3>
+                    <p class="portfolio-meta">Top 3 Google cho 150+ từ khóa</p>
+                </div>
+                <div class="portfolio-arrow">↗</div>
+            </div>
+
+            <div class="portfolio-item">
+                <div class="portfolio-bg"></div>
+                <div class="portfolio-content">
+                    <div class="portfolio-cat">Video + Influencer</div>
+                    <h3 class="portfolio-name">FashionX — Chiến dịch Tết 2026</h3>
+                    <p class="portfolio-meta">10M+ views, 200K+ engagements</p>
+                </div>
+                <div class="portfolio-arrow">↗</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ PROCESS ═══════════ -->
+    <section class="process">
+        <div class="process-header">
+            <div class="section-tag" style="justify-content:center;">Quy trình</div>
+            <h2 class="process-title">Cách chúng tôi làm việc</h2>
+        </div>
+
+        <div class="process-steps">
+            <div class="process-step">
+                <div class="step-circle">
+                    <span class="step-number">01</span>
+                </div>
+                <h3 class="step-name">Khám phá</h3>
+                <p class="step-desc">Tìm hiểu sâu về doanh nghiệp, đối thủ, thị trường và khách hàng mục tiêu của bạn.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-circle">
+                    <span class="step-number">02</span>
+                </div>
+                <h3 class="step-name">Chiến lược</h3>
+                <p class="step-desc">Xây dựng chiến lược marketing tổng thể dựa trên dữ liệu và insight thị trường.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-circle">
+                    <span class="step-number">03</span>
+                </div>
+                <h3 class="step-name">Triển khai</h3>
+                <p class="step-desc">Thực thi chiến dịch đa kênh với đội ngũ chuyên gia giàu kinh nghiệm.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-circle">
+                    <span class="step-number">04</span>
+                </div>
+                <h3 class="step-name">Tối ưu</h3>
+                <p class="step-desc">Đo lường, phân tích và tối ưu liên tục để đạt hiệu quả cao nhất.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ TESTIMONIALS ═══════════ -->
+    <section class="testimonials">
+        <div class="testimonials-header">
+            <div class="section-tag" style="justify-content:center;">Đánh giá</div>
+            <h2 class="testimonials-title">Khách hàng nói gì?</h2>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">VORTEX đã giúp chúng tôi tăng 300% doanh thu online chỉ trong 4 tháng. Đội ngũ chuyên nghiệp, tận tâm và luôn chủ động đề xuất giải pháp sáng tạo.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">NL</div>
+                    <div>
+                        <div class="testimonial-name">Nguyễn Lan</div>
+                        <div class="testimonial-role">CEO, VinCoffee</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">Chiến dịch quảng cáo của VORTEX vượt xa kỳ vọng. CPA giảm 45%, quality lead tăng gấp 5 lần. ROI tuyệt vời so với các agency trước đây.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">TH</div>
+                    <div>
+                        <div class="testimonial-name">Trần Hùng</div>
+                        <div class="testimonial-role">CMO, TechViet</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">Từ khi hợp tác với VORTEX, thương hiệu của chúng tôi được nhận diện rộng rãi hơn rất nhiều. Website tăng 200% organic traffic sau 3 tháng.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">PM</div>
+                    <div>
+                        <div class="testimonial-name">Phạm Minh</div>
+                        <div class="testimonial-role">Founder, GreenLife</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ TEAM ═══════════ -->
+    <section class="team" id="team">
+        <div class="team-header">
+            <div class="section-tag" style="justify-content:center;">Đội ngũ</div>
+            <h2 class="team-title">Những người tạo nên<br>sự khác biệt</h2>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-photo">
+                    <div class="team-photo-inner"></div>
+                    <div class="team-photo-overlay">CEO</div>
+                    <div class="team-socials">
+                        <a href="#" class="team-social-btn">in</a>
+                        <a href="#" class="team-social-btn">𝕏</a>
+                    </div>
+                </div>
+                <div class="team-name">Lê Quang Đại</div>
+                <div class="team-role">CEO & Founder</div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-photo">
+                    <div class="team-photo-inner"></div>
+                    <div class="team-photo-overlay">CD</div>
+                    <div class="team-socials">
+                        <a href="#" class="team-social-btn">in</a>
+                        <a href="#" class="team-social-btn">𝕏</a>
+                    </div>
+                </div>
+                <div class="team-name">Nguyễn Thu Hà</div>
+                <div class="team-role">Creative Director</div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-photo">
+                    <div class="team-photo-inner"></div>
+                    <div class="team-photo-overlay">PM</div>
+                    <div class="team-socials">
+                        <a href="#" class="team-social-btn">in</a>
+                        <a href="#" class="team-social-btn">𝕏</a>
+                    </div>
+                </div>
+                <div class="team-name">Trần Minh Tuấn</div>
+                <div class="team-role">Performance Manager</div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-photo">
+                    <div class="team-photo-inner"></div>
+                    <div class="team-photo-overlay">SM</div>
+                    <div class="team-socials">
+                        <a href="#" class="team-social-btn">in</a>
+                        <a href="#" class="team-social-btn">𝕏</a>
+                    </div>
+                </div>
+                <div class="team-name">Hoàng Mai Linh</div>
+                <div class="team-role">Social Media Lead</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ CLIENTS ═══════════ -->
+    <section class="clients">
+        <p class="clients-label">Được tin tưởng bởi hơn 250+ thương hiệu</p>
+        <div class="clients-logos">
+            <div class="client-logo">VINGROUP</div>
+            <div class="client-logo">TECHVIET</div>
+            <div class="client-logo">NOVAON</div>
+            <div class="client-logo">SUNGROUP</div>
+            <div class="client-logo">SHOPEE</div>
+            <div class="client-logo">LAZADA</div>
+        </div>
+    </section>
+
+    <!-- ═══════════ PRICING ═══════════ -->
+    <section class="pricing" id="pricing">
+        <div class="pricing-header">
+            <div class="section-tag" style="justify-content:center;">Bảng giá</div>
+            <h2 class="pricing-title">Gói dịch vụ linh hoạt</h2>
+            <p class="services-subtitle">Lựa chọn gói phù hợp với quy mô và mục tiêu kinh doanh của bạn.</p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-plan">Starter</div>
+                <div class="pricing-desc">Dành cho startup & SME</div>
+                <div class="pricing-price">15<span>tr</span></div>
+                <div class="pricing-period">/ tháng</div>
+                <ul class="pricing-features">
+                    <li>Quản lý 2 kênh social</li>
+                    <li>8 bài viết / tháng</li>
+                    <li>Thiết kế đồ hoạ cơ bản</li>
+                    <li>Báo cáo hàng tháng</li>
+                    <li>1 buổi tư vấn chiến lược</li>
+                </ul>
+                <button class="pricing-btn">Bắt đầu ngay</button>
+            </div>
+
+            <div class="pricing-card featured">
+                <div class="pricing-badge">Phổ biến nhất</div>
+                <div class="pricing-plan">Professional</div>
+                <div class="pricing-desc">Cho doanh nghiệp tăng trưởng</div>
+                <div class="pricing-price">35<span>tr</span></div>
+                <div class="pricing-period">/ tháng</div>
+                <ul class="pricing-features">
+                    <li>Quản lý 4 kênh social</li>
+                    <li>20 bài viết + 4 video / tháng</li>
+                    <li>Quảng cáo Facebook & Google</li>
+                    <li>SEO cơ bản</li>
+                    <li>Báo cáo chi tiết hàng tuần</li>
+                    <li>Account Manager riêng</li>
+                </ul>
+                <button class="pricing-btn">Chọn gói này</button>
+            </div>
+
+            <div class="pricing-card">
+                <div class="pricing-plan">Enterprise</div>
+                <div class="pricing-desc">Giải pháp toàn diện</div>
+                <div class="pricing-price">Liên hệ</div>
+                <div class="pricing-period">tuỳ chỉnh theo nhu cầu</div>
+                <ul class="pricing-features">
+                    <li>Quản lý đa kênh không giới hạn</li>
+                    <li>Chiến lược marketing tổng thể</li>
+                    <li>Production video chuyên nghiệp</li>
+                    <li>KOL & Influencer management</li>
+                    <li>Đội ngũ chuyên trách 24/7</li>
+                    <li>Báo cáo realtime dashboard</li>
+                </ul>
+                <button class="pricing-btn">Liên hệ tư vấn</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ BLOG ═══════════ -->
+    <section class="blog" id="blog">
+        <div class="blog-header">
+            <div>
+                <div class="section-tag">Blog & Insights</div>
+                <h2 class="blog-title">Kiến thức marketing</h2>
+            </div>
+            <a href="#" class="btn-outline" style="padding:12px 30px; font-size:0.85rem;">Xem thêm →</a>
+        </div>
+
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-image">
+                    <div class="blog-image-text">SEO</div>
+                </div>
+                <div class="blog-body">
+                    <div class="blog-meta">
+                        <span class="blog-tag">SEO</span>
+                        <span class="blog-date">15 Th2, 2026</span>
+                    </div>
+                    <h3 class="blog-heading">10 xu hướng SEO quan trọng nhất năm 2026</h3>
+                    <p class="blog-excerpt">Cập nhật những thay đổi mới nhất từ Google và chiến lược SEO giúp website bạn bứt phá thứ hạng.</p>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-image">
+                    <div class="blog-image-text">ADS</div>
+                </div>
+                <div class="blog-body">
+                    <div class="blog-meta">
+                        <span class="blog-tag">Quảng cáo</span>
+                        <span class="blog-date">08 Th2, 2026</span>
+                    </div>
+                    <h3 class="blog-heading">Cách tối ưu chi phí quảng cáo Facebook hiệu quả</h3>
+                    <p class="blog-excerpt">Hướng dẫn chi tiết cách giảm CPA và tăng ROAS cho chiến dịch Facebook Ads của bạn.</p>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-image">
+                    <div class="blog-image-text">AI</div>
+                </div>
+                <div class="blog-body">
+                    <div class="blog-meta">
+                        <span class="blog-tag">AI Marketing</span>
+                        <span class="blog-date">01 Th2, 2026</span>
+                    </div>
+                    <h3 class="blog-heading">Ứng dụng AI trong marketing: Bước đột phá 2026</h3>
+                    <p class="blog-excerpt">Khám phá cách các doanh nghiệp đang tận dụng trí tuệ nhân tạo để tối ưu chiến lược marketing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ CTA ═══════════ -->
+    <section class="cta">
+        <div class="cta-bg"></div>
+        <div class="cta-content">
+            <div class="section-tag" style="justify-content:center;">Sẵn sàng bắt đầu?</div>
+            <h2 class="cta-title">Hãy để chúng tôi<br>giúp bạn <span style="color:var(--color-accent)">tăng trưởng</span></h2>
+            <p class="cta-text">Đặt lịch tư vấn miễn phí ngay hôm nay và nhận chiến lược marketing được cá nhân hóa cho doanh nghiệp của bạn.</p>
+            <div class="cta-buttons">
+                <button class="btn-primary">Đặt lịch tư vấn miễn phí</button>
+                <button class="btn-outline">Tải Portfolio</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div class="logo">
+                    <div class="logo-dot"></div>
+                    VORTEX
+                </div>
+                <p class="footer-brand-text">Agency marketing toàn diện, giúp thương hiệu của bạn bứt phá trên mọi nền tảng số với chiến lược dựa trên dữ liệu.</p>
+                <div class="footer-social">
+                    <a href="#" class="footer-social-btn">𝕏</a>
+                    <a href="#" class="footer-social-btn">in</a>
+                    <a href="#" class="footer-social-btn">fb</a>
+                    <a href="#" class="footer-social-btn">ig</a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="footer-col-title">Dịch vụ</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Branding</a></li>
+                    <li><a href="#">Social Media</a></li>
+                    <li><a href="#">Performance Ads</a></li>
+                    <li><a href="#">SEO & Content</a></li>
+                    <li><a href="#">Video Production</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-col-title">Công ty</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Giới thiệu</a></li>
+                    <li><a href="#">Đội ngũ</a></li>
+                    <li><a href="#">Tuyển dụng</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-col-title">Liên hệ</h4>
+                <ul class="footer-links">
+                    <li><a href="#">hello@vortex.agency</a></li>
+                    <li><a href="#">+84 28 3822 xxxx</a></li>
+                    <li><a href="#">Tầng 12, Bitexco Tower</a></li>
+                    <li><a href="#">Quận 1, TP.HCM</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-copy">© 2026 VORTEX Agency. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Cookie</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

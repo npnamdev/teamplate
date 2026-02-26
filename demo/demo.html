@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AXON — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050509;
+      --sidebar: #09090f;
+      --surface: #0c0c14;
+      --raised: #111119;
+      --raised2: #16161f;
+      --border: rgba(130, 90, 255, 0.06);
+      --border-s: rgba(130, 90, 255, 0.1);
+      --border-h: rgba(130, 90, 255, 0.2);
+      --v1: #7c3aed;
+      --v2: #8b5cf6;
+      --v3: #a78bfa;
+      --v4: #c4b5fd;
+      --v5: #6d28d9;
+      --indigo: #818cf8;
+      --blue: #60a5fa;
+      --cyan: #22d3ee;
+      --green: #34d399;
+      --emerald: #6ee7b7;
+      --yellow: #fbbf24;
+      --orange: #fb923c;
+      --pink: #f472b6;
+      --red: #f87171;
+      --text: #e0dced;
+      --text2: #c4bdd8;
+      --dim: #706a82;
+      --faint: #3d3856;
+      --mute: #2a2640;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      overflow: hidden;
+    }
+
+    .heading { font-family: 'Lexend', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 10px; }
+
+    /* ===================================================================
+       SIDEBAR
+    =================================================================== */
+    .sidebar {
+      width: 260px;
+      height: 100vh;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--v2), var(--indigo));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(139,92,246,0.25);
+    }
+    .sidebar-logo span { color: #fff; font-weight: 900; font-size: 0.7rem; font-family: 'Lexend'; letter-spacing: 0.05em; }
+    .sidebar-brand { font-family: 'Lexend'; font-weight: 800; font-size: 1.05rem; color: #fff; letter-spacing: 0.04em; }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0.75rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .nav-group-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--faint);
+      padding: 1rem 0.75rem 0.4rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .nav-item:hover { background: rgba(139,92,246,0.04); color: var(--text2); }
+    .nav-item.active {
+      background: rgba(139,92,246,0.08);
+      color: var(--v3);
+    }
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: -0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      border-radius: 0 3px 3px 0;
+      background: var(--v2);
+    }
+    .nav-item .ico {
+      width: 20px;
+      text-align: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .nav-item .badge {
+      margin-left: auto;
+      padding: 0.1rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.62rem;
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding: 1rem 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--v5), var(--v2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.7rem; color: #fff; flex-shrink: 0;
+    }
+    .sidebar-user-name { font-weight: 700; font-size: 0.82rem; color: var(--text); }
+    .sidebar-user-role { font-size: 0.68rem; color: var(--dim); }
+
+    /* ===================================================================
+       MAIN CONTENT
+    =================================================================== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    .topbar {
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      gap: 1rem;
+      flex-shrink: 0;
+      background: rgba(5,5,9,0.6);
+      backdrop-filter: blur(20px);
+    }
+    .topbar-title {
+      font-family: 'Lexend';
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-right: auto;
+    }
+    .topbar-search {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--dim);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      min-width: 220px;
+    }
+    .topbar-search:hover { border-color: var(--border-h); }
+    .topbar-search .key {
+      margin-left: auto;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: var(--mute);
+      font-size: 0.62rem;
+      font-family: 'JetBrains Mono';
+      color: var(--faint);
+    }
+    .topbar-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--raised);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .topbar-icon:hover { border-color: var(--border-h); background: var(--raised2); }
+    .topbar-icon .notif-dot {
+      position: absolute; top: 6px; right: 6px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--bg);
+    }
+    .topbar-avatar {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--v5), var(--v2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.65rem; color: #fff;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(139,92,246,0.2);
+    }
+
+    /* Content Area */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.75rem 2rem 3rem;
+    }
+
+    /* ===================================================================
+       KPI ROW
+    =================================================================== */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.4rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .kpi-card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.06;
+    }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+    }
+    .kpi-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .kpi-value {
+      font-family: 'Lexend';
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+    .kpi-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+    .kpi-change.up { color: var(--green); background: rgba(52,211,153,0.08); }
+    .kpi-change.down { color: var(--red); background: rgba(248,113,113,0.08); }
+
+    /* ===================================================================
+       MAIN GRID: CHART + PIPELINE
+    =================================================================== */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-title {
+      font-family: 'Lexend';
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #fff;
+    }
+    .card-tabs {
+      display: flex; gap: 0.25rem;
+    }
+    .card-tab {
+      padding: 0.3rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .card-tab:hover { color: var(--text); }
+    .card-tab.active { background: rgba(139,92,246,0.1); color: var(--v3); }
+    .card-body { padding: 1.5rem; }
+
+    /* Revenue Chart (CSS bars) */
+    .chart-area {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 200px;
+      padding-top: 1rem;
+    }
+    .chart-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .chart-bar-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 1;
+    }
+    .chart-bar {
+      width: 70%;
+      border-radius: 6px 6px 2px 2px;
+      background: linear-gradient(180deg, var(--v2), var(--v5));
+      min-height: 4px;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      opacity: 0.55;
+    }
+    .chart-bar.highlight {
+      opacity: 1;
+      background: linear-gradient(180deg, var(--v3), var(--v1));
+      box-shadow: 0 0 20px rgba(139,92,246,0.2);
+    }
+    .chart-bar:hover {
+      opacity: 1;
+      box-shadow: 0 0 16px rgba(139,92,246,0.25);
+    }
+    .chart-label {
+      font-size: 0.6rem;
+      color: var(--faint);
+      font-weight: 600;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .chart-legend-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; color: var(--dim);
+    }
+    .chart-legend-dot { width: 8px; height: 8px; border-radius: 3px; }
+
+    /* ===================================================================
+       PIPELINE MINI
+    =================================================================== */
+    .pipeline-stages {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .pipeline-stage {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.8rem 1rem;
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .pipeline-stage:hover {
+      border-color: var(--border-h);
+      background: var(--raised2);
+    }
+    .stage-dot {
+      width: 10px; height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .stage-info { flex: 1; }
+    .stage-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .stage-count { font-size: 0.68rem; color: var(--dim); margin-top: 0.1rem; }
+    .stage-value {
+      font-family: 'Lexend';
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: #fff;
+    }
+    .stage-bar-track {
+      width: 60px; height: 4px;
+      background: var(--mute);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-left: 0.5rem;
+    }
+    .stage-bar-fill { height: 100%; border-radius: 2px; }
+
+    /* ===================================================================
+       BOTTOM GRID: CONTACTS + ACTIVITY + CAMPAIGNS
+    =================================================================== */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Recent Contacts */
+    .contact-list { display: flex; flex-direction: column; gap: 0.15rem; }
+    .contact-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.7rem 0.5rem;
+      border-radius: 10px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .contact-row:hover { background: rgba(139,92,246,0.03); }
+    .contact-av {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.65rem; color: #fff;
+      flex-shrink: 0;
+    }
+    .contact-name { font-weight: 600; font-size: 0.82rem; color: var(--text); }
+    .contact-email { font-size: 0.68rem; color: var(--dim); }
+    .contact-score {
+      margin-left: auto;
+      font-family: 'JetBrains Mono';
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    /* Activity Feed */
+    .activity-list { display: flex; flex-direction: column; gap: 0; }
+    .activity-item {
+      display: flex; gap: 0.85rem;
+      padding: 0.75rem 0.25rem;
+      position: relative;
+    }
+    .activity-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 15px; top: 36px; bottom: -6px;
+      width: 1px;
+      background: var(--border-s);
+    }
+    .activity-dot-wrap {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .activity-text { font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+    .activity-text strong { color: #fff; font-weight: 600; }
+    .activity-time { font-size: 0.65rem; color: var(--faint); margin-top: 0.2rem; }
+
+    /* Campaign Cards */
+    .campaign-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .campaign-card {
+      padding: 1rem;
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .campaign-card:hover { border-color: var(--border-h); }
+    .campaign-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+    .campaign-name { font-weight: 700; font-size: 0.82rem; color: var(--text); }
+    .campaign-status {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.15rem 0.5rem; border-radius: 5px;
+    }
+    .campaign-stats {
+      display: flex; gap: 1.25rem;
+    }
+    .campaign-stat-label { font-size: 0.6rem; color: var(--faint); text-transform: uppercase; letter-spacing: 0.08em; }
+    .campaign-stat-value { font-family: 'Lexend'; font-size: 0.95rem; font-weight: 800; color: #fff; }
+    .campaign-bar-track {
+      width: 100%; height: 4px;
+      background: var(--mute);
+      border-radius: 2px;
+      margin-top: 0.75rem;
+      overflow: hidden;
+    }
+    .campaign-bar-fill { height: 100%; border-radius: 2px; }
+
+    /* ===================================================================
+       ANIMATIONS
+    =================================================================== */
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .kpi-card { animation: fade-in 0.5s ease both; }
+    .kpi-card:nth-child(1) { animation-delay: 0.05s; }
+    .kpi-card:nth-child(2) { animation-delay: 0.1s; }
+    .kpi-card:nth-child(3) { animation-delay: 0.15s; }
+    .kpi-card:nth-child(4) { animation-delay: 0.2s; }
+
+    .main-grid > .card:nth-child(1) { animation: fade-in 0.5s ease 0.25s both; }
+    .main-grid > .card:nth-child(2) { animation: fade-in 0.5s ease 0.3s both; }
+
+    .bottom-grid > .card:nth-child(1) { animation: fade-in 0.5s ease 0.35s both; }
+    .bottom-grid > .card:nth-child(2) { animation: fade-in 0.5s ease 0.4s both; }
+    .bottom-grid > .card:nth-child(3) { animation: fade-in 0.5s ease 0.45s both; }
+
+    @keyframes bar-grow {
+      from { height: 0; }
+    }
+    .chart-bar { animation: bar-grow 0.8s cubic-bezier(0.4,0,0.2,1) both; }
+
+    /* ===================================================================
+       RESPONSIVE
+    =================================================================== */
+    @media (max-width: 1200px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 860px) {
+      .sidebar { display: none; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .bottom-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"><span>AX</span></div>
+    <span class="sidebar-brand">AXON</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <div class="nav-item active">
+      <span class="ico">◆</span> Dashboard
+    </div>
+    <div class="nav-item">
+      <span class="ico">☰</span> Pipeline
+      <span class="badge" style="background: rgba(139,92,246,0.1); color: var(--v3);">24</span>
+    </div>
+    <div class="nav-item">
+      <span class="ico">👥</span> Contacts
+      <span class="badge" style="background: rgba(52,211,153,0.08); color: var(--green);">1.8K</span>
+    </div>
+    <div class="nav-item">
+      <span class="ico">🏢</span> Companies
+    </div>
+
+    <div class="nav-group-label">Marketing</div>
+    <div class="nav-item">
+      <span class="ico">✉️</span> Campaigns
+      <span class="badge" style="background: rgba(96,165,250,0.08); color: var(--blue);">3</span>
+    </div>
+    <div class="nav-item">
+      <span class="ico">⚡</span> Automation
+    </div>
+    <div class="nav-item">
+      <span class="ico">📋</span> Forms
+    </div>
+    <div class="nav-item">
+      <span class="ico">📄</span> Landing Pages
+    </div>
+
+    <div class="nav-group-label">Analytics</div>
+    <div class="nav-item">
+      <span class="ico">📊</span> Reports
+    </div>
+    <div class="nav-item">
+      <span class="ico">🎯</span> Lead Scoring
+    </div>
+    <div class="nav-item">
+      <span class="ico">📈</span> Forecasting
+    </div>
+
+    <div class="nav-group-label">System</div>
+    <div class="nav-item">
+      <span class="ico">🔗</span> Integrations
+    </div>
+    <div class="nav-item">
+      <span class="ico">⚙️</span> Settings
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-avatar">HN</div>
+    <div>
+      <div class="sidebar-user-name">Hoàng Nam</div>
+      <div class="sidebar-user-role">Admin · Pro Plan</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-title">Dashboard</div>
+    <div class="topbar-search">
+      <span>🔍</span>
+      <span>Tìm kiếm...</span>
+      <span class="key">⌘K</span>
+    </div>
+    <div class="topbar-icon">
+      🔔
+      <div class="notif-dot"></div>
+    </div>
+    <div class="topbar-icon">💬</div>
+    <div class="topbar-avatar">HN</div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ===== KPI CARDS ===== -->
+    <div class="kpi-row">
+      <!-- Revenue -->
+      <div class="kpi-card" style="">
+        <div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:0.06;background:var(--v2);"></div>
+        <div class="kpi-top">
+          <span class="kpi-label mono">Doanh thu</span>
+          <div class="kpi-icon" style="background: rgba(139,92,246,0.08);">💰</div>
+        </div>
+        <div class="kpi-value">₫2.47B</div>
+        <span class="kpi-change up">↑ 24.5% vs tháng trước</span>
+      </div>
+
+      <!-- Leads -->
+      <div class="kpi-card">
+        <div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:0.06;background:var(--blue);"></div>
+        <div class="kpi-top">
+          <span class="kpi-label mono">Leads mới</span>
+          <div class="kpi-icon" style="background: rgba(96,165,250,0.08);">👥</div>
+        </div>
+        <div class="kpi-value">1,847</div>
+        <span class="kpi-change up">↑ 18.2% vs tháng trước</span>
+      </div>
+
+      <!-- Conversion -->
+      <div class="kpi-card">
+        <div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:0.06;background:var(--green);"></div>
+        <div class="kpi-top">
+          <span class="kpi-label mono">Conversion Rate</span>
+          <div class="kpi-icon" style="background: rgba(52,211,153,0.08);">📈</div>
+        </div>
+        <div class="kpi-value">34.2%</div>
+        <span class="kpi-change up">↑ 5.7% vs tháng trước</span>
+      </div>
+
+      <!-- Active Flows -->
+      <div class="kpi-card">
+        <div style="position:absolute;top:0;right:0;width:120px;height:120px;border-radius:50%;filter:blur(50px);opacity:0.06;background:var(--orange);"></div>
+        <div class="kpi-top">
+          <span class="kpi-label mono">Active Flows</span>
+          <div class="kpi-icon" style="background: rgba(251,146,60,0.08);">⚡</div>
+        </div>
+        <div class="kpi-value">23</div>
+        <span class="kpi-change up" style="color: var(--v3); background: rgba(139,92,246,0.08);">● Đang chạy</span>
+      </div>
+    </div>
+
+    <!-- ===== CHART + PIPELINE ===== -->
+    <div class="main-grid">
+
+      <!-- Revenue Chart -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Doanh thu theo tháng</span>
+          <div class="card-tabs">
+            <div class="card-tab">6 tháng</div>
+            <div class="card-tab active">12 tháng</div>
+            <div class="card-tab">YTD</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-area">
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:30%; animation-delay:0.1s;"></div></div><span class="chart-label">T1</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:42%; animation-delay:0.15s;"></div></div><span class="chart-label">T2</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:38%; animation-delay:0.2s;"></div></div><span class="chart-label">T3</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:55%; animation-delay:0.25s;"></div></div><span class="chart-label">T4</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:48%; animation-delay:0.3s;"></div></div><span class="chart-label">T5</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:62%; animation-delay:0.35s;"></div></div><span class="chart-label">T6</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:58%; animation-delay:0.4s;"></div></div><span class="chart-label">T7</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:72%; animation-delay:0.45s;"></div></div><span class="chart-label">T8</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:68%; animation-delay:0.5s;"></div></div><span class="chart-label">T9</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:80%; animation-delay:0.55s;"></div></div><span class="chart-label">T10</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:88%; animation-delay:0.6s;"></div></div><span class="chart-label">T11</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar highlight" style="height:100%; animation-delay:0.65s;"></div></div><span class="chart-label" style="color: var(--v3);">T12</span></div>
+          </div>
+          <div class="chart-legend">
+            <div class="chart-legend-item">
+              <div class="chart-legend-dot" style="background: var(--v2);"></div> Doanh thu
+            </div>
+            <div class="chart-legend-item">
+              <div class="chart-legend-dot" style="background: var(--v3);"></div> Tháng hiện tại
+            </div>
+            <div class="chart-legend-item" style="margin-left: auto;">
+              <span class="mono" style="font-size: 0.72rem; color: var(--green);">+24.5% YoY</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Pipeline Overview</span>
+          <span class="mono" style="font-size: 0.72rem; color: var(--v3);">₫8.2B total</span>
+        </div>
+        <div class="card-body">
+          <div class="pipeline-stages">
+            <div class="pipeline-stage">
+              <div class="stage-dot" style="background: var(--indigo);"></div>
+              <div class="stage-info">
+                <div class="stage-name">New Leads</div>
+                <div class="stage-count">12 deals</div>
+              </div>
+              <div class="stage-value">₫1.8B</div>
+              <div class="stage-bar-track"><div class="stage-bar-fill" style="width: 22%; background: var(--indigo);"></div></div>
+            </div>
+
+            <div class="pipeline-stage">
+              <div class="stage-dot" style="background: var(--v3);"></div>
+              <div class="stage-info">
+                <div class="stage-name">Contacted</div>
+                <div class="stage-count">8 deals</div>
+              </div>
+              <div class="stage-value">₫2.1B</div>
+              <div class="stage-bar-track"><div class="stage-bar-fill" style="width: 26%; background: var(--v3);"></div></div>
+            </div>
+
+            <div class="pipeline-stage">
+              <div class="stage-dot" style="background: var(--blue);"></div>
+              <div class="stage-info">
+                <div class="stage-name">Proposal Sent</div>
+                <div class="stage-count">5 deals</div>
+              </div>
+              <div class="stage-value">₫2.4B</div>
+              <div class="stage-bar-track"><div class="stage-bar-fill" style="width: 30%; background: var(--blue);"></div></div>
+            </div>
+
+            <div class="pipeline-stage">
+              <div class="stage-dot" style="background: var(--yellow);"></div>
+              <div class="stage-info">
+                <div class="stage-name">Negotiation</div>
+                <div class="stage-count">3 deals</div>
+              </div>
+              <div class="stage-value">₫1.2B</div>
+              <div class="stage-bar-track"><div class="stage-bar-fill" style="width: 15%; background: var(--yellow);"></div></div>
+            </div>
+
+            <div class="pipeline-stage">
+              <div class="stage-dot" style="background: var(--green);"></div>
+              <div class="stage-info">
+                <div class="stage-name">Won</div>
+                <div class="stage-count">6 deals</div>
+              </div>
+              <div class="stage-value" style="color: var(--green);">₫0.7B</div>
+              <div class="stage-bar-track"><div class="stage-bar-fill" style="width: 7%; background: var(--green);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CONTACTS + ACTIVITY + CAMPAIGNS ===== -->
+    <div class="bottom-grid">
+
+      <!-- Recent Contacts -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Contacts gần đây</span>
+          <span style="font-size: 0.72rem; color: var(--dim); cursor: pointer;">Xem tất cả →</span>
+        </div>
+        <div class="card-body" style="padding: 1rem 1.25rem;">
+          <div class="contact-list">
+            <div class="contact-row">
+              <div class="contact-av" style="background: linear-gradient(135deg, var(--v1), var(--v5));">NT</div>
+              <div>
+                <div class="contact-name">Nguyễn Thảo</div>
+                <div class="contact-email">thao@techviet.com</div>
+              </div>
+              <div class="contact-score" style="color: var(--green); background: rgba(52,211,153,0.08);">92</div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-av" style="background: linear-gradient(135deg, var(--indigo), var(--blue));">TH</div>
+              <div>
+                <div class="contact-name">Trần Hùng</div>
+                <div class="contact-email">hung@shopbase.vn</div>
+              </div>
+              <div class="contact-score" style="color: var(--green); background: rgba(52,211,153,0.08);">87</div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-av" style="background: linear-gradient(135deg, var(--pink), var(--v1));">LM</div>
+              <div>
+                <div class="contact-name">Lê Minh</div>
+                <div class="contact-email">minh@greenfinance.vn</div>
+              </div>
+              <div class="contact-score" style="color: var(--yellow); background: rgba(251,191,36,0.08);">64</div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-av" style="background: linear-gradient(135deg, var(--cyan), var(--indigo));">PD</div>
+              <div>
+                <div class="contact-name">Phạm Dũng</div>
+                <div class="contact-email">dung@mediviet.com</div>
+              </div>
+              <div class="contact-score" style="color: var(--orange); background: rgba(251,146,60,0.08);">45</div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-av" style="background: linear-gradient(135deg, var(--green), var(--cyan));">VA</div>
+              <div>
+                <div class="contact-name">Vũ An</div>
+                <div class="contact-email">an@dataweb.vn</div>
+              </div>
+              <div class="contact-score" style="color: var(--green); background: rgba(52,211,153,0.08);">78</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Hoạt động gần đây</span>
+          <span style="font-size: 0.72rem; color: var(--dim); cursor: pointer;">Tất cả →</span>
+        </div>
+        <div class="card-body" style="padding: 1rem 1.25rem;">
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-dot-wrap" style="background: rgba(52,211,153,0.08);">✅</div>
+              <div>
+                <div class="activity-text"><strong>Deal Won</strong> — MegaCorp ₫1.2B đã chốt</div>
+                <div class="activity-time mono">2 phút trước</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot-wrap" style="background: rgba(139,92,246,0.08);">✉️</div>
+              <div>
+                <div class="activity-text"><strong>Email sent</strong> — Campaign "Black Friday" gửi 12K contacts</div>
+                <div class="activity-time mono">15 phút trước</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot-wrap" style="background: rgba(96,165,250,0.08);">👤</div>
+              <div>
+                <div class="activity-text"><strong>New lead</strong> — Vũ An từ DataWeb đăng ký form</div>
+                <div class="activity-time mono">32 phút trước</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot-wrap" style="background: rgba(251,191,36,0.08);">⚡</div>
+              <div>
+                <div class="activity-text"><strong>Flow triggered</strong> — Onboarding sequence cho 8 leads mới</div>
+                <div class="activity-time mono">1 giờ trước</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot-wrap" style="background: rgba(244,114,182,0.08);">📊</div>
+              <div>
+                <div class="activity-text"><strong>Report ready</strong> — Báo cáo tuần đã tự động gửi email</div>
+                <div class="activity-time mono">3 giờ trước</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campaign Performance -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Campaigns</span>
+          <span style="font-size: 0.72rem; color: var(--dim); cursor: pointer;">Xem tất cả →</span>
+        </div>
+        <div class="card-body" style="padding: 1rem 1.25rem;">
+          <div class="campaign-list">
+            <div class="campaign-card">
+              <div class="campaign-top">
+                <span class="campaign-name">Black Friday 2025</span>
+                <span class="campaign-status" style="color: var(--green); background: rgba(52,211,153,0.08);">Active</span>
+              </div>
+              <div class="campaign-stats">
+                <div>
+                  <div class="campaign-stat-label mono">Sent</div>
+                  <div class="campaign-stat-value">12,847</div>
+                </div>
+                <div>
+                  <div class="campaign-stat-label mono">Open</div>
+                  <div class="campaign-stat-value">42.3%</div>
+                </div>
+                <div>
+                  <div class="campaign-stat-label mono">Click</div>
+                  <div class="campaign-stat-value">8.7%</div>
+                </div>
+              </div>
+              <div class="campaign-bar-track"><div class="campaign-bar-fill" style="width: 42%; background: linear-gradient(90deg, var(--v2), var(--indigo));"></div></div>
+            </div>
+
+            <div class="campaign-card">
+              <div class="campaign-top">
+                <span class="campaign-name">Nurture Sequence Q4</span>
+                <span class="campaign-status" style="color: var(--yellow); background: rgba(251,191,36,0.08);">Running</span>
+              </div>
+              <div class="campaign-stats">
+                <div>
+                  <div class="campaign-stat-label mono">Sent</div>
+                  <div class="campaign-stat-value">5,230</div>
+                </div>
+                <div>
+                  <div class="campaign-stat-label mono">Open</div>
+                  <div class="campaign-stat-value">38.1%</div>
+                </div>
+                <div>
+                  <div class="campaign-stat-label mono">Click</div>
+                  <div class="campaign-stat-value">6.2%</div>
+                </div>
+              </div>
+              <div class="campaign-bar-track"><div class="campaign-bar-fill" style="width: 38%; background: linear-gradient(90deg, var(--yellow), var(--orange));"></div></div>
+            </div>
+
+            <div class="campaign-card">
+              <div class="campaign-top">
+                <span class="campaign-name">Welcome Series</span>
+                <span class="campaign-status" style="color: var(--v3); background: rgba(139,92,246,0.08);">Auto</span>
+              </div>
+              <div class="campaign-stats">
+                <div>
+                  <div class="campaign-stat-label mono">Sent</div>
+                  <div class="campaign-stat-value">890</div>
+                </div>
+                <div>
+                  <div class="campaign-stat-label mono">Open</div>
+                  <div class="campaign-stat-value">56.8%</div>
+                </div>
+                <div>
+                  <div class="campaign-stat-label mono">Click</div>
+                  <div class="campaign-stat-value">12.4%</div>
+                </div>
+              </div>
+              <div class="campaign-bar-track"><div class="campaign-bar-fill" style="width: 57%; background: linear-gradient(90deg, var(--v2), var(--cyan));"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

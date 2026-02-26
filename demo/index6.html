@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AXON — CRM & Marketing Automation Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #06060b;
+      --surface: #0c0c14;
+      --raised: #111119;
+      --border: rgba(130, 90, 255, 0.07);
+      --border-h: rgba(130, 90, 255, 0.2);
+      --v1: #7c3aed;
+      --v2: #8b5cf6;
+      --v3: #a78bfa;
+      --v4: #c4b5fd;
+      --v5: #6d28d9;
+      --indigo: #818cf8;
+      --cyan: #67e8f9;
+      --green: #6ee7b7;
+      --pink: #f0abfc;
+      --text: #e0dced;
+      --dim: #706a82;
+      --faint: #3a3550;
+      --glass: rgba(10, 10, 18, 0.7);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .heading { font-family: 'Lexend', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Noise */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 99999;
+    }
+
+    /* Ambient */
+    .ambient {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+    }
+    .ambient .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(150px);
+      animation: blob-drift 25s ease-in-out infinite alternate;
+    }
+    @keyframes blob-drift {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(50px,-60px) scale(1.1); }
+      66% { transform: translate(-40px,40px) scale(0.9); }
+      100% { transform: translate(20px,-20px) scale(1.05); }
+    }
+
+    /* ===== FLOATING NAV (kept from VORTEX) ===== */
+    nav {
+      position: fixed;
+      top: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000;
+      padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      background: var(--glass);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
+    }
+    .nav-logo-mark {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--v2), var(--indigo));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 16px rgba(139,92,246,0.3);
+    }
+    .nav-logo-mark span { color: #fff; font-weight: 900; font-size: 0.75rem; font-family: 'Lexend'; }
+    .nav-logo-name { color: #fff; font-family: 'Lexend'; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.06em; }
+    .nav-link { color: var(--dim); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s; }
+    .nav-link:hover { color: var(--v3); }
+    .nav-cta {
+      padding: 0.5rem 1.3rem; background: var(--v1); color: #fff; font-weight: 700; font-size: 0.78rem;
+      border-radius: 50px; text-decoration: none; transition: all 0.3s;
+      box-shadow: 0 0 18px rgba(124,58,237,0.3);
+    }
+    .nav-cta:hover { background: var(--v2); transform: scale(1.04); }
+
+    /* ===== HERO WITH DASHBOARD MOCKUP ===== */
+    .hero {
+      padding: 10rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.45rem 1.2rem; border-radius: 50px;
+      background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.1);
+      margin-bottom: 2rem;
+    }
+    .hero-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--v3); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+    .hero-label span { font-size: 0.72rem; font-weight: 600; color: var(--v4); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--v3), var(--indigo), var(--cyan));
+      background-size: 200% 200%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: grad 6s ease infinite;
+    }
+    @keyframes grad { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+
+    .hero-desc {
+      max-width: 520px; margin: 0 auto 2.5rem; color: var(--dim);
+      font-size: 1.05rem; line-height: 1.8;
+    }
+    .hero-actions { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 5rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2.2rem; background: linear-gradient(135deg, var(--v1), var(--v5));
+      color: #fff; font-weight: 700; font-size: 0.92rem; border-radius: 12px;
+      text-decoration: none; transition: all 0.3s;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(124,58,237,0.45); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2.2rem; background: var(--raised);
+      color: var(--text); font-weight: 600; font-size: 0.92rem; border-radius: 12px;
+      text-decoration: none; border: 1px solid var(--border); transition: all 0.3s;
+    }
+    .btn-secondary:hover { border-color: var(--border-h); background: rgba(139,92,246,0.04); }
+
+    /* ===== DASHBOARD MOCKUP ===== */
+    .dash-mockup {
+      max-width: 1100px;
+      margin: 0 auto;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 80px rgba(124,58,237,0.05);
+      position: relative;
+    }
+    .dash-topbar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--raised);
+      border-bottom: 1px solid var(--border);
+    }
+    .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-body {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 420px;
+    }
+    .dash-sidebar {
+      background: var(--raised);
+      border-right: 1px solid var(--border);
+      padding: 1.25rem 0;
+    }
+    .dash-sidebar-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.55rem 1.25rem;
+      font-size: 0.78rem; color: var(--dim);
+      transition: all 0.2s;
+    }
+    .dash-sidebar-item.active {
+      color: var(--v3);
+      background: rgba(139,92,246,0.06);
+      border-right: 2px solid var(--v2);
+    }
+    .dash-sidebar-item .ico { font-size: 0.9rem; width: 20px; text-align: center; }
+    .dash-main { padding: 1.5rem; }
+    .dash-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;
+    }
+    .dash-stat {
+      padding: 1rem;
+      background: rgba(139,92,246,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .dash-stat .label { font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+    .dash-stat .value { font-family: 'Lexend'; font-size: 1.4rem; font-weight: 800; color: #fff; }
+    .dash-stat .change { font-size: 0.65rem; font-weight: 600; margin-top: 0.25rem; }
+
+    /* Mini chart bars */
+    .dash-chart {
+      display: flex; align-items: flex-end; gap: 4px; height: 140px;
+      padding: 1rem;
+      background: rgba(139,92,246,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .dash-chart .bar {
+      flex: 1; border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--v2), var(--v5));
+      min-width: 12px;
+      transition: opacity 0.3s;
+    }
+
+    /* ===== ZIGZAG FEATURES ===== */
+    .zigzag {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6rem;
+    }
+    .zig-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .zig-row.reverse .zig-text { order: 2; }
+    .zig-row.reverse .zig-visual { order: 1; }
+
+    .zig-num {
+      font-family: 'JetBrains Mono'; font-size: 0.7rem; font-weight: 700;
+      color: var(--v3); letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+    .zig-title {
+      font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: -0.02em;
+      margin-bottom: 0.75rem; line-height: 1.2;
+    }
+    .zig-desc {
+      color: var(--dim); font-size: 0.95rem; line-height: 1.8; margin-bottom: 1.5rem;
+    }
+    .zig-features {
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .zig-feat {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.88rem; color: var(--text);
+    }
+    .zig-feat .dot { width: 6px; height: 6px; border-radius: 2px; background: var(--v2); flex-shrink: 0; }
+
+    /* Visual blocks */
+    .zig-visual-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.4s;
+    }
+    .zig-visual-card:hover { transform: scale(0.98); }
+    .zig-visual-inner { padding: 2rem; }
+
+    /* Pipeline visual */
+    .pipeline-cols {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
+    }
+    .pipeline-col-head {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--dim); margin-bottom: 0.6rem;
+    }
+    .pipeline-card-mini {
+      padding: 0.6rem; border-radius: 8px;
+      background: rgba(139,92,246,0.04);
+      border: 1px solid var(--border);
+      margin-bottom: 0.4rem;
+    }
+    .pipeline-card-mini .name { font-size: 0.7rem; font-weight: 600; color: var(--text); }
+    .pipeline-card-mini .val { font-size: 0.62rem; color: var(--dim); margin-top: 0.15rem; }
+
+    /* Email visual */
+    .email-preview {
+      background: var(--raised); border-radius: 12px; border: 1px solid var(--border); overflow: hidden;
+    }
+    .email-header {
+      padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .email-header .from { font-size: 0.72rem; color: var(--v3); font-weight: 600; }
+    .email-header .time { font-size: 0.65rem; color: var(--faint); }
+    .email-body { padding: 1rem; }
+    .email-line {
+      height: 8px; border-radius: 4px; margin-bottom: 0.5rem;
+      background: rgba(139,92,246,0.06);
+    }
+
+    /* Score visual */
+    .score-ring-wrap {
+      display: flex; align-items: center; justify-content: center; gap: 2rem;
+    }
+    .score-ring {
+      width: 120px; height: 120px; border-radius: 50%;
+      border: 4px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .score-ring::before {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 4px solid transparent;
+      border-top-color: var(--v2);
+      border-right-color: var(--v2);
+    }
+    .score-ring .val { font-family: 'Lexend'; font-size: 2rem; font-weight: 900; color: #fff; }
+    .score-ring .label { font-size: 0.6rem; color: var(--dim); text-align: center; }
+    .score-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .score-item {
+      display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; color: var(--text);
+    }
+    .score-bar-track {
+      width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+    }
+    .score-bar-fill { height: 100%; border-radius: 2px; background: var(--v2); }
+
+    /* ===== SOCIAL PROOF BAR ===== */
+    .proof-bar {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border); border-radius: 20px;
+      overflow: hidden;
+    }
+    .proof-cell {
+      padding: 2.5rem 2rem; text-align: center;
+      border-right: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    .proof-cell:last-child { border-right: none; }
+    .proof-cell:hover { background: rgba(139,92,246,0.02); }
+    .proof-cell .num {
+      font-family: 'Lexend'; font-size: 2.5rem; font-weight: 900; color: #fff;
+      margin-bottom: 0.3rem;
+    }
+    .proof-cell .num .highlight { color: var(--v3); }
+    .proof-cell .txt { font-size: 0.82rem; color: var(--dim); }
+
+    /* ===== TESTIMONIALS - HORIZONTAL SCROLL CARDS ===== */
+    .review-section { overflow: hidden; }
+    .review-track {
+      display: flex; gap: 1.25rem;
+      padding: 0 2rem;
+      width: max-content;
+      animation: scroll-reviews 35s linear infinite;
+    }
+    @keyframes scroll-reviews {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .review-card {
+      width: 380px; flex-shrink: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      transition: border-color 0.3s;
+    }
+    .review-card:hover { border-color: var(--border-h); }
+    .review-stars { color: var(--v3); font-size: 0.75rem; letter-spacing: 0.2em; margin-bottom: 1rem; }
+    .review-text { font-size: 0.9rem; line-height: 1.75; color: #b5aec8; margin-bottom: 1.25rem; }
+    .review-author { display: flex; align-items: center; gap: 0.7rem; }
+    .review-av {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.75rem; color: #fff;
+    }
+    .review-name { font-weight: 700; font-size: 0.85rem; color: #fff; }
+    .review-role { font-size: 0.72rem; color: var(--dim); }
+
+    /* ===== PRICING TABLE ===== */
+    .price-table-wrap {
+      max-width: 1100px; margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .price-table {
+      width: 100%; border-collapse: collapse;
+    }
+    .price-table thead th {
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: left;
+      font-family: 'Lexend'; font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      vertical-align: bottom;
+    }
+    .price-table thead th:first-child { width: 30%; color: var(--dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .price-table thead th .plan-name { font-size: 0.72rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; margin-bottom: 0.4rem; }
+    .price-table thead th .plan-price { font-size: 2rem; font-weight: 900; color: #fff; }
+    .price-table thead th .plan-price-sub { font-size: 0.75rem; color: var(--dim); font-weight: 400; }
+    .price-table thead th.featured { background: rgba(124,58,237,0.04); position: relative; }
+    .price-table thead th.featured::before {
+      content: 'PHỔ BIẾN'; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      padding: 0.25rem 1rem; background: var(--v1); color: #fff;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
+      border-radius: 0 0 8px 8px;
+    }
+    .price-table tbody td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .price-table tbody td:first-child { color: var(--dim); font-weight: 500; }
+    .price-table tbody td.featured { background: rgba(124,58,237,0.03); }
+    .price-table tbody tr:last-child td { border-bottom: none; }
+    .price-table .check { color: var(--v3); font-weight: 700; }
+    .price-table .dash { color: var(--faint); }
+    .price-table tfoot td { padding: 1.5rem; border-top: 1px solid var(--border); }
+    .price-table tfoot td.featured { background: rgba(124,58,237,0.04); }
+
+    .btn-sm-primary {
+      display: inline-flex; padding: 0.6rem 1.5rem; background: linear-gradient(135deg, var(--v1), var(--v5));
+      color: #fff; font-weight: 700; font-size: 0.82rem; border-radius: 10px; text-decoration: none;
+      transition: all 0.3s; box-shadow: 0 2px 16px rgba(124,58,237,0.25);
+    }
+    .btn-sm-primary:hover { transform: translateY(-1px); }
+    .btn-sm-outline {
+      display: inline-flex; padding: 0.6rem 1.5rem; background: transparent;
+      color: var(--text); font-weight: 600; font-size: 0.82rem; border-radius: 10px; text-decoration: none;
+      border: 1px solid var(--border); transition: all 0.3s;
+    }
+    .btn-sm-outline:hover { border-color: var(--v2); }
+
+    /* ===== CTA ===== */
+    .final-cta {
+      max-width: 900px; margin: 0 auto;
+      text-align: center;
+      padding: 5rem 3rem;
+      border-radius: 32px;
+      background: linear-gradient(180deg, rgba(124,58,237,0.06) 0%, var(--surface) 60%);
+      border: 1px solid rgba(124,58,237,0.1);
+      position: relative; overflow: hidden;
+    }
+    .final-cta::before {
+      content: ''; position: absolute;
+      top: -120px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%);
+      filter: blur(60px);
+    }
+    .cta-form {
+      display: flex; gap: 0.5rem; max-width: 440px; margin: 0 auto; position: relative; z-index: 2;
+    }
+    .cta-input {
+      flex: 1; padding: 0.9rem 1.4rem;
+      background: rgba(124,58,237,0.05); border: 1.5px solid rgba(124,58,237,0.12);
+      border-radius: 12px; color: var(--text); font-family: 'Plus Jakarta Sans'; font-size: 0.9rem;
+      outline: none; transition: border 0.3s;
+    }
+    .cta-input::placeholder { color: var(--faint); }
+    .cta-input:focus { border-color: var(--v2); }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem 1.5rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .footer-row { display: flex; justify-content: space-between; align-items: center; }
+    .footer-row p { color: var(--faint); font-size: 0.78rem; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { color: var(--faint); font-size: 0.78rem; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--v3); }
+
+    /* Section spacing */
+    .section { padding: 7rem 2rem; }
+    .sec-label {
+      font-family: 'JetBrains Mono'; font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.2em;
+      color: var(--v3); margin-bottom: 1rem;
+    }
+    .sec-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900; line-height: 1.12; letter-spacing: -0.03em; color: #fff;
+    }
+    .sec-desc { color: var(--dim); font-size: 1rem; line-height: 1.8; max-width: 480px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 960px) {
+      .zig-row, .zig-row.reverse { grid-template-columns: 1fr; gap: 2rem; }
+      .zig-row.reverse .zig-text, .zig-row.reverse .zig-visual { order: unset; }
+      .dash-body { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+      .dash-stats { grid-template-columns: repeat(2, 1fr); }
+      .proof-bar { grid-template-columns: repeat(2, 1fr); }
+      .proof-cell { border-bottom: 1px solid var(--border); }
+      .price-table-wrap { overflow-x: auto; }
+      .nav-link { display: none; }
+      .cta-form { flex-direction: column; }
+      .pipeline-cols { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true">
+  <div class="blob" style="width: 700px; height: 700px; background: radial-gradient(circle, rgba(109,40,217,0.12), transparent 70%); top: -250px; left: -100px;"></div>
+  <div class="blob" style="width: 500px; height: 500px; background: radial-gradient(circle, rgba(129,140,248,0.07), transparent 70%); top: 50%; right: -150px; animation-delay: 8s;"></div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark"><span>AX</span></div>
+    <span class="nav-logo-name">AXON</span>
+  </a>
+  <a href="#features" class="nav-link">Tính năng</a>
+  <a href="#pricing" class="nav-link">Bảng giá</a>
+  <a href="#reviews" class="nav-link">Reviews</a>
+  <a href="#cta" class="nav-cta">Dùng thử →</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-label">
+    <span class="dot"></span>
+    <span class="mono">V3.0 — AI-POWERED CRM</span>
+  </div>
+
+  <h1>
+    Quản lý khách hàng.<br>
+    <span class="accent">Tự động doanh thu.</span>
+  </h1>
+
+  <p class="hero-desc">
+    Nền tảng CRM & Marketing Automation cho doanh nghiệp Việt. Pipeline thông minh, email tự động, lead scoring AI — tất cả trong một dashboard.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#cta" class="btn-primary">Bắt đầu miễn phí <span>→</span></a>
+    <a href="#features" class="btn-secondary">Xem tính năng</a>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="dash-mockup">
+    <div class="dash-topbar">
+      <div class="dash-dot" style="background: #ff5f57;"></div>
+      <div class="dash-dot" style="background: #ffbd2e;"></div>
+      <div class="dash-dot" style="background: #28ca41;"></div>
+      <span style="flex:1;"></span>
+      <span class="mono" style="font-size: 0.65rem; color: var(--faint);">dashboard.axon.vn</span>
+    </div>
+    <div class="dash-body">
+      <div class="dash-sidebar">
+        <div class="dash-sidebar-item active"><span class="ico">◆</span> Dashboard</div>
+        <div class="dash-sidebar-item"><span class="ico">☰</span> Pipeline</div>
+        <div class="dash-sidebar-item"><span class="ico">✉</span> Campaigns</div>
+        <div class="dash-sidebar-item"><span class="ico">⚡</span> Automation</div>
+        <div class="dash-sidebar-item"><span class="ico">👥</span> Contacts</div>
+        <div class="dash-sidebar-item"><span class="ico">📊</span> Analytics</div>
+        <div class="dash-sidebar-item"><span class="ico">⚙</span> Settings</div>
+      </div>
+      <div class="dash-main">
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <div class="label mono">Revenue</div>
+            <div class="value">₫2.4B</div>
+            <div class="change" style="color: var(--green);">↑ 24.5%</div>
+          </div>
+          <div class="dash-stat">
+            <div class="label mono">Leads</div>
+            <div class="value">1,847</div>
+            <div class="change" style="color: var(--green);">↑ 18.2%</div>
+          </div>
+          <div class="dash-stat">
+            <div class="label mono">Conversion</div>
+            <div class="value">34.2%</div>
+            <div class="change" style="color: var(--green);">↑ 5.7%</div>
+          </div>
+          <div class="dash-stat">
+            <div class="label mono">Active Flows</div>
+            <div class="value">23</div>
+            <div class="change" style="color: var(--v3);">● Running</div>
+          </div>
+        </div>
+        <div class="dash-chart">
+          <div class="bar" style="height: 25%;"></div>
+          <div class="bar" style="height: 40%;"></div>
+          <div class="bar" style="height: 35%;"></div>
+          <div class="bar" style="height: 55%;"></div>
+          <div class="bar" style="height: 45%;"></div>
+          <div class="bar" style="height: 70%;"></div>
+          <div class="bar" style="height: 60%;"></div>
+          <div class="bar" style="height: 85%;"></div>
+          <div class="bar" style="height: 75%;"></div>
+          <div class="bar" style="height: 95%; background: linear-gradient(180deg, var(--v3), var(--v1));"></div>
+          <div class="bar" style="height: 80%;"></div>
+          <div class="bar" style="height: 90%;"></div>
+          <div class="bar" style="height: 65%;"></div>
+          <div class="bar" style="height: 78%;"></div>
+          <div class="bar" style="height: 88%;"></div>
+          <div class="bar" style="height: 70%;"></div>
+          <div class="bar" style="height: 82%;"></div>
+          <div class="bar" style="height: 92%; background: linear-gradient(180deg, var(--v3), var(--v1));"></div>
+          <div class="bar" style="height: 85%;"></div>
+          <div class="bar" style="height: 100%; background: linear-gradient(180deg, var(--cyan), var(--v2));"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROOF BAR ===== -->
+<section class="section" style="padding-top: 4rem;">
+  <div class="proof-bar">
+    <div class="proof-cell">
+      <div class="num">3.4<span class="highlight">x</span></div>
+      <div class="txt">Conversion rate</div>
+    </div>
+    <div class="proof-cell">
+      <div class="num">85<span class="highlight">%</span></div>
+      <div class="txt">Tiết kiệm thời gian</div>
+    </div>
+    <div class="proof-cell">
+      <div class="num">50<span class="highlight">M+</span></div>
+      <div class="txt">Email gửi mỗi tháng</div>
+    </div>
+    <div class="proof-cell">
+      <div class="num">2.5<span class="highlight">K+</span></div>
+      <div class="txt">Doanh nghiệp tin dùng</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ZIGZAG FEATURES ===== -->
+<section id="features" class="section">
+  <div style="text-align: center; margin-bottom: 5rem;">
+    <div class="sec-label mono" style="text-align: center;">// Tính năng</div>
+    <h2 class="sec-title" style="text-align: center;">Tất cả công cụ bạn cần.<br><span style="color: var(--v3);">Không gì thừa.</span></h2>
+  </div>
+
+  <div class="zigzag">
+
+    <!-- Feature 1: Pipeline -->
+    <div class="zig-row">
+      <div class="zig-text">
+        <div class="zig-num mono">// 01 — Pipeline</div>
+        <h3 class="zig-title">Smart Pipeline<br>với AI Forecasting</h3>
+        <p class="zig-desc">Kanban board trực quan với AI dự đoán xác suất chốt deal. Tự động phân bổ lead, cảnh báo deal nguội, và timeline chi tiết cho mỗi khách hàng.</p>
+        <div class="zig-features">
+          <div class="zig-feat"><span class="dot"></span> Drag & drop kanban board</div>
+          <div class="zig-feat"><span class="dot"></span> AI deal scoring & forecasting</div>
+          <div class="zig-feat"><span class="dot"></span> Auto-assign & alerts</div>
+          <div class="zig-feat"><span class="dot"></span> Activity timeline per contact</div>
+        </div>
+      </div>
+      <div class="zig-visual">
+        <div class="zig-visual-card">
+          <div class="zig-visual-inner">
+            <div class="pipeline-cols">
+              <div>
+                <div class="pipeline-col-head" style="color: var(--dim);">New</div>
+                <div class="pipeline-card-mini"><div class="name">Nguyễn Văn A</div><div class="val">₫120M</div></div>
+                <div class="pipeline-card-mini"><div class="name">TechCorp Ltd</div><div class="val">₫450M</div></div>
+                <div class="pipeline-card-mini"><div class="name">StartupXYZ</div><div class="val">₫85M</div></div>
+              </div>
+              <div>
+                <div class="pipeline-col-head" style="color: var(--indigo);">Contacted</div>
+                <div class="pipeline-card-mini"><div class="name">VietMedia</div><div class="val">₫200M</div></div>
+                <div class="pipeline-card-mini"><div class="name">FoodChain</div><div class="val">₫340M</div></div>
+              </div>
+              <div>
+                <div class="pipeline-col-head" style="color: var(--v3);">Proposal</div>
+                <div class="pipeline-card-mini"><div class="name">BigRetail</div><div class="val">₫780M</div></div>
+              </div>
+              <div>
+                <div class="pipeline-col-head" style="color: var(--green);">Won ✓</div>
+                <div class="pipeline-card-mini" style="border-color: rgba(110,231,183,0.15);"><div class="name">MegaCorp</div><div class="val">₫1.2B</div></div>
+                <div class="pipeline-card-mini" style="border-color: rgba(110,231,183,0.15);"><div class="name">DataSoft</div><div class="val">₫560M</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 2: Email (reversed) -->
+    <div class="zig-row reverse">
+      <div class="zig-text">
+        <div class="zig-num mono">// 02 — Email Automation</div>
+        <h3 class="zig-title">Email cá nhân hóa<br>gửi đúng thời điểm</h3>
+        <p class="zig-desc">Xây dựng sequence email thông minh với A/B testing và thuật toán send-time optimization. Mỗi khách hàng nhận nội dung khác nhau.</p>
+        <div class="zig-features">
+          <div class="zig-feat"><span class="dot"></span> Visual email builder</div>
+          <div class="zig-feat"><span class="dot"></span> A/B testing tự động</div>
+          <div class="zig-feat"><span class="dot"></span> Send-time AI optimization</div>
+          <div class="zig-feat"><span class="dot"></span> Dynamic content blocks</div>
+        </div>
+      </div>
+      <div class="zig-visual">
+        <div class="zig-visual-card">
+          <div class="zig-visual-inner">
+            <div class="email-preview" style="margin-bottom: 0.75rem;">
+              <div class="email-header">
+                <span class="from">Variant A — Open rate: 42.3%</span>
+                <span class="time">Sent 2h ago</span>
+              </div>
+              <div class="email-body">
+                <div class="email-line" style="width: 60%;"></div>
+                <div class="email-line" style="width: 90%;"></div>
+                <div class="email-line" style="width: 45%;"></div>
+                <div style="margin: 0.75rem 0; padding: 0.5rem 1rem; background: var(--v1); border-radius: 6px; display: inline-block;">
+                  <span style="font-size: 0.7rem; color: #fff; font-weight: 600;">CTA Button →</span>
+                </div>
+              </div>
+            </div>
+            <div class="email-preview">
+              <div class="email-header">
+                <span class="from" style="color: var(--pink);">Variant B — Open rate: 38.7%</span>
+                <span class="time">Sent 2h ago</span>
+              </div>
+              <div class="email-body">
+                <div class="email-line" style="width: 80%;"></div>
+                <div class="email-line" style="width: 55%;"></div>
+                <div class="email-line" style="width: 70%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3: Lead Scoring -->
+    <div class="zig-row">
+      <div class="zig-text">
+        <div class="zig-num mono">// 03 — AI Lead Scoring</div>
+        <h3 class="zig-title">Biết chính xác<br>ai sẵn sàng mua</h3>
+        <p class="zig-desc">AI phân tích hành vi real-time để chấm điểm lead. Team sales tập trung đúng người, đúng lúc — không phí thời gian cho lead chưa sẵn sàng.</p>
+        <div class="zig-features">
+          <div class="zig-feat"><span class="dot"></span> Behavioral scoring real-time</div>
+          <div class="zig-feat"><span class="dot"></span> Smart segmentation</div>
+          <div class="zig-feat"><span class="dot"></span> Priority alerts cho sales</div>
+          <div class="zig-feat"><span class="dot"></span> Predictive analytics</div>
+        </div>
+      </div>
+      <div class="zig-visual">
+        <div class="zig-visual-card">
+          <div class="zig-visual-inner">
+            <div class="score-ring-wrap">
+              <div style="text-align: center;">
+                <div class="score-ring">
+                  <div>
+                    <div class="val">87</div>
+                  </div>
+                </div>
+                <div style="margin-top: 0.6rem; font-size: 0.72rem; color: var(--green); font-weight: 600;">HOT LEAD</div>
+              </div>
+              <div class="score-list">
+                <div class="score-item">
+                  <span style="width: 90px; font-size: 0.72rem; color: var(--dim);">Email opens</span>
+                  <div class="score-bar-track"><div class="score-bar-fill" style="width: 92%;"></div></div>
+                </div>
+                <div class="score-item">
+                  <span style="width: 90px; font-size: 0.72rem; color: var(--dim);">Page visits</span>
+                  <div class="score-bar-track"><div class="score-bar-fill" style="width: 78%;"></div></div>
+                </div>
+                <div class="score-item">
+                  <span style="width: 90px; font-size: 0.72rem; color: var(--dim);">Downloads</span>
+                  <div class="score-bar-track"><div class="score-bar-fill" style="width: 65%;"></div></div>
+                </div>
+                <div class="score-item">
+                  <span style="width: 90px; font-size: 0.72rem; color: var(--dim);">Form fills</span>
+                  <div class="score-bar-track"><div class="score-bar-fill" style="width: 85%; background: var(--green);"></div></div>
+                </div>
+                <div class="score-item">
+                  <span style="width: 90px; font-size: 0.72rem; color: var(--dim);">Recency</span>
+                  <div class="score-bar-track"><div class="score-bar-fill" style="width: 95%; background: var(--cyan);"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS (auto-scroll) ===== -->
+<section id="reviews" class="section review-section">
+  <div style="text-align: center; margin-bottom: 4rem;">
+    <div class="sec-label mono">// Reviews</div>
+    <h2 class="sec-title">Khách hàng nói gì về <span style="color: var(--v3);">AXON</span></h2>
+  </div>
+
+  <div class="review-track">
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"AXON giúp team sales tăng 40% conversion chỉ sau 2 tháng. Automation chạy mượt, pipeline visibility tuyệt vời. Best CRM cho thị trường Việt Nam."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--v1), var(--v5));">NT</div>
+        <div><div class="review-name">Nguyễn Thảo</div><div class="review-role">CMO, TechViet JSC</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"Từ 3 ngày gửi campaign giảm còn 30 phút setup. ROI tăng 280%. Flow builder trực quan, intern cũng tự setup được. Game changer thực sự."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--indigo), var(--v2));">TH</div>
+        <div><div class="review-name">Trần Hùng</div><div class="review-role">CEO, ShopBase Vietnam</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"Lead scoring thay đổi hoàn toàn cách team bán hàng. Biết chính xác ai cần push, ai cần nurture. Chốt deal nhanh hơn 60%."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--pink), var(--v1));">LM</div>
+        <div><div class="review-name">Lê Minh</div><div class="review-role">Head of Sales, GreenFinance</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"Tích hợp Zalo OA + Facebook quá tiện. Mọi tin nhắn, comment đều vào 1 inbox. Support team phản hồi trong 30 giây."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--cyan), var(--v2));">PD</div>
+        <div><div class="review-name">Phạm Dũng</div><div class="review-role">COO, MediViet Group</div></div>
+      </div>
+    </div>
+    <!-- Duplicate for seamless loop -->
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"AXON giúp team sales tăng 40% conversion chỉ sau 2 tháng. Automation chạy mượt, pipeline visibility tuyệt vời. Best CRM cho thị trường Việt Nam."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--v1), var(--v5));">NT</div>
+        <div><div class="review-name">Nguyễn Thảo</div><div class="review-role">CMO, TechViet JSC</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"Từ 3 ngày gửi campaign giảm còn 30 phút setup. ROI tăng 280%. Flow builder trực quan, intern cũng tự setup được. Game changer thực sự."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--indigo), var(--v2));">TH</div>
+        <div><div class="review-name">Trần Hùng</div><div class="review-role">CEO, ShopBase Vietnam</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"Lead scoring thay đổi hoàn toàn cách team bán hàng. Biết chính xác ai cần push, ai cần nurture. Chốt deal nhanh hơn 60%."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--pink), var(--v1));">LM</div>
+        <div><div class="review-name">Lê Minh</div><div class="review-role">Head of Sales, GreenFinance</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★ ★ ★ ★ ★</div>
+      <p class="review-text">"Tích hợp Zalo OA + Facebook quá tiện. Mọi tin nhắn, comment đều vào 1 inbox. Support team phản hồi trong 30 giây."</p>
+      <div class="review-author">
+        <div class="review-av" style="background: linear-gradient(135deg, var(--cyan), var(--v2));">PD</div>
+        <div><div class="review-name">Phạm Dũng</div><div class="review-role">COO, MediViet Group</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING TABLE ===== -->
+<section id="pricing" class="section">
+  <div style="text-align: center; margin-bottom: 4rem;">
+    <div class="sec-label mono">// Bảng giá</div>
+    <h2 class="sec-title">Minh bạch. <span style="color: var(--v3);">Không phí ẩn.</span></h2>
+    <p class="sec-desc" style="margin: 1rem auto 0;">Bắt đầu free, scale khi cần.</p>
+  </div>
+
+  <div class="price-table-wrap">
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>
+            <div class="plan-name mono">Starter</div>
+            <div class="plan-price">Free</div>
+            <div class="plan-price-sub">Miễn phí mãi mãi</div>
+          </th>
+          <th class="featured">
+            <div class="plan-name mono">Professional</div>
+            <div class="plan-price">1.49M<span class="plan-price-sub">/tháng</span></div>
+            <div class="plan-price-sub">Cho team muốn scale</div>
+          </th>
+          <th>
+            <div class="plan-name mono">Enterprise</div>
+            <div class="plan-price">Custom</div>
+            <div class="plan-price-sub">Giải pháp riêng</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Contacts</td>
+          <td>500</td>
+          <td class="featured">10,000</td>
+          <td>Unlimited</td>
+        </tr>
+        <tr>
+          <td>Email / tháng</td>
+          <td>1,000</td>
+          <td class="featured">50,000</td>
+          <td>Unlimited</td>
+        </tr>
+        <tr>
+          <td>Automation flows</td>
+          <td>3</td>
+          <td class="featured">Unlimited</td>
+          <td>Unlimited</td>
+        </tr>
+        <tr>
+          <td>AI Lead Scoring</td>
+          <td class="dash">—</td>
+          <td class="featured"><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Zalo + Facebook</td>
+          <td class="dash">—</td>
+          <td class="featured"><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Custom API</td>
+          <td class="dash">—</td>
+          <td class="dash featured">—</td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Dedicated Server</td>
+          <td class="dash">—</td>
+          <td class="dash featured">—</td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>SLA</td>
+          <td>99.5%</td>
+          <td class="featured">99.9%</td>
+          <td>99.99%</td>
+        </tr>
+        <tr>
+          <td>Support</td>
+          <td>Email</td>
+          <td class="featured">Priority</td>
+          <td>Account Manager</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td><a href="#cta" class="btn-sm-outline">Bắt đầu free</a></td>
+          <td class="featured"><a href="#cta" class="btn-sm-primary">Dùng thử 14 ngày</a></td>
+          <td><a href="#cta" class="btn-sm-outline">Liên hệ</a></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="cta" class="section">
+  <div class="final-cta">
+    <h2 class="heading" style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1rem; position: relative; z-index: 2; color: #fff;">
+      Sẵn sàng tăng trưởng<br><span style="color: var(--v3);">tự động?</span>
+    </h2>
+    <p style="color: var(--dim); font-size: 1rem; line-height: 1.7; margin-bottom: 2.5rem; max-width: 420px; margin-left: auto; margin-right: auto; position: relative; z-index: 2;">
+      2,500+ doanh nghiệp đang scale doanh thu cùng AXON. Miễn phí — không cần thẻ.
+    </p>
+    <div class="cta-form">
+      <input type="email" class="cta-input" placeholder="email@company.vn" />
+      <a href="#" class="btn-primary" style="white-space: nowrap; border-radius: 12px;">Đăng ký →</a>
+    </div>
+    <p style="color: var(--faint); font-size: 0.72rem; margin-top: 1rem; position: relative; z-index: 2;">14 ngày free · Hủy bất cứ lúc nào</p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+  <div class="footer-row">
+    <p>
+      <span style="color: var(--v3); margin-right: 0.3rem;">◆</span>
+      © 2026 AXON. All rights reserved.
+    </p>
+    <div class="footer-links">
+      <a href="#">Điều khoản</a>
+      <a href="#">Bảo mật</a>
+      <a href="#">Status</a>
+      <a href="#">API Docs</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

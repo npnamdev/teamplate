@@ -1,0 +1,2192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXELEARN — Khoá học Marketing chuyên sâu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #08060e;
+            --bg-secondary: #0e0a18;
+            --bg-card: #120e1f;
+            --bg-card-hover: #1a1430;
+            --purple-deep: #6c2bd9;
+            --purple-main: #8b5cf6;
+            --purple-light: #a78bfa;
+            --purple-glow: #c4b5fd;
+            --violet-hot: #d946ef;
+            --pink-accent: #f472b6;
+            --cyan-accent: #67e8f9;
+            --text-primary: #f1eeff;
+            --text-secondary: #9f95b8;
+            --text-muted: #6b6080;
+            --border: rgba(139, 92, 246, 0.12);
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Outfit', sans-serif;
+            --glow-purple: 0 0 80px rgba(139, 92, 246, 0.25);
+            --glow-violet: 0 0 60px rgba(217, 70, 239, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        /* ═══ GRAIN OVERLAY ═══ */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* ═══ AURORA BG ═══ */
+        .aurora {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .aurora-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+        }
+
+        .aurora-orb:nth-child(1) {
+            width: 600px; height: 600px;
+            background: var(--purple-deep);
+            top: -200px; right: -100px;
+            animation: orbit1 25s ease-in-out infinite;
+        }
+
+        .aurora-orb:nth-child(2) {
+            width: 500px; height: 500px;
+            background: var(--violet-hot);
+            bottom: -150px; left: -100px;
+            animation: orbit2 30s ease-in-out infinite;
+        }
+
+        .aurora-orb:nth-child(3) {
+            width: 400px; height: 400px;
+            background: var(--purple-main);
+            top: 40%; left: 30%;
+            animation: orbit3 20s ease-in-out infinite;
+        }
+
+        @keyframes orbit1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-80px, 60px) scale(1.15); }
+            66% { transform: translate(40px, -40px) scale(0.9); }
+        }
+        @keyframes orbit2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(60px, -50px) rotate(30deg); }
+        }
+        @keyframes orbit3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 40px) scale(1.2); }
+        }
+
+        /* ═══ CONTAINER ═══ */
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ═══ NAVIGATION ═══ */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+            padding: 18px 0;
+            backdrop-filter: blur(30px) saturate(180%);
+            background: rgba(8, 6, 14, 0.65);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .nav-inner {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--purple-main), var(--violet-hot));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transform: rotate(-5deg);
+            box-shadow: var(--glow-purple);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover { color: var(--text-primary); }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--purple-main), var(--violet-hot));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after { width: 100%; }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-ghost {
+            padding: 10px 22px;
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--purple-main);
+            color: var(--purple-light);
+        }
+
+        .btn-glow {
+            padding: 10px 26px;
+            background: linear-gradient(135deg, var(--purple-deep), var(--violet-hot));
+            color: white;
+            border: none;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+        }
+
+        /* ═══ HERO ═══ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+            position: relative;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px 6px 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--purple-light);
+            margin-bottom: 28px;
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .hero-badge-icon {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, var(--purple-main), var(--violet-hot));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 24px;
+            animation: fadeUp 0.8s ease 0.1s forwards;
+            opacity: 0;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            background: linear-gradient(135deg, var(--purple-light), var(--violet-hot), var(--pink-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 36px;
+            max-width: 520px;
+            animation: fadeUp 0.8s ease 0.2s forwards;
+            opacity: 0;
+        }
+
+        .hero-cta-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 50px;
+            animation: fadeUp 0.8s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .btn-hero {
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--purple-deep), var(--violet-hot));
+            color: white;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--violet-hot), var(--pink-accent));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .btn-hero:hover::before { opacity: 1; }
+        .btn-hero span { position: relative; z-index: 1; }
+
+        .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(217, 70, 239, 0.5);
+        }
+
+        .btn-play {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .btn-play:hover { color: var(--purple-light); }
+
+        .btn-play-circle {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-play:hover .btn-play-circle {
+            border-color: var(--purple-main);
+            box-shadow: var(--glow-purple);
+        }
+
+        .hero-social-proof {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            animation: fadeUp 0.8s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .avatar-stack {
+            display: flex;
+        }
+
+        .avatar-stack .av {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 3px solid var(--bg-primary);
+            margin-left: -10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .avatar-stack .av:first-child { margin-left: 0; }
+        .avatar-stack .av:nth-child(1) { background: linear-gradient(135deg, #6c2bd9, #8b5cf6); }
+        .avatar-stack .av:nth-child(2) { background: linear-gradient(135deg, #d946ef, #f472b6); }
+        .avatar-stack .av:nth-child(3) { background: linear-gradient(135deg, #0ea5e9, #67e8f9); }
+        .avatar-stack .av:nth-child(4) { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000; }
+
+        .social-proof-text {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        .social-proof-text strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+            animation: fadeUp 0.8s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .hero-card-main {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--glow-purple);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-card-main:hover { transform: translateY(-5px); }
+
+        .hero-card-thumb {
+            height: 220px;
+            background: linear-gradient(135deg, #1a0a30, #2d1065, #4c1d95);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-card-thumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, var(--bg-card));
+        }
+
+        .hero-card-thumb-text {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 900;
+            opacity: 0.08;
+            letter-spacing: -2px;
+        }
+
+        .hero-card-play {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(139, 92, 246, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            z-index: 2;
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+        }
+
+        .hero-card-body {
+            padding: 28px;
+        }
+
+        .hero-card-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(139, 92, 246, 0.15);
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--purple-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .hero-card-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .hero-card-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .hero-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hero-card-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-card-price {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--purple-light);
+        }
+
+        .hero-card-old-price {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            margin-left: 8px;
+            font-family: var(--font-body);
+            font-weight: 400;
+        }
+
+        .hero-card-enroll {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--purple-deep), var(--violet-hot));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+
+        /* Floating badge */
+        .hero-float {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            backdrop-filter: blur(20px);
+            animation: float-gentle 5s ease-in-out infinite;
+        }
+
+        .hero-float-1 {
+            top: -10px;
+            right: -30px;
+        }
+
+        .hero-float-2 {
+            bottom: 30px;
+            left: -40px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-float-number {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--purple-light), var(--violet-hot));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-float-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══ PARTNERS ═══ */
+        .partners {
+            padding: 70px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .partners-label {
+            text-align: center;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+        }
+
+        .partners-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .partner-logo {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            opacity: 0.35;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .partner-logo:hover {
+            opacity: 0.8;
+            color: var(--purple-light);
+        }
+
+        /* ═══ COURSES ═══ */
+        .courses {
+            padding: 120px 0;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--purple-light);
+            margin-bottom: 16px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 28px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--purple-main), var(--violet-hot));
+            border-radius: 2px;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 550px;
+        }
+
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .courses-filter {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.82rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: var(--purple-main);
+            color: var(--purple-light);
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .course-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .course-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(217,70,239,0.3)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .course-card:hover::after { opacity: 1; }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(139, 92, 246, 0.15);
+        }
+
+        .course-thumb {
+            height: 190px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card:nth-child(1) .course-thumb { background: linear-gradient(135deg, #1e0a3e, #3b1a7a, #5b21b6); }
+        .course-card:nth-child(2) .course-thumb { background: linear-gradient(135deg, #2d0a3e, #6b217a, #9333ea); }
+        .course-card:nth-child(3) .course-thumb { background: linear-gradient(135deg, #0a1e3e, #1a3b7a, #2563eb); }
+        .course-card:nth-child(4) .course-thumb { background: linear-gradient(135deg, #3e0a2d, #7a1a5b, #be185d); }
+        .course-card:nth-child(5) .course-thumb { background: linear-gradient(135deg, #0a3e2d, #1a7a5b, #059669); }
+        .course-card:nth-child(6) .course-thumb { background: linear-gradient(135deg, #3e2d0a, #7a5b1a, #d97706); }
+
+        .course-thumb-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            opacity: 0.15;
+        }
+
+        .course-level {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .level-beginner { background: rgba(16, 185, 129, 0.25); color: #6ee7b7; }
+        .level-intermediate { background: rgba(139, 92, 246, 0.3); color: var(--purple-glow); }
+        .level-advanced { background: rgba(239, 68, 68, 0.25); color: #fca5a5; }
+
+        .course-hot {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            padding: 4px 10px;
+            background: rgba(239, 68, 68, 0.9);
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .course-body {
+            padding: 24px;
+        }
+
+        .course-tag {
+            font-size: 0.72rem;
+            color: var(--purple-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .course-name {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .course-info {
+            display: flex;
+            gap: 16px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .course-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .course-price {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: var(--purple-light);
+        }
+
+        .course-price .old {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            font-family: var(--font-body);
+            font-weight: 400;
+            margin-left: 6px;
+        }
+
+        .course-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .course-rating .stars { color: #fbbf24; font-size: 0.75rem; }
+
+        /* ═══ FEATURES ═══ */
+        .features {
+            padding: 120px 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .features-header .section-label { justify-content: center; }
+
+        .features-header .section-title { max-width: 600px; margin: 0 auto 16px; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 35px 28px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--purple-main), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+
+        .feature-card:nth-child(1) .feature-icon { background: rgba(139,92,246,0.12); }
+        .feature-card:nth-child(2) .feature-icon { background: rgba(217,70,239,0.12); }
+        .feature-card:nth-child(3) .feature-icon { background: rgba(103,232,249,0.12); }
+        .feature-card:nth-child(4) .feature-icon { background: rgba(244,114,182,0.12); }
+
+        .feature-name {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ═══ INSTRUCTOR ═══ */
+        .instructor {
+            padding: 120px 0;
+        }
+
+        .instructor-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .instructor-photo {
+            position: relative;
+        }
+
+        .instructor-photo-frame {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #1a0a30, #2d1065, #4c1d95, #2d1065);
+            border: 1px solid var(--border);
+        }
+
+        .instructor-photo-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 40%, rgba(139,92,246,0.2), transparent 70%);
+        }
+
+        .instructor-photo-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 8rem;
+            font-weight: 900;
+            opacity: 0.04;
+        }
+
+        .instructor-badge {
+            position: absolute;
+            bottom: -15px;
+            right: -15px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 24px;
+            text-align: center;
+            box-shadow: var(--glow-purple);
+        }
+
+        .instructor-badge-number {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--purple-light), var(--violet-hot));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .instructor-badge-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .instructor-name {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .instructor-title {
+            font-size: 1.05rem;
+            color: var(--purple-light);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .instructor-bio {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 30px;
+        }
+
+        .instructor-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .ins-stat {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .ins-stat-num {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--purple-light);
+        }
+
+        .ins-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .instructor-certs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cert-tag {
+            padding: 6px 16px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.15);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--purple-light);
+        }
+
+        /* ═══ TESTIMONIALS ═══ */
+        .testimonials {
+            padding: 120px 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-header .section-label { justify-content: center; }
+
+        .testi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .testi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 35px 28px;
+            transition: all 0.4s ease;
+        }
+
+        .testi-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(139,92,246,0.2);
+        }
+
+        .testi-card:nth-child(2) { transform: translateY(20px); }
+        .testi-card:nth-child(2):hover { transform: translateY(15px); }
+
+        .testi-stars {
+            color: #fbbf24;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .testi-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .testi-av {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--bg-primary);
+        }
+
+        .testi-card:nth-child(1) .testi-av { background: linear-gradient(135deg, var(--purple-main), var(--violet-hot)); }
+        .testi-card:nth-child(2) .testi-av { background: linear-gradient(135deg, var(--cyan-accent), #06b6d4); }
+        .testi-card:nth-child(3) .testi-av { background: linear-gradient(135deg, var(--pink-accent), #ec4899); }
+
+        .testi-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .testi-role {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .testi-result {
+            margin-top: 16px;
+            padding: 10px 16px;
+            background: rgba(139,92,246,0.08);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: var(--purple-light);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ═══ PRICING ═══ */
+        .pricing {
+            padding: 120px 0;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .pricing-header .section-label { justify-content: center; }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .price-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .price-card.popular {
+            border-color: var(--purple-main);
+            box-shadow: var(--glow-purple);
+            transform: scale(1.03);
+        }
+
+        .price-card:hover:not(.popular) {
+            border-color: rgba(139,92,246,0.2);
+            transform: translateY(-5px);
+        }
+
+        .price-popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 18px;
+            background: linear-gradient(135deg, var(--purple-deep), var(--violet-hot));
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-plan {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .price-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .price-amount {
+            font-family: var(--font-display);
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .price-amount span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            font-family: var(--font-body);
+        }
+
+        .price-period {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        .price-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .price-features li {
+            padding: 9px 0;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .price-features li::before {
+            content: '✦';
+            color: var(--purple-light);
+            font-size: 0.7rem;
+        }
+
+        .price-btn {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--purple-main);
+            background: transparent;
+            color: var(--purple-light);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .price-btn:hover, .price-card.popular .price-btn {
+            background: linear-gradient(135deg, var(--purple-deep), var(--violet-hot));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 8px 25px rgba(139,92,246,0.35);
+        }
+
+        .price-card.popular .price-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(139,92,246,0.5);
+        }
+
+        /* ═══ FAQ ═══ */
+        .faq {
+            padding: 120px 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .faq-header .section-label { justify-content: center; }
+
+        .faq-list {
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .faq-item:hover { border-color: rgba(139,92,246,0.2); }
+
+        .faq-question {
+            width: 100%;
+            padding: 22px 28px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .faq-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(139,92,246,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--purple-light);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            background: linear-gradient(135deg, var(--purple-main), var(--violet-hot));
+            color: white;
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-answer-inner {
+            padding: 0 28px 22px;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* ═══ CTA SECTION ═══ */
+        .cta-section {
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+        }
+
+        .cta-title em {
+            font-style: italic;
+            background: linear-gradient(135deg, var(--purple-light), var(--violet-hot));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .cta-guarantee {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* ═══ FOOTER ═══ */
+        .footer {
+            padding: 80px 0 35px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .footer-brand-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin: 18px 0 24px;
+            max-width: 320px;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-social-icon {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .footer-social-icon:hover {
+            background: rgba(139,92,246,0.15);
+            border-color: var(--purple-main);
+            color: var(--purple-light);
+        }
+
+        .footer-col-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 22px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--purple-light);
+            padding-left: 6px;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .footer-bottom-links a {
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .footer-bottom-links a:hover { color: var(--purple-light); }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 1024px) {
+            .container { padding: 0 24px; }
+            .nav-inner { padding: 0 24px; }
+            .nav-menu { display: none; }
+            .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+            .hero-visual { max-width: 500px; }
+            .courses-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .instructor-grid { grid-template-columns: 1fr; gap: 50px; }
+            .instructor-photo { max-width: 400px; }
+            .testi-grid { grid-template-columns: 1fr; }
+            .testi-card:nth-child(2) { transform: none; }
+            .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+            .price-card.popular { transform: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .hero { padding-top: 80px; }
+            .hero-cta-row { flex-direction: column; align-items: flex-start; }
+            .courses-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .instructor-stats { grid-template-columns: 1fr; }
+            .cta-btns { flex-direction: column; align-items: center; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+            .section-header-row { flex-direction: column; gap: 20px; align-items: flex-start; }
+            .partners-row { gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AURORA BG -->
+    <div class="aurora">
+        <div class="aurora-orb"></div>
+        <div class="aurora-orb"></div>
+        <div class="aurora-orb"></div>
+    </div>
+
+    <!-- ═══ NAVIGATION ═══ -->
+    <nav>
+        <div class="nav-inner">
+            <div class="logo">
+                <div class="logo-icon">✦</div>
+                LUXELEARN
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#courses">Khoá học</a></li>
+                <li><a href="#features">Tại sao chọn chúng tôi</a></li>
+                <li><a href="#instructor">Giảng viên</a></li>
+                <li><a href="#pricing">Học phí</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-ghost">Đăng nhập</button>
+                <button class="btn-glow">Đăng ký học</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <div class="hero-badge-icon">🔥</div>
+                        Khai giảng khoá mới — Tháng 3/2026
+                    </div>
+
+                    <h1 class="hero-title">
+                        Chinh phục <em>Marketing</em> từ nền tảng đến chuyên sâu
+                    </h1>
+
+                    <p class="hero-desc">
+                        Hệ thống khoá học marketing bài bản, cập nhật xu hướng mới nhất. Học từ chuyên gia hàng đầu, thực hành dự án thực tế, cam kết hỗ trợ việc làm.
+                    </p>
+
+                    <div class="hero-cta-row">
+                        <button class="btn-hero"><span>Khám phá khoá học →</span></button>
+                        <div class="btn-play">
+                            <div class="btn-play-circle">▶</div>
+                            Xem giới thiệu
+                        </div>
+                    </div>
+
+                    <div class="hero-social-proof">
+                        <div class="avatar-stack">
+                            <div class="av">TL</div>
+                            <div class="av">HN</div>
+                            <div class="av">MP</div>
+                            <div class="av">QD</div>
+                        </div>
+                        <div class="social-proof-text">
+                            <strong>12,000+</strong> học viên đã đăng ký
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="hero-card-main">
+                        <div class="hero-card-thumb">
+                            <div class="hero-card-thumb-text">MARKETING</div>
+                            <div class="hero-card-play">▶</div>
+                        </div>
+                        <div class="hero-card-body">
+                            <div class="hero-card-tag">Bestseller</div>
+                            <h3 class="hero-card-title">Digital Marketing Mastery 2026</h3>
+                            <div class="hero-card-meta">
+                                <span>📚 48 bài học</span>
+                                <span>⏱ 32 giờ</span>
+                                <span>⭐ 4.9</span>
+                            </div>
+                            <div class="hero-card-price-row">
+                                <div class="hero-card-price">
+                                    1.990K
+                                    <span class="hero-card-old-price">3.500K</span>
+                                </div>
+                                <button class="hero-card-enroll">Đăng ký ngay</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-float hero-float-1">
+                        <div class="hero-float-number">98%</div>
+                        <div class="hero-float-label">Tỷ lệ hoàn thành</div>
+                    </div>
+
+                    <div class="hero-float hero-float-2">
+                        <div class="hero-float-number">4.9★</div>
+                        <div class="hero-float-label">Đánh giá trung bình</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PARTNERS ═══ -->
+    <section class="partners">
+        <div class="container">
+            <p class="partners-label">Học viên đến từ các công ty hàng đầu</p>
+            <div class="partners-row">
+                <div class="partner-logo">VINGROUP</div>
+                <div class="partner-logo">SHOPEE</div>
+                <div class="partner-logo">TIKI</div>
+                <div class="partner-logo">VIETTEL</div>
+                <div class="partner-logo">FPT</div>
+                <div class="partner-logo">MOMO</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ COURSES ═══ -->
+    <section class="courses" id="courses">
+        <div class="container">
+            <div class="section-header-row">
+                <div class="section-header">
+                    <div class="section-label">Khoá học nổi bật</div>
+                    <h2 class="section-title">Lộ trình học<br>được thiết kế chuyên biệt</h2>
+                    <p class="section-desc">Từ cơ bản đến nâng cao, mỗi khoá học đều có lộ trình rõ ràng và bài tập thực hành.</p>
+                </div>
+                <div class="courses-filter">
+                    <button class="filter-btn active">Tất cả</button>
+                    <button class="filter-btn">Digital</button>
+                    <button class="filter-btn">Content</button>
+                    <button class="filter-btn">Ads</button>
+                </div>
+            </div>
+
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <div class="course-thumb-icon">📱</div>
+                        <div class="course-level level-beginner">Cơ bản</div>
+                        <div class="course-hot">HOT</div>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-tag">Digital Marketing</div>
+                        <h3 class="course-name">Nhập môn Digital Marketing toàn diện</h3>
+                        <div class="course-info">
+                            <span>📚 36 bài</span>
+                            <span>⏱ 24h</span>
+                            <span>👥 3.2K</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price">990K <span class="old">1.800K</span></div>
+                            <div class="course-rating"><span class="stars">★★★★★</span> 4.8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <div class="course-thumb-icon">📝</div>
+                        <div class="course-level level-beginner">Cơ bản</div>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-tag">Content Marketing</div>
+                        <h3 class="course-name">Content Marketing — Viết để bán hàng</h3>
+                        <div class="course-info">
+                            <span>📚 28 bài</span>
+                            <span>⏱ 18h</span>
+                            <span>👥 2.8K</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price">790K <span class="old">1.500K</span></div>
+                            <div class="course-rating"><span class="stars">★★★★★</span> 4.9</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <div class="course-thumb-icon">🎯</div>
+                        <div class="course-level level-intermediate">Trung cấp</div>
+                        <div class="course-hot">HOT</div>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-tag">Facebook & Google Ads</div>
+                        <h3 class="course-name">Performance Marketing — Chạy quảng cáo hiệu quả</h3>
+                        <div class="course-info">
+                            <span>📚 42 bài</span>
+                            <span>⏱ 30h</span>
+                            <span>👥 4.1K</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price">1.490K <span class="old">2.800K</span></div>
+                            <div class="course-rating"><span class="stars">★★★★★</span> 4.9</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <div class="course-thumb-icon">🔍</div>
+                        <div class="course-level level-intermediate">Trung cấp</div>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-tag">SEO</div>
+                        <h3 class="course-name">SEO Mastery — Lên top Google bền vững</h3>
+                        <div class="course-info">
+                            <span>📚 32 bài</span>
+                            <span>⏱ 22h</span>
+                            <span>👥 1.9K</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price">1.290K <span class="old">2.200K</span></div>
+                            <div class="course-rating"><span class="stars">★★★★☆</span> 4.7</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <div class="course-thumb-icon">🎬</div>
+                        <div class="course-level level-beginner">Cơ bản</div>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-tag">Video & Reels</div>
+                        <h3 class="course-name">TikTok & Reels Marketing cho người mới</h3>
+                        <div class="course-info">
+                            <span>📚 24 bài</span>
+                            <span>⏱ 16h</span>
+                            <span>👥 5.6K</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price">690K <span class="old">1.200K</span></div>
+                            <div class="course-rating"><span class="stars">★★★★★</span> 4.8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <div class="course-thumb-icon">🤖</div>
+                        <div class="course-level level-advanced">Nâng cao</div>
+                        <div class="course-hot">MỚI</div>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-tag">AI Marketing</div>
+                        <h3 class="course-name">AI trong Marketing — Tự động hoá & tối ưu</h3>
+                        <div class="course-info">
+                            <span>📚 38 bài</span>
+                            <span>⏱ 26h</span>
+                            <span>👥 1.2K</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price">1.890K <span class="old">3.200K</span></div>
+                            <div class="course-rating"><span class="stars">★★★★★</span> 4.9</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FEATURES ═══ -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="features-header">
+                <div class="section-label">Tại sao chọn chúng tôi</div>
+                <h2 class="section-title">Trải nghiệm học tập<br>khác biệt hoàn toàn</h2>
+                <p class="section-desc" style="max-width:550px; margin:0 auto;">Không chỉ là video bài giảng — đây là hệ sinh thái học tập hoàn chỉnh.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3 class="feature-name">Giảng viên Top 1%</h3>
+                    <p class="feature-desc">Học từ chuyên gia đang làm việc tại các công ty hàng đầu Việt Nam và quốc tế.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3 class="feature-name">Dự án thực tế</h3>
+                    <p class="feature-desc">Mỗi khoá học đều có 3-5 dự án thực hành với dữ liệu từ doanh nghiệp thật.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3 class="feature-name">Chứng chỉ có giá trị</h3>
+                    <p class="feature-desc">Chứng chỉ được công nhận bởi 200+ doanh nghiệp đối tác tuyển dụng.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3 class="feature-name">Cộng đồng 12K+</h3>
+                    <p class="feature-desc">Tham gia cộng đồng marketing sôi động, networking và cơ hội việc làm.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ INSTRUCTOR ═══ -->
+    <section class="instructor" id="instructor">
+        <div class="container">
+            <div class="instructor-grid">
+                <div class="instructor-photo">
+                    <div class="instructor-photo-frame">
+                        <div class="instructor-photo-text">MENTOR</div>
+                    </div>
+                    <div class="instructor-badge">
+                        <div class="instructor-badge-number">12+</div>
+                        <div class="instructor-badge-label">Năm kinh nghiệm</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="section-label">Giảng viên chính</div>
+                    <h2 class="instructor-name">Nguyễn Minh Đức</h2>
+                    <div class="instructor-title">Head of Marketing — Ex-Shopee, Ex-Tiki</div>
+                    <p class="instructor-bio">
+                        Với hơn 12 năm kinh nghiệm trong ngành Marketing, anh Đức đã dẫn dắt các chiến dịch trị giá hàng triệu đô cho các thương hiệu lớn. Hiện tại, anh là cố vấn marketing cho hơn 30 startup và doanh nghiệp SME tại Việt Nam.
+                    </p>
+                    <div class="instructor-stats">
+                        <div class="ins-stat">
+                            <div class="ins-stat-num">12K+</div>
+                            <div class="ins-stat-label">Học viên</div>
+                        </div>
+                        <div class="ins-stat">
+                            <div class="ins-stat-num">50+</div>
+                            <div class="ins-stat-label">Dự án lớn</div>
+                        </div>
+                        <div class="ins-stat">
+                            <div class="ins-stat-num">$5M+</div>
+                            <div class="ins-stat-label">Budget đã quản lý</div>
+                        </div>
+                    </div>
+                    <div class="instructor-certs">
+                        <span class="cert-tag">Google Certified</span>
+                        <span class="cert-tag">Meta Blueprint</span>
+                        <span class="cert-tag">HubSpot Inbound</span>
+                        <span class="cert-tag">SEMrush Expert</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ TESTIMONIALS ═══ -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="testimonials-header">
+                <div class="section-label">Đánh giá từ học viên</div>
+                <h2 class="section-title">Câu chuyện thành công</h2>
+            </div>
+            <div class="testi-grid">
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-text">"Sau khoá học Performance Marketing, mình đã tự chạy ads cho shop online và tăng doanh thu 400% chỉ trong 2 tháng. Kiến thức rất thực tế và dễ áp dụng."</p>
+                    <div class="testi-author">
+                        <div class="testi-av">TL</div>
+                        <div>
+                            <div class="testi-name">Trần Thuỳ Linh</div>
+                            <div class="testi-role">Chủ shop online, Hà Nội</div>
+                        </div>
+                    </div>
+                    <div class="testi-result">📈 Doanh thu tăng 400% sau 2 tháng</div>
+                </div>
+
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-text">"Mình zero kinh nghiệm marketing khi bắt đầu. Sau 3 khoá học tại LUXELEARN, mình đã nhận được offer Marketing Executive tại một công ty fintech lớn."</p>
+                    <div class="testi-author">
+                        <div class="testi-av">HN</div>
+                        <div>
+                            <div class="testi-name">Hoàng Nhật Nam</div>
+                            <div class="testi-role">Marketing Executive, MoMo</div>
+                        </div>
+                    </div>
+                    <div class="testi-result">💼 Nhận offer sau 4 tháng học</div>
+                </div>
+
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-text">"Content Marketing course là khoá học hay nhất mình từng học. Giảng viên chia sẻ rất nhiều case study thực tế và template có thể dùng ngay."</p>
+                    <div class="testi-author">
+                        <div class="testi-av">MP</div>
+                        <div>
+                            <div class="testi-name">Mai Phương</div>
+                            <div class="testi-role">Content Lead, Tiki</div>
+                        </div>
+                    </div>
+                    <div class="testi-result">⭐ Rating 5/5 — Recommend 100%</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PRICING ═══ -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="pricing-header">
+                <div class="section-label">Học phí</div>
+                <h2 class="section-title">Đầu tư cho tương lai</h2>
+                <p class="section-desc" style="max-width:500px; margin: 0 auto;">Chọn gói phù hợp với mục tiêu học tập và ngân sách của bạn.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div class="price-plan">Khoá lẻ</div>
+                    <div class="price-desc">Chọn 1 khoá học bất kỳ</div>
+                    <div class="price-amount">990K <span>VNĐ</span></div>
+                    <div class="price-period">/ khoá học</div>
+                    <ul class="price-features">
+                        <li>Truy cập trọn đời</li>
+                        <li>Bài tập & dự án thực hành</li>
+                        <li>Chứng chỉ hoàn thành</li>
+                        <li>Hỗ trợ qua cộng đồng</li>
+                        <li>Cập nhật nội dung miễn phí</li>
+                    </ul>
+                    <button class="price-btn">Chọn khoá học</button>
+                </div>
+
+                <div class="price-card popular">
+                    <div class="price-popular-badge">Phổ biến nhất</div>
+                    <div class="price-plan">Combo Bundle</div>
+                    <div class="price-desc">3 khoá học bất kỳ</div>
+                    <div class="price-amount">2.490K <span>VNĐ</span></div>
+                    <div class="price-period">tiết kiệm 40%</div>
+                    <ul class="price-features">
+                        <li>Tất cả quyền lợi Khoá lẻ</li>
+                        <li>Mentoring 1-on-1 (2 buổi)</li>
+                        <li>Review CV & Portfolio</li>
+                        <li>Tham gia workshop hàng tháng</li>
+                        <li>Kết nối việc làm</li>
+                        <li>Ưu tiên hỗ trợ 24/7</li>
+                    </ul>
+                    <button class="price-btn">Đăng ký combo</button>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-plan">All Access</div>
+                    <div class="price-desc">Toàn bộ khoá học</div>
+                    <div class="price-amount">4.990K <span>VNĐ</span></div>
+                    <div class="price-period">/ năm — truy cập không giới hạn</div>
+                    <ul class="price-features">
+                        <li>Tất cả quyền lợi Combo</li>
+                        <li>Truy cập mọi khoá học</li>
+                        <li>Mentoring 1-on-1 (6 buổi)</li>
+                        <li>Khoá học mới miễn phí</li>
+                        <li>Chứng chỉ Professional</li>
+                        <li>Cam kết hoàn tiền 30 ngày</li>
+                    </ul>
+                    <button class="price-btn">Truy cập toàn bộ</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FAQ ═══ -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="faq-header">
+                <div class="section-label">Câu hỏi thường gặp</div>
+                <h2 class="section-title">Bạn thắc mắc điều gì?</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item active">
+                    <button class="faq-question">
+                        Tôi chưa biết gì về marketing, có học được không?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Hoàn toàn được! Các khoá học cơ bản được thiết kế cho người mới bắt đầu, hướng dẫn từ A-Z với lộ trình rõ ràng. Bạn không cần kiến thức nền tảng nào trước đó.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Tôi có thể học ở đâu và khi nào?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Tất cả khoá học đều online 100%, bạn có thể học mọi lúc, mọi nơi trên điện thoại, tablet hoặc máy tính. Video bài giảng có thể tải xuống để học offline.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Khoá học có chứng chỉ không?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Có! Sau khi hoàn thành khoá học và bài kiểm tra cuối khoá, bạn sẽ nhận được chứng chỉ điện tử được công nhận bởi 200+ doanh nghiệp đối tác.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Chính sách hoàn tiền như thế nào?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Chúng tôi cam kết hoàn tiền 100% trong vòng 30 ngày nếu bạn không hài lòng. Không cần lý do, quy trình hoàn tiền đơn giản trong 3-5 ngày làm việc.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Có hỗ trợ tìm việc sau khoá học không?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Với gói Combo và All Access, bạn sẽ được review CV, hỗ trợ phỏng vấn và kết nối trực tiếp với 200+ doanh nghiệp đối tác đang tuyển dụng Marketing.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="cta-section">
+        <div class="cta-glow"></div>
+        <div class="container">
+            <div class="cta-content">
+                <div class="section-label" style="justify-content:center;">Bắt đầu hành trình</div>
+                <h2 class="cta-title">Sẵn sàng trở thành<br><em>Marketing Expert?</em></h2>
+                <p class="cta-desc">Đăng ký hôm nay và nhận ngay ưu đãi giảm 40% cho khoá học đầu tiên. Cơ hội có hạn!</p>
+                <div class="cta-btns">
+                    <button class="btn-hero"><span>Đăng ký ngay — Giảm 40% →</span></button>
+                    <button class="btn-ghost" style="padding:16px 36px;">Tư vấn miễn phí</button>
+                </div>
+                <div class="cta-guarantee">🛡️ Cam kết hoàn tiền 100% trong 30 ngày</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="logo">
+                        <div class="logo-icon">✦</div>
+                        LUXELEARN
+                    </div>
+                    <p class="footer-brand-text">Nền tảng khoá học marketing hàng đầu Việt Nam. Học từ chuyên gia, thực hành thực tế, cam kết kết quả.</p>
+                    <div class="footer-socials">
+                        <a class="footer-social-icon">𝕏</a>
+                        <a class="footer-social-icon">in</a>
+                        <a class="footer-social-icon">fb</a>
+                        <a class="footer-social-icon">yt</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-col-title">Khoá học</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Digital Marketing</a></li>
+                        <li><a href="#">Content Marketing</a></li>
+                        <li><a href="#">Performance Ads</a></li>
+                        <li><a href="#">SEO Mastery</a></li>
+                        <li><a href="#">AI Marketing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-col-title">Hỗ trợ</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Trung tâm trợ giúp</a></li>
+                        <li><a href="#">Chính sách hoàn tiền</a></li>
+                        <li><a href="#">Hướng dẫn sử dụng</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-col-title">Liên hệ</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">hello@luxelearn.vn</a></li>
+                        <li><a href="#">1900 xxxx</a></li>
+                        <li><a href="#">Tầng 8, Landmark 81</a></li>
+                        <li><a href="#">Bình Thạnh, TP.HCM</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 LUXELEARN. All rights reserved.</span>
+                <div class="footer-bottom-links">
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản sử dụng</a>
+                    <a href="#">Cookie</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.parentElement;
+                const isActive = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+                if (!isActive) item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

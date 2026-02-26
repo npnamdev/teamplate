@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexaCRM — Đăng nhập</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef7ff',
+                            100: '#d9ecff',
+                            200: '#bcdfff',
+                            300: '#8ecbff',
+                            400: '#58adff',
+                            500: '#3b8bff',
+                            600: '#1a62f5',
+                            700: '#144de1',
+                            800: '#1740b6',
+                            900: '#193a8f',
+                        },
+                        surface: {
+                            900: '#0a0e1a',
+                            800: '#0f1424',
+                            700: '#161c30',
+                            600: '#1e2540',
+                            500: '#2a3352',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0a0e1a;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Animated mesh gradient background */
+        .mesh-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 10% 90%, rgba(27, 99, 245, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 85% 20%, rgba(99, 50, 230, 0.12) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 50% at 50% 50%, rgba(20, 77, 225, 0.06) 0%, transparent 70%);
+            animation: meshShift 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes meshShift {
+            0% { filter: hue-rotate(0deg); opacity: 1; }
+            50% { filter: hue-rotate(15deg); opacity: 0.85; }
+            100% { filter: hue-rotate(-10deg); opacity: 1; }
+        }
+
+        /* Grain overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px;
+        }
+
+        /* Grid lines */
+        .grid-lines {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background-image:
+                linear-gradient(rgba(59, 139, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 139, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 8s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 300px; height: 300px;
+            background: rgba(27, 99, 245, 0.12);
+            top: 10%; left: 5%;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 200px; height: 200px;
+            background: rgba(139, 92, 246, 0.1);
+            bottom: 15%; right: 10%;
+            animation-delay: -3s;
+        }
+        .orb-3 {
+            width: 160px; height: 160px;
+            background: rgba(59, 139, 255, 0.08);
+            top: 50%; left: 40%;
+            animation-delay: -6s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        /* Card glass */
+        .login-card {
+            background: linear-gradient(135deg, rgba(22, 28, 48, 0.85) 0%, rgba(15, 20, 36, 0.92) 100%);
+            border: 1px solid rgba(59, 139, 255, 0.1);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.03),
+                0 25px 60px -10px rgba(0,0,0,0.5),
+                0 0 120px -20px rgba(59, 139, 255, 0.08);
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(59, 139, 255, 0.3), transparent);
+        }
+
+        /* Input styling */
+        .input-field {
+            background: rgba(10, 14, 26, 0.6);
+            border: 1px solid rgba(59, 139, 255, 0.12);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-field:focus {
+            border-color: rgba(59, 139, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(59, 139, 255, 0.08), 0 0 20px -5px rgba(59, 139, 255, 0.15);
+            background: rgba(10, 14, 26, 0.8);
+        }
+
+        .input-field::placeholder {
+            color: rgba(148, 163, 194, 0.4);
+        }
+
+        /* Button */
+        .btn-primary {
+            background: linear-gradient(135deg, #1a62f5 0%, #144de1 50%, #1740b6 100%);
+            box-shadow: 0 4px 20px -4px rgba(26, 98, 245, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px -4px rgba(26, 98, 245, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+
+        .btn-primary:hover::before { opacity: 1; }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px -2px rgba(26, 98, 245, 0.4);
+        }
+
+        /* Logo pulse */
+        .logo-glow {
+            animation: logoPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(59, 139, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(59, 139, 255, 0.5)); }
+        }
+
+        /* Staggered reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: revealUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .reveal-d1 { animation-delay: 0.1s; }
+        .reveal-d2 { animation-delay: 0.2s; }
+        .reveal-d3 { animation-delay: 0.35s; }
+        .reveal-d4 { animation-delay: 0.5s; }
+        .reveal-d5 { animation-delay: 0.65s; }
+        .reveal-d6 { animation-delay: 0.8s; }
+        .reveal-d7 { animation-delay: 0.95s; }
+
+        @keyframes revealUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Left panel decorative lines */
+        .deco-line {
+            position: absolute;
+            background: linear-gradient(180deg, transparent, rgba(59,139,255,0.15), transparent);
+            width: 1px;
+            animation: lineGrow 2s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes lineGrow {
+            0% { height: 0; opacity: 0; }
+            50% { opacity: 1; }
+            100% { height: 120px; opacity: 0.6; }
+        }
+
+        /* Toggle password */
+        .toggle-pw {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .toggle-pw:hover { color: rgba(59, 139, 255, 0.8); }
+
+        /* Checkbox */
+        .custom-check {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            border: 1.5px solid rgba(59, 139, 255, 0.25);
+            border-radius: 4px;
+            background: rgba(10, 14, 26, 0.6);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .custom-check:checked {
+            background: #1a62f5;
+            border-color: #1a62f5;
+        }
+
+        .custom-check:checked::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 5px;
+            width: 5px; height: 9px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Stat numbers */
+        .stat-num {
+            background: linear-gradient(135deg, #fff 30%, rgba(59,139,255,0.7));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 0; }
+
+        /* Responsive left panel hide */
+        @media (max-width: 1023px) {
+            .left-panel { display: none !important; }
+        }
+    </style>
+</head>
+<body class="font-body text-white antialiased">
+
+    <!-- Background layers -->
+    <div class="mesh-bg"></div>
+    <div class="grain"></div>
+    <div class="grid-lines"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Main Layout -->
+    <div class="relative z-10 flex min-h-screen">
+
+        <!-- LEFT PANEL — Branding -->
+        <div class="left-panel hidden lg:flex lg:w-[52%] xl:w-[55%] flex-col justify-between p-12 xl:p-16 relative overflow-hidden">
+
+            <!-- Deco lines -->
+            <div class="deco-line" style="left: 20%; top: 15%; animation-delay: 0.5s;"></div>
+            <div class="deco-line" style="left: 60%; top: 40%; animation-delay: 1s;"></div>
+            <div class="deco-line" style="left: 80%; top: 25%; animation-delay: 1.5s;"></div>
+
+            <!-- Top -->
+            <div>
+                <div class="reveal reveal-d1 flex items-center gap-3 mb-20">
+                    <div class="logo-glow w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-semibold tracking-tight text-white/90">NexaCRM</span>
+                </div>
+
+                <!-- Headline -->
+                <div class="max-w-lg">
+                    <h1 class="reveal reveal-d2 font-display text-5xl xl:text-6xl font-semibold leading-[1.1] tracking-tight text-white mb-6">
+                        Quản lý<br>
+                        <span class="bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">khách hàng</span><br>
+                        thông minh.
+                    </h1>
+                    <p class="reveal reveal-d3 text-base xl:text-lg text-white/40 leading-relaxed max-w-md">
+                        Hệ thống CRM nội bộ giúp đội ngũ của bạn quản lý quan hệ khách hàng hiệu quả, tối ưu quy trình và tăng trưởng doanh thu.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="reveal reveal-d4">
+                <div class="flex gap-12 xl:gap-16">
+                    <div>
+                        <div class="stat-num font-display text-4xl xl:text-5xl font-bold">2.4k</div>
+                        <div class="text-xs text-white/30 mt-1.5 uppercase tracking-widest">Khách hàng</div>
+                    </div>
+                    <div>
+                        <div class="stat-num font-display text-4xl xl:text-5xl font-bold">98%</div>
+                        <div class="text-xs text-white/30 mt-1.5 uppercase tracking-widest">Hài lòng</div>
+                    </div>
+                    <div>
+                        <div class="stat-num font-display text-4xl xl:text-5xl font-bold">↑ 34</div>
+                        <div class="text-xs text-white/30 mt-1.5 uppercase tracking-widest">Tăng trưởng</div>
+                    </div>
+                </div>
+
+                <div class="mt-10 flex items-center gap-3 text-white/25 text-xs">
+                    <div class="flex -space-x-2">
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-500 to-purple-600 border-2 border-surface-800 flex items-center justify-center text-[10px] font-semibold text-white">NH</div>
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 border-2 border-surface-800 flex items-center justify-center text-[10px] font-semibold text-white">TL</div>
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 border-2 border-surface-800 flex items-center justify-center text-[10px] font-semibold text-white">PT</div>
+                        <div class="w-7 h-7 rounded-full bg-surface-600 border-2 border-surface-800 flex items-center justify-center text-[10px] font-medium text-white/50">+12</div>
+                    </div>
+                    <span>Đang hoạt động</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL — Login Form -->
+        <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+            <div class="w-full max-w-[420px]">
+
+                <!-- Mobile logo -->
+                <div class="reveal reveal-d1 lg:hidden flex items-center gap-3 mb-10 justify-center">
+                    <div class="logo-glow w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-semibold tracking-tight text-white/90">NexaCRM</span>
+                </div>
+
+                <!-- Card -->
+                <div class="login-card rounded-2xl p-8 sm:p-10 relative">
+
+                    <!-- Header -->
+                    <div class="reveal reveal-d2 mb-8">
+                        <h2 class="font-display text-2xl font-semibold text-white tracking-tight">Chào mừng trở lại</h2>
+                        <p class="text-sm text-white/35 mt-2">Đăng nhập vào hệ thống CRM nội bộ</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form onsubmit="handleLogin(event)" class="space-y-5">
+
+                        <!-- Email -->
+                        <div class="reveal reveal-d3">
+                            <label class="block text-xs font-medium text-white/50 mb-2 uppercase tracking-wider">Email công ty</label>
+                            <div class="relative">
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-white/25">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                    </svg>
+                                </div>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-sm text-white outline-none"
+                                    placeholder="ten@congty.vn"
+                                    required
+                                    autocomplete="email"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="reveal reveal-d4">
+                            <label class="block text-xs font-medium text-white/50 mb-2 uppercase tracking-wider">Mật khẩu</label>
+                            <div class="relative">
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-white/25">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                    </svg>
+                                </div>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    class="input-field w-full pl-12 pr-12 py-3.5 rounded-xl text-sm text-white outline-none"
+                                    placeholder="••••••••"
+                                    required
+                                    autocomplete="current-password"
+                                />
+                                <div class="toggle-pw absolute right-4 top-1/2 -translate-y-1/2 text-white/25" onclick="togglePassword()">
+                                    <svg id="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                        <line x1="1" y1="1" x2="23" y2="23"/>
+                                    </svg>
+                                    <svg id="eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Remember + Forgot -->
+                        <div class="reveal reveal-d5 flex items-center justify-between">
+                            <label class="flex items-center gap-2.5 cursor-pointer group">
+                                <input type="checkbox" class="custom-check" checked />
+                                <span class="text-xs text-white/35 group-hover:text-white/50 transition-colors">Ghi nhớ đăng nhập</span>
+                            </label>
+                            <a href="#" class="text-xs text-brand-400/70 hover:text-brand-400 transition-colors">Quên mật khẩu?</a>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="reveal reveal-d6 pt-2">
+                            <button type="submit" id="loginBtn" class="btn-primary w-full py-3.5 rounded-xl text-sm font-semibold text-white relative">
+                                <span id="btnText">Đăng nhập</span>
+                                <svg id="btnSpinner" class="hidden animate-spin mx-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="reveal reveal-d7 mt-8 pt-6 border-t border-white/[0.04]">
+                        <p class="text-center text-xs text-white/20">
+                            Gặp sự cố đăng nhập?
+                            <a href="#" class="text-brand-400/60 hover:text-brand-400 transition-colors ml-1">Liên hệ IT Support</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="reveal reveal-d7 mt-6 text-center text-[11px] text-white/15">
+                    <p>© 2026 NexaCRM · Hệ thống nội bộ · v3.2.1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const eyeOff = document.getElementById('eye-off');
+            const eyeOn = document.getElementById('eye-on');
+
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                eyeOff.style.display = 'none';
+                eyeOn.style.display = 'block';
+            } else {
+                pw.type = 'password';
+                eyeOff.style.display = 'block';
+                eyeOn.style.display = 'none';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('btnSpinner');
+
+            btn.disabled = true;
+            btnText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+
+            // Simulate login
+            setTimeout(() => {
+                btn.disabled = false;
+                btnText.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                btnText.textContent = 'Đăng nhập thành công ✓';
+                btn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+
+                setTimeout(() => {
+                    btnText.textContent = 'Đăng nhập';
+                    btn.style.background = '';
+                }, 2000);
+            }, 1800);
+        }
+    </script>
+</body>
+</html>

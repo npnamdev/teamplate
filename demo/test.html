@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexaCRM — Đăng nhập</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sora', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: #07060e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* === AURORA BACKGROUND === */
+        .cosmos {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .cosmos::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 900px 600px at 15% 85%, rgba(168, 85, 247, 0.09) 0%, transparent 70%),
+                radial-gradient(ellipse 700px 500px at 85% 15%, rgba(244, 114, 182, 0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 500px 400px at 50% 50%, rgba(251, 146, 60, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse 600px 400px at 75% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
+        }
+
+        .cosmos::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                conic-gradient(from 180deg at 30% 70%, transparent 0deg, rgba(168, 85, 247, 0.03) 60deg, transparent 120deg),
+                conic-gradient(from 0deg at 70% 30%, transparent 0deg, rgba(244, 114, 182, 0.03) 60deg, transparent 120deg);
+            animation: auroraShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraShift {
+            0% { opacity: 1; filter: hue-rotate(0deg); }
+            100% { opacity: 0.7; filter: hue-rotate(15deg); }
+        }
+
+        /* Animated stars */
+        .stars { position: fixed; inset: 0; z-index: 0; }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--dur) ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: var(--max-o); transform: scale(1); }
+        }
+
+        /* Diamond grid pattern */
+        .hex-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.018;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='%23c084fc' stroke-width='0.4'/%3E%3C/svg%3E");
+            background-size: 40px 40px;
+        }
+
+        /* Noise grain */
+        .noise {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* === MAIN CARD === */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 960px;
+            margin: 20px;
+        }
+
+        .card-outer {
+            border-radius: 28px;
+            padding: 1px;
+            background: linear-gradient(
+                160deg,
+                rgba(168, 85, 247, 0.3),
+                rgba(244, 114, 182, 0.1) 30%,
+                rgba(251, 146, 60, 0.05) 50%,
+                rgba(99, 102, 241, 0.15) 80%,
+                rgba(168, 85, 247, 0.2)
+            );
+            background-size: 200% 200%;
+            animation: cardReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards, borderShift 8s ease-in-out infinite;
+            opacity: 0;
+            transform: scale(0.96) translateY(20px);
+        }
+
+        @keyframes cardReveal {
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes borderShift {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+        }
+
+        .card-inner {
+            border-radius: 27px;
+            background: linear-gradient(160deg, rgba(14, 12, 26, 0.97), rgba(10, 8, 20, 0.99));
+            backdrop-filter: blur(60px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 620px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .card-inner {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+            .visual-side { display: none !important; }
+        }
+
+        /* === LEFT: VISUAL SIDE === */
+        .visual-side {
+            position: relative;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-right: 1px solid rgba(168, 85, 247, 0.06);
+        }
+
+        .visual-side::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 30% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 60%),
+                radial-gradient(circle at 70% 70%, rgba(244, 114, 182, 0.04) 0%, transparent 50%);
+        }
+
+        /* Morphing blob behind cube */
+        .morph-blob {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(168, 85, 247, 0.06) 0%,
+                rgba(244, 114, 182, 0.03) 50%,
+                transparent 70%
+            );
+            filter: blur(40px);
+            animation: morphBlob 12s ease-in-out infinite;
+        }
+
+        @keyframes morphBlob {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: rotate(0deg) scale(1); }
+            33% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: rotate(60deg) scale(1.1); }
+            66% { border-radius: 50% 30% 60% 40% / 30% 50% 70% 60%; transform: rotate(120deg) scale(0.95); }
+        }
+
+        /* 3D Cube */
+        .cube-scene {
+            perspective: 800px;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 40px;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: cubeRotate 20s linear infinite;
+        }
+
+        @keyframes cubeRotate {
+            0% { transform: rotateX(-20deg) rotateY(0deg); }
+            100% { transform: rotateX(-20deg) rotateY(360deg); }
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border: 1px solid rgba(168, 85, 247, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cube-face.front  { background: rgba(168, 85, 247, 0.04); }
+        .cube-face.back   { background: rgba(244, 114, 182, 0.03); }
+        .cube-face.right  { background: rgba(251, 146, 60, 0.03); }
+        .cube-face.left   { background: rgba(99, 102, 241, 0.04); }
+        .cube-face.top    { background: rgba(168, 85, 247, 0.05); border-color: rgba(244, 114, 182, 0.1); }
+        .cube-face.bottom { background: rgba(99, 102, 241, 0.03); }
+
+        .cube-face::after {
+            content: '';
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgba(168, 85, 247, 0.08);
+            border-radius: 10px;
+            transform: rotate(45deg);
+        }
+
+        .front  { transform: translateZ(80px); }
+        .back   { transform: rotateY(180deg) translateZ(80px); }
+        .right  { transform: rotateY(90deg) translateZ(80px); }
+        .left   { transform: rotateY(-90deg) translateZ(80px); }
+        .top    { transform: rotateX(90deg) translateZ(80px); }
+        .bottom { transform: rotateX(-90deg) translateZ(80px); }
+
+        /* Orbiting rings with gradient */
+        .orbit-ring {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            animation: orbitSpin 15s linear infinite;
+            border: none;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(168, 85, 247, 0.15) 30deg,
+                rgba(244, 114, 182, 0.12) 60deg,
+                transparent 120deg,
+                transparent 360deg
+            );
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px));
+        }
+
+        .orbit-ring::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #a855f7, #f472b6);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.6), 0 0 40px rgba(168, 85, 247, 0.2);
+        }
+
+        @keyframes orbitSpin { to { transform: rotate(360deg); } }
+
+        .orbit-ring-2 {
+            width: 320px;
+            height: 320px;
+            animation-duration: 25s;
+            animation-direction: reverse;
+            background: conic-gradient(
+                from 180deg,
+                transparent 0deg,
+                rgba(99, 102, 241, 0.1) 40deg,
+                rgba(251, 146, 60, 0.08) 80deg,
+                transparent 140deg,
+                transparent 360deg
+            );
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1px), #000 calc(100% - 0.5px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 1px), #000 calc(100% - 0.5px));
+        }
+
+        .orbit-ring-2::before {
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(135deg, #818cf8, #fb923c);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Floating badges */
+        .float-badge {
+            position: absolute;
+            background: rgba(14, 12, 26, 0.85);
+            border: 1px solid rgba(168, 85, 247, 0.08);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.45);
+            backdrop-filter: blur(20px);
+            animation: badgeFloat 6s ease-in-out infinite;
+            z-index: 5;
+        }
+
+        .float-badge:hover {
+            border-color: rgba(168, 85, 247, 0.2);
+            color: rgba(255,255,255,0.6);
+        }
+
+        @keyframes badgeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .badge-1 { top: 40px; right: 30px; animation-delay: 0s; }
+        .badge-2 { bottom: 60px; left: 30px; animation-delay: -2s; }
+        .badge-3 { bottom: 40px; right: 40px; animation-delay: -4s; }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* === RIGHT: FORM SIDE === */
+        .form-side {
+            padding: 48px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .form-side { padding: 36px 28px; }
+        }
+
+        /* Logo mark — gradient */
+        .logo-mark {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #7c3aed, #c026d3, #f472b6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow:
+                0 0 30px -5px rgba(168, 85, 247, 0.4),
+                0 0 60px -10px rgba(192, 38, 211, 0.15);
+        }
+
+        .logo-mark::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 16px;
+            border: 1px solid rgba(168, 85, 247, 0.25);
+        }
+
+        /* Input fields */
+        .field-group { position: relative; }
+
+        .field-input {
+            width: 100%;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 14px 16px 14px 48px;
+            color: #f0edf6;
+            font-size: 14px;
+            font-family: 'Sora', sans-serif;
+            outline: none;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .field-input:focus {
+            border-color: rgba(168, 85, 247, 0.45);
+            background: rgba(168, 85, 247, 0.03);
+            box-shadow:
+                0 0 0 4px rgba(168, 85, 247, 0.06),
+                0 0 20px -4px rgba(168, 85, 247, 0.1);
+        }
+
+        .field-input::placeholder { color: rgba(255,255,255,0.15); }
+
+        .field-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.18);
+            transition: color 0.3s;
+        }
+
+        .field-input:focus ~ .field-icon,
+        .field-input:not(:placeholder-shown) ~ .field-icon {
+            color: rgba(168, 85, 247, 0.65);
+        }
+
+        /* Floating label */
+        .field-label {
+            position: absolute;
+            left: 48px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.18);
+            font-size: 14px;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .field-input:focus ~ .field-label,
+        .field-input:not(:placeholder-shown) ~ .field-label {
+            top: -8px;
+            left: 14px;
+            font-size: 10px;
+            color: rgba(168, 85, 247, 0.7);
+            background: rgb(12, 10, 22);
+            padding: 0 6px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Submit button — gradient */
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #7c3aed, #c026d3, #e879a0);
+            background-size: 200% 100%;
+            box-shadow:
+                0 8px 32px -8px rgba(168, 85, 247, 0.35),
+                0 4px 16px -4px rgba(192, 38, 211, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            background-position: 100% 0;
+            box-shadow:
+                0 12px 40px -8px rgba(168, 85, 247, 0.45),
+                0 6px 20px -4px rgba(192, 38, 211, 0.3);
+        }
+
+        .btn-login:active { transform: translateY(0); }
+
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        /* Divider */
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.08), transparent);
+        }
+
+        /* Social buttons */
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+            color: rgba(255,255,255,0.45);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .social-btn:hover {
+            border-color: rgba(168, 85, 247, 0.2);
+            background: rgba(168, 85, 247, 0.04);
+            color: rgba(255,255,255,0.7);
+            box-shadow: 0 0 20px -4px rgba(168, 85, 247, 0.1);
+        }
+
+        /* Toggle password */
+        .pw-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .pw-toggle:hover { color: rgba(168, 85, 247, 0.65); }
+
+        /* Checkbox — purple */
+        .ck {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 5px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .ck:checked {
+            background: linear-gradient(135deg, #7c3aed, #c026d3);
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+        }
+
+        .ck:checked::after {
+            content: '';
+            position: absolute;
+            top: 1px; left: 4px;
+            width: 5px; height: 8px;
+            border: solid white;
+            border-width: 0 1.5px 1.5px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Stagger animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .d1 { animation-delay: 0.15s; }
+        .d2 { animation-delay: 0.25s; }
+        .d3 { animation-delay: 0.38s; }
+        .d4 { animation-delay: 0.5s; }
+        .d5 { animation-delay: 0.6s; }
+        .d6 { animation-delay: 0.72s; }
+        .d7 { animation-delay: 0.82s; }
+        .d8 { animation-delay: 0.92s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typing cursor */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 12px;
+            background: linear-gradient(180deg, #a855f7, #f472b6);
+            margin-left: 2px;
+            animation: blink 1s steps(1) infinite;
+            vertical-align: middle;
+            border-radius: 1px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Link style */
+        .link-purple {
+            color: rgba(168, 85, 247, 0.5);
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+        .link-purple:hover { color: rgba(168, 85, 247, 0.85); }
+
+        ::-webkit-scrollbar { width: 0; }
+
+        /* Selection color */
+        ::selection {
+            background: rgba(168, 85, 247, 0.3);
+            color: #f0edf6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background layers -->
+    <div class="cosmos"></div>
+    <div class="hex-grid"></div>
+    <div class="noise"></div>
+
+    <!-- Stars -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Main Card -->
+    <div class="main-container">
+        <div class="card-outer">
+            <div class="card-inner">
+
+                <!-- LEFT: Visual Side -->
+                <div class="visual-side">
+
+                    <!-- Morphing blob -->
+                    <div class="morph-blob"></div>
+
+                    <!-- Orbiting rings -->
+                    <div class="orbit-ring"></div>
+                    <div class="orbit-ring orbit-ring-2"></div>
+
+                    <!-- 3D Cube -->
+                    <div class="cube-scene" style="position: relative; z-index: 2;">
+                        <div class="cube">
+                            <div class="cube-face front"></div>
+                            <div class="cube-face back"></div>
+                            <div class="cube-face right"></div>
+                            <div class="cube-face left"></div>
+                            <div class="cube-face top"></div>
+                            <div class="cube-face bottom"></div>
+                        </div>
+                    </div>
+
+                    <!-- Text under cube -->
+                    <div style="position: relative; z-index: 2; text-align: center;">
+                        <div class="font-mono text-[10px] tracking-[0.3em] uppercase" style="color: rgba(168,85,247,0.4); margin-bottom: 12px;">System Status</div>
+                        <div class="text-lg font-light tracking-wide" style="color: rgba(255,255,255,0.65);">Hệ thống đang hoạt động
+                            <span class="typing-cursor"></span>
+                        </div>
+                        <div class="font-mono text-[11px] mt-2" style="color: rgba(255,255,255,0.12);">uptime: 99.98% · latency: 12ms</div>
+                    </div>
+
+                    <!-- Floating badges -->
+                    <div class="float-badge badge-1">
+                        <div class="badge-dot" style="background: linear-gradient(135deg, #22c55e, #4ade80);"></div>
+                        <span>42 nhân viên online</span>
+                    </div>
+                    <div class="float-badge badge-2">
+                        <div class="badge-dot" style="background: linear-gradient(135deg, #a855f7, #c084fc);"></div>
+                        <span>1,247 deals tháng này</span>
+                    </div>
+                    <div class="float-badge badge-3">
+                        <div class="badge-dot" style="background: linear-gradient(135deg, #fb923c, #fbbf24);"></div>
+                        <span>API: tất cả hoạt động</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Form Side -->
+                <div class="form-side">
+
+                    <!-- Logo + Brand -->
+                    <div class="fade-in d1 flex items-center gap-4 mb-10">
+                        <div class="logo-mark">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+                                <line x1="12" y1="22" x2="12" y2="15.5"/>
+                                <polyline points="22 8.5 12 15.5 2 8.5"/>
+                                <polyline points="2 15.5 12 8.5 22 15.5"/>
+                                <line x1="12" y1="2" x2="12" y2="8.5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-white font-semibold text-lg tracking-tight">NexaCRM</div>
+                            <div class="font-mono text-[10px] tracking-wider uppercase" style="color: rgba(168,85,247,0.3);">Internal Platform</div>
+                        </div>
+                    </div>
+
+                    <!-- Heading -->
+                    <div class="fade-in d2 mb-8">
+                        <h1 class="text-[28px] font-bold text-white tracking-tight leading-tight">
+                            Đăng nhập hệ thống
+                        </h1>
+                        <p class="text-sm mt-2" style="color: rgba(255,255,255,0.28);">Sử dụng tài khoản nội bộ để truy cập</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form onsubmit="handleSubmit(event)" class="space-y-5">
+
+                        <!-- Email -->
+                        <div class="fade-in d3 field-group">
+                            <input type="email" id="email" class="field-input" placeholder=" " required autocomplete="email" />
+                            <span class="field-label">Email công ty</span>
+                            <div class="field-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="8" r="4"/>
+                                    <path d="M20 21a8 8 0 1 0-16 0"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="fade-in d4 field-group">
+                            <input type="password" id="password" class="field-input" placeholder=" " required autocomplete="current-password" style="padding-right: 48px;" />
+                            <span class="field-label">Mật khẩu</span>
+                            <div class="field-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"/>
+                                    <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <button type="button" class="pw-toggle" onclick="togglePw()">
+                                <svg id="ico-hide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                </svg>
+                                <svg id="ico-show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Remember + Forgot -->
+                        <div class="fade-in d5 flex items-center justify-between">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="ck" checked />
+                                <span class="text-xs" style="color: rgba(255,255,255,0.22);">Ghi nhớ</span>
+                            </label>
+                            <a href="#" class="link-purple text-xs">Quên mật khẩu?</a>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="fade-in d6">
+                            <button type="submit" class="btn-login" id="submitBtn">
+                                <span id="btnLabel">Đăng nhập →</span>
+                                <svg id="btnLoader" class="hidden animate-spin" style="margin: 0 auto;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="fade-in d7 flex items-center gap-4 my-6">
+                        <div class="divider-line"></div>
+                        <span class="text-[10px] uppercase tracking-widest font-mono" style="color: rgba(255,255,255,0.12);">hoặc</span>
+                        <div class="divider-line"></div>
+                    </div>
+
+                    <!-- Social login -->
+                    <div class="fade-in d7 flex gap-3">
+                        <button class="social-btn" onclick="alert('Đăng nhập Microsoft SSO')">
+                            <svg width="16" height="16" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+                            Microsoft
+                        </button>
+                        <button class="social-btn" onclick="alert('Đăng nhập Google Workspace')">
+                            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 1 12c0 1.93.46 3.77 1.18 5.43l3.66-3.34z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 3.34c.87-2.6 3.3-5.03 6.16-5.03z" fill="#EA4335"/></svg>
+                            Google
+                        </button>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="fade-in d8 mt-8 text-center">
+                        <p class="text-[11px] font-mono" style="color: rgba(255,255,255,0.08);">
+                            NexaCRM v3.2 · Internal Use Only · <a href="#" class="link-purple" style="opacity: 0.6;">IT Support</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate stars
+        const starsEl = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--dur', (3 + Math.random() * 5) + 's');
+            star.style.setProperty('--max-o', (0.12 + Math.random() * 0.35).toString());
+            star.style.animationDelay = (-Math.random() * 8) + 's';
+            const size = (1 + Math.random() * 1.5);
+            star.style.width = star.style.height = size + 'px';
+            // Random warm/cool tint on some stars
+            if (Math.random() > 0.7) {
+                const colors = ['#c084fc', '#f9a8d4', '#fdba74', '#818cf8', '#ffffff'];
+                star.style.background = colors[Math.floor(Math.random() * colors.length)];
+            }
+            starsEl.appendChild(star);
+        }
+
+        // Toggle password
+        function togglePw() {
+            const pw = document.getElementById('password');
+            const hide = document.getElementById('ico-hide');
+            const show = document.getElementById('ico-show');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                hide.style.display = 'none';
+                show.style.display = 'block';
+            } else {
+                pw.type = 'password';
+                hide.style.display = 'block';
+                show.style.display = 'none';
+            }
+        }
+
+        // Submit handler
+        function handleSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const label = document.getElementById('btnLabel');
+            const loader = document.getElementById('btnLoader');
+
+            btn.disabled = true;
+            label.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                label.classList.remove('hidden');
+                label.textContent = '✓ Xác thực thành công';
+                btn.style.background = 'linear-gradient(135deg, #059669, #10b981, #34d399)';
+                btn.style.boxShadow = '0 8px 32px -8px rgba(16, 185, 129, 0.4)';
+
+                setTimeout(() => {
+                    label.textContent = 'Đăng nhập →';
+                    btn.style.background = '';
+                    btn.style.boxShadow = '';
+                    btn.disabled = false;
+                }, 2500);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

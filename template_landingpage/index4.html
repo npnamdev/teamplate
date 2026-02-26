@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漢語學院 — Học Tiếng Trung Online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Playfair+Display:ital,wght@0,700;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & VARIABLES ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #C53030;
+      --red-dark: #9B2C2C;
+      --red-light: #FEB2B2;
+      --gold: #D4A853;
+      --gold-light: #F6E9C8;
+      --ink: #1A1A2E;
+      --ink-light: #2D2D44;
+      --cream: #FFF8F0;
+      --cream-dark: #F7ECDF;
+      --white: #FFFFFF;
+      --gray: #6B7280;
+      --gray-light: #E5E7EB;
+
+      --font-display: 'Noto Serif SC', 'Playfair Display', serif;
+      --font-body: 'Be Vietnam Pro', sans-serif;
+
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 8px 30px rgba(0,0,0,0.1);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+      --shadow-gold: 0 8px 30px rgba(212,168,83,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--ink);
+      background: var(--cream);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ===== DECORATIVE PATTERN ===== */
+    .pattern-bg {
+      position: relative;
+    }
+    .pattern-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(212,168,83,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(197,48,48,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(255,248,240,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212,168,83,0.15);
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo-han {
+      font-size: 1.8rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink-light);
+      position: relative;
+      padding: 0.3rem 0;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--red); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .btn-nav {
+      background: var(--red);
+      color: var(--white) !important;
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-nav:hover {
+      background: var(--red-dark);
+      transform: translateY(-1px);
+    }
+    .btn-nav::after { display: none !important; }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '中';
+      position: absolute;
+      right: -5%;
+      top: 10%;
+      font-family: var(--font-display);
+      font-size: clamp(20rem, 40vw, 50rem);
+      font-weight: 900;
+      color: rgba(212,168,83,0.06);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to top, var(--cream), transparent);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--gold-light);
+      color: var(--red-dark);
+      padding: 0.5rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(212,168,83,0.3);
+    }
+    .hero-badge::before {
+      content: '🏆';
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+    }
+    .hero h1 span {
+      color: var(--red);
+      position: relative;
+    }
+    .hero h1 span::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: var(--gold-light);
+      z-index: -1;
+      border-radius: 4px;
+    }
+    .hero-text {
+      font-size: 1.15rem;
+      color: var(--gray);
+      margin-bottom: 2rem;
+      max-width: 520px;
+      line-height: 1.8;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--red);
+      color: var(--white);
+      padding: 1rem 2.2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(197,48,48,0.3);
+    }
+    .btn-primary:hover {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(197,48,48,0.4);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--white);
+      color: var(--ink);
+      padding: 1rem 2.2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid var(--gray-light);
+      transition: all 0.3s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+    }
+    .stat-item {
+      text-align: left;
+    }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--red);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    /* Hero Visual Card */
+    .hero-visual {
+      position: relative;
+    }
+    .hero-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+    }
+    .hero-card-han {
+      font-family: var(--font-display);
+      font-size: 5rem;
+      font-weight: 900;
+      text-align: center;
+      background: linear-gradient(135deg, var(--red), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .hero-card-pinyin {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--gray);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+    }
+    .hero-card-meaning {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+    .hero-card-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 1.5rem 0;
+    }
+    .hero-card-examples {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .example-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 1rem;
+      background: var(--cream);
+      border-radius: 12px;
+    }
+    .example-char {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--red);
+      min-width: 80px;
+    }
+    .example-info {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+    .floating-badge {
+      position: absolute;
+      background: var(--white);
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      animation: float 3s ease-in-out infinite;
+    }
+    .floating-badge.top-right {
+      top: -20px;
+      right: -20px;
+      background: linear-gradient(135deg, var(--gold), #E8C468);
+      color: var(--white);
+    }
+    .floating-badge.bottom-left {
+      bottom: -15px;
+      left: -15px;
+      color: var(--ink);
+    }
+    .badge-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ===== SECTION COMMONS ===== */
+    .section {
+      padding: 6rem 2rem;
+    }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--gray);
+      max-width: 600px;
+      line-height: 1.8;
+    }
+    .section-header {
+      margin-bottom: 3.5rem;
+    }
+    .section-header.center {
+      text-align: center;
+    }
+    .section-header.center .section-desc {
+      margin: 0 auto;
+    }
+
+    /* ===== FEATURES / WHY US ===== */
+    .features {
+      background: var(--white);
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .feature-card {
+      padding: 2.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--gray-light);
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .feature-card:hover {
+      border-color: transparent;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .feature-icon.red { background: rgba(197,48,48,0.08); }
+    .feature-icon.gold { background: rgba(212,168,83,0.12); }
+    .feature-icon.ink { background: rgba(26,26,46,0.06); }
+    .feature-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    /* ===== COURSES ===== */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .course-card {
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.4s;
+      display: flex;
+      flex-direction: column;
+    }
+    .course-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-6px);
+    }
+    .course-banner {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .course-banner.beginner {
+      background: linear-gradient(135deg, #FFF5F5, #FED7D7);
+    }
+    .course-banner.intermediate {
+      background: linear-gradient(135deg, #FFFFF0, #FEFCBF);
+    }
+    .course-banner.advanced {
+      background: linear-gradient(135deg, #F0FFF4, #C6F6D5);
+    }
+    .course-banner-text {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 900;
+      opacity: 0.15;
+      position: absolute;
+    }
+    .course-level {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .course-level.beginner { background: var(--red); color: var(--white); }
+    .course-level.intermediate { background: var(--gold); color: var(--white); }
+    .course-level.advanced { background: #38A169; color: var(--white); }
+    .course-body {
+      padding: 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .course-body h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .course-body p {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+    .course-meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--gray-light);
+    }
+    .course-meta-item {
+      font-size: 0.85rem;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .course-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .course-price {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--red);
+    }
+    .course-price small {
+      font-size: 0.8rem;
+      color: var(--gray);
+      font-weight: 400;
+      text-decoration: line-through;
+      margin-left: 0.3rem;
+    }
+    .btn-course {
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: var(--ink);
+      color: var(--white);
+      transition: all 0.3s;
+    }
+    .btn-course:hover {
+      background: var(--red);
+      transform: translateY(-1px);
+    }
+
+    /* ===== METHOD SECTION ===== */
+    .method {
+      background: var(--ink);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .method::before {
+      content: '學';
+      position: absolute;
+      left: -5%;
+      bottom: -10%;
+      font-family: var(--font-display);
+      font-size: 30rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.02);
+      pointer-events: none;
+    }
+    .method .section-label { color: var(--gold); }
+    .method .section-desc { color: rgba(255,255,255,0.6); }
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .method-step {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+    }
+    .method-number {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold), rgba(212,168,83,0.3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .method-step h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+    }
+    .method-step p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+    }
+    .method-connector {
+      position: absolute;
+      top: 3.5rem;
+      right: -1rem;
+      color: var(--gold);
+      font-size: 1.5rem;
+      opacity: 0.4;
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials {
+      background: var(--cream-dark);
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .testimonial-card {
+      background: var(--white);
+      padding: 2.5rem;
+      border-radius: 20px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s;
+    }
+    .testimonial-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+    .testimonial-card::before {
+      content: '"';
+      font-family: var(--font-display);
+      font-size: 5rem;
+      color: var(--gold-light);
+      position: absolute;
+      top: 0.5rem;
+      left: 1.5rem;
+      line-height: 1;
+    }
+    .testimonial-text {
+      font-size: 0.95rem;
+      color: var(--ink-light);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .testimonial-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+    }
+    .testimonial-avatar.a { background: var(--red); }
+    .testimonial-avatar.b { background: var(--gold); }
+    .testimonial-avatar.c { background: var(--ink); }
+    .testimonial-info strong {
+      font-size: 0.95rem;
+      display: block;
+    }
+    .testimonial-info span {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+    .testimonial-stars {
+      color: var(--gold);
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta {
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      border-radius: 30px;
+      padding: 5rem 4rem;
+      text-align: center;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box::before {
+      content: '开始';
+      position: absolute;
+      right: -2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-display);
+      font-size: 15rem;
+      font-weight: 900;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+    .cta-box .section-label {
+      color: var(--gold-light);
+    }
+    .cta-box .section-title {
+      color: var(--white);
+      max-width: 700px;
+      margin: 0 auto 1rem;
+    }
+    .cta-box .section-desc {
+      color: rgba(255,255,255,0.8);
+      max-width: 550px;
+      margin: 0 auto 2.5rem;
+    }
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--white);
+      color: var(--red);
+      padding: 1.1rem 2.8rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: all 0.3s;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+    .btn-cta:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .cta-note {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.7);
+      padding: 4rem 2rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer-brand .logo {
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .footer-brand p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      max-width: 300px;
+    }
+    .footer-col h4 {
+      font-family: var(--font-display);
+      color: var(--white);
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .footer-col a {
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      opacity: 0.5;
+    }
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+    .social-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    .social-icon:hover {
+      border-color: var(--gold);
+      background: rgba(212,168,83,0.1);
+      color: var(--gold);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-visual { max-width: 500px; margin: 0 auto; }
+      .features-grid, .courses-grid, .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+      .method-grid { grid-template-columns: repeat(2, 1fr); }
+      .method-connector { display: none; }
+      .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 6rem 1.5rem 3rem; }
+      .hero h1 { font-size: 2.2rem; }
+      .hero-stats { gap: 1.5rem; }
+      .stat-number { font-size: 1.5rem; }
+      .section { padding: 4rem 1.5rem; }
+      .features-grid, .courses-grid, .testimonials-grid { grid-template-columns: 1fr; }
+      .method-grid { grid-template-columns: 1fr; }
+      .cta-box { padding: 3rem 2rem; border-radius: 20px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; }
+      .floating-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <span class="logo-han">漢</span> HanYu Academy
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Tại sao chọn chúng tôi</a></li>
+        <li><a href="#courses">Khoá học</a></li>
+        <li><a href="#method">Phương pháp</a></li>
+        <li><a href="#testimonials">Đánh giá</a></li>
+        <li><a href="#cta" class="btn-nav">Đăng ký ngay</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero pattern-bg">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">Nền tảng #1 Việt Nam về dạy tiếng Trung online</div>
+        <h1>Chinh Phục <span>Tiếng Trung</span> Từ Con Số Không</h1>
+        <p class="hero-text">
+          Phương pháp học tiếng Trung hiệu quả nhất, kết hợp giữa lý thuyết bài bản và thực hành tương tác. Cam kết giao tiếp tự tin sau 6 tháng.
+        </p>
+        <div class="hero-cta">
+          <a href="#courses" class="btn-primary">Xem Khoá Học →</a>
+          <a href="#method" class="btn-secondary">▶ Tìm Hiểu Thêm</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">15,000+</div>
+            <div class="stat-label">Học viên</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">98%</div>
+            <div class="stat-label">Hài lòng</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Giảng viên</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="hero-card-pinyin">nǐ hǎo</div>
+          <div class="hero-card-han">你好</div>
+          <div class="hero-card-meaning">Xin chào</div>
+          <div class="hero-card-divider"></div>
+          <div class="hero-card-examples">
+            <div class="example-row">
+              <span class="example-char">谢谢</span>
+              <span class="example-info">xiè xie — Cảm ơn</span>
+            </div>
+            <div class="example-row">
+              <span class="example-char">学习</span>
+              <span class="example-info">xué xí — Học tập</span>
+            </div>
+            <div class="example-row">
+              <span class="example-char">加油</span>
+              <span class="example-info">jiā yóu — Cố lên!</span>
+            </div>
+          </div>
+        </div>
+        <div class="floating-badge top-right">
+          <span class="badge-icon">🎯</span> HSK Certified
+        </div>
+        <div class="floating-badge bottom-left">
+          <span class="badge-icon">⭐</span> 4.9/5 đánh giá
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="section features" id="features">
+    <div class="section-inner">
+      <div class="section-header center">
+        <div class="section-label">Tại sao chọn chúng tôi</div>
+        <h2 class="section-title">Phương Pháp Học Hiện Đại,<br>Kết Quả Thực Tế</h2>
+        <p class="section-desc">Chúng tôi kết hợp công nghệ và phương pháp giảng dạy tiên tiến để mang đến trải nghiệm học tập hiệu quả nhất.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon red">🎓</div>
+          <h3>Giảng Viên Bản Ngữ</h3>
+          <p>Đội ngũ giảng viên người Trung Quốc giàu kinh nghiệm, phát âm chuẩn, am hiểu văn hoá Việt Nam.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon gold">📚</div>
+          <h3>Giáo Trình Chuẩn HSK</h3>
+          <p>Nội dung bám sát khung chuẩn HSK quốc tế từ cấp 1 đến cấp 6, phù hợp mọi trình độ.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon ink">💬</div>
+          <h3>Thực Hành Giao Tiếp</h3>
+          <p>70% thời gian luyện nói với tình huống thực tế: giao tiếp hàng ngày, công sở, du lịch.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon gold">⏰</div>
+          <h3>Học Mọi Lúc Mọi Nơi</h3>
+          <p>Bài giảng video HD, tài liệu PDF tải về, ứng dụng học trên điện thoại tiện lợi 24/7.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon red">🏅</div>
+          <h3>Chứng Chỉ Uy Tín</h3>
+          <p>Hoàn thành khoá học nhận chứng chỉ được công nhận, tăng giá trị CV và cơ hội nghề nghiệp.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon ink">🤝</div>
+          <h3>Hỗ Trợ 1-1</h3>
+          <p>Mentor riêng theo sát tiến trình, giải đáp thắc mắc nhanh chóng qua Zalo và email.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COURSES ===== -->
+  <section class="section" id="courses">
+    <div class="section-inner">
+      <div class="section-header center">
+        <div class="section-label">Khoá Học Nổi Bật</div>
+        <h2 class="section-title">Chọn Khoá Học Phù Hợp Với Bạn</h2>
+        <p class="section-desc">Từ người mới bắt đầu đến nâng cao, chúng tôi có chương trình phù hợp cho mọi mục tiêu học tập.</p>
+      </div>
+      <div class="courses-grid">
+        <!-- Course 1 -->
+        <div class="course-card">
+          <div class="course-banner beginner">
+            <span class="course-banner-text">初</span>
+            <span class="course-level beginner">Sơ cấp</span>
+          </div>
+          <div class="course-body">
+            <h3>Tiếng Trung Cơ Bản — HSK 1-2</h3>
+            <p>Bắt đầu từ bảng phiên âm Pinyin, thanh điệu, 600+ từ vựng cơ bản và ngữ pháp nền tảng. Tự tin giao tiếp hàng ngày.</p>
+            <div class="course-meta">
+              <span class="course-meta-item">📖 48 bài học</span>
+              <span class="course-meta-item">⏱ 3 tháng</span>
+              <span class="course-meta-item">🎬 Video HD</span>
+            </div>
+            <div class="course-footer">
+              <span class="course-price">1.990K <small>3.500K</small></span>
+              <a href="#" class="btn-course">Đăng Ký</a>
+            </div>
+          </div>
+        </div>
+        <!-- Course 2 -->
+        <div class="course-card">
+          <div class="course-banner intermediate">
+            <span class="course-banner-text">中</span>
+            <span class="course-level intermediate">Trung cấp</span>
+          </div>
+          <div class="course-body">
+            <h3>Tiếng Trung Giao Tiếp — HSK 3-4</h3>
+            <p>Nâng cao kỹ năng nghe nói, 1200+ từ vựng, đọc hiểu văn bản, viết đoạn văn. Đủ trình độ du học và làm việc.</p>
+            <div class="course-meta">
+              <span class="course-meta-item">📖 72 bài học</span>
+              <span class="course-meta-item">⏱ 5 tháng</span>
+              <span class="course-meta-item">🎬 Video HD</span>
+            </div>
+            <div class="course-footer">
+              <span class="course-price">3.490K <small>5.900K</small></span>
+              <a href="#" class="btn-course">Đăng Ký</a>
+            </div>
+          </div>
+        </div>
+        <!-- Course 3 -->
+        <div class="course-card">
+          <div class="course-banner advanced">
+            <span class="course-banner-text">高</span>
+            <span class="course-level advanced">Nâng cao</span>
+          </div>
+          <div class="course-body">
+            <h3>Tiếng Trung Thương Mại — HSK 5-6</h3>
+            <p>Tiếng Trung chuyên ngành kinh doanh, đàm phán, hợp đồng. Luyện thi HSK 5-6 với tỉ lệ đậu 95%.</p>
+            <div class="course-meta">
+              <span class="course-meta-item">📖 96 bài học</span>
+              <span class="course-meta-item">⏱ 6 tháng</span>
+              <span class="course-meta-item">🎬 Video HD</span>
+            </div>
+            <div class="course-footer">
+              <span class="course-price">5.490K <small>8.900K</small></span>
+              <a href="#" class="btn-course">Đăng Ký</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== METHOD ===== -->
+  <section class="section method" id="method">
+    <div class="section-inner">
+      <div class="section-header center">
+        <div class="section-label">Phương Pháp Học</div>
+        <h2 class="section-title" style="color: var(--white);">Lộ Trình 4 Bước Hiệu Quả</h2>
+        <p class="section-desc">Quy trình học tập khoa học được chứng minh giúp bạn tiến bộ nhanh gấp 3 lần phương pháp truyền thống.</p>
+      </div>
+      <div class="method-grid">
+        <div class="method-step">
+          <div class="method-number">01</div>
+          <h3>Nghe & Bắt Chước</h3>
+          <p>Luyện phát âm chuẩn bản ngữ với audio chất lượng cao từ giảng viên người Trung.</p>
+          <span class="method-connector">→</span>
+        </div>
+        <div class="method-step">
+          <div class="method-number">02</div>
+          <h3>Hiểu & Ghi Nhớ</h3>
+          <p>Phương pháp flashcard thông minh và spaced repetition giúp nhớ lâu, không quên.</p>
+          <span class="method-connector">→</span>
+        </div>
+        <div class="method-step">
+          <div class="method-number">03</div>
+          <h3>Luyện & Thực Hành</h3>
+          <p>Thực hành giao tiếp với bạn học và giảng viên qua các tình huống đời thực.</p>
+          <span class="method-connector">→</span>
+        </div>
+        <div class="method-step">
+          <div class="method-number">04</div>
+          <h3>Kiểm Tra & Đánh Giá</h3>
+          <p>Bài test định kỳ, phản hồi chi tiết và lộ trình cá nhân hoá theo tiến trình.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="section testimonials" id="testimonials">
+    <div class="section-inner">
+      <div class="section-header center">
+        <div class="section-label">Học Viên Nói Gì</div>
+        <h2 class="section-title">Câu Chuyện Thành Công</h2>
+        <p class="section-desc">Hàng nghìn học viên đã thay đổi sự nghiệp và cuộc sống nhờ tiếng Trung.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">Từ một người không biết gì về tiếng Trung, sau 6 tháng tôi đã có thể giao tiếp tự tin với đối tác Trung Quốc. Giảng viên rất tận tâm và phương pháp dạy rất dễ hiểu.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar a">TH</div>
+            <div class="testimonial-info">
+              <strong>Trần Thu Hà</strong>
+              <span>Nhân viên XNK — HSK 4</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">Tôi đã thử nhiều app học tiếng Trung nhưng không hiệu quả. HanYu Academy khác biệt ở chỗ có giảng viên thật và lộ trình rõ ràng. Đậu HSK 5 ngay lần đầu!</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar b">MĐ</div>
+            <div class="testimonial-info">
+              <strong>Nguyễn Minh Đức</strong>
+              <span>Du học sinh — HSK 5</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">Học online mà cảm giác như lớp offline. Bài tập phong phú, được chữa bài cá nhân, và cộng đồng học viên hỗ trợ nhau rất nhiệt tình.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar c">PL</div>
+            <div class="testimonial-info">
+              <strong>Phạm Thuỳ Linh</strong>
+              <span>Giáo viên — HSK 3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="section cta" id="cta">
+    <div class="cta-box">
+      <div class="section-label">Bắt Đầu Ngay Hôm Nay</div>
+      <h2 class="section-title">Sẵn Sàng Chinh Phục Tiếng Trung?</h2>
+      <p class="section-desc">Đăng ký học thử miễn phí 3 buổi. Không cần thẻ tín dụng, không ràng buộc. Trải nghiệm trước khi quyết định.</p>
+      <a href="#" class="btn-cta">Học Thử Miễn Phí →</a>
+      <p class="cta-note">✓ 3 buổi miễn phí &nbsp;·&nbsp; ✓ Không ràng buộc &nbsp;·&nbsp; ✓ Huỷ bất cứ lúc nào</p>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <span class="logo-han">漢</span> HanYu Academy
+          </a>
+          <p>Nền tảng học tiếng Trung online hàng đầu Việt Nam. Cam kết chất lượng, đồng hành cùng bạn trên hành trình chinh phục ngôn ngữ mới.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Khoá Học</h4>
+          <ul>
+            <li><a href="#">Tiếng Trung Cơ Bản</a></li>
+            <li><a href="#">Tiếng Trung Giao Tiếp</a></li>
+            <li><a href="#">Tiếng Trung Thương Mại</a></li>
+            <li><a href="#">Luyện Thi HSK</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Hỗ Trợ</h4>
+          <ul>
+            <li><a href="#">Câu Hỏi Thường Gặp</a></li>
+            <li><a href="#">Chính Sách Hoàn Tiền</a></li>
+            <li><a href="#">Liên Hệ Tư Vấn</a></li>
+            <li><a href="#">Blog Học Tiếng Trung</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Liên Hệ</h4>
+          <ul>
+            <li><a href="#">📞 0912 345 678</a></li>
+            <li><a href="#">✉ hello@hanyuacademy.vn</a></li>
+            <li><a href="#">📍 Hà Nội, Việt Nam</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 HanYu Academy. All rights reserved.</span>
+        <div class="footer-social">
+          <a href="#" class="social-icon">FB</a>
+          <a href="#" class="social-icon">YT</a>
+          <a href="#" class="social-icon">TT</a>
+          <a href="#" class="social-icon">ZL</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

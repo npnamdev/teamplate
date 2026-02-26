@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VORTEX — CRM & Marketing Automation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #030306;
+      --surface: #08080f;
+      --glass: rgba(12, 10, 24, 0.65);
+      --glass-border: rgba(140, 100, 255, 0.08);
+      --v1: #7c3aed;
+      --v2: #8b5cf6;
+      --v3: #a78bfa;
+      --v4: #c4b5fd;
+      --v5: #6d28d9;
+      --blue: #818cf8;
+      --pink: #e879f9;
+      --text: #ddd8ee;
+      --dim: #6b6580;
+      --faint: #3d3654;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--black);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+
+    /* ===== CURSOR GLOW (pure CSS) ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.06), transparent 70%);
+      top: 20%; left: 30%;
+      pointer-events: none;
+      z-index: 0;
+      animation: ambient-move 30s ease-in-out infinite alternate;
+    }
+    @keyframes ambient-move {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(200px, -100px); }
+      50% { transform: translate(-150px, 200px); }
+      75% { transform: translate(100px, 100px); }
+      100% { transform: translate(-100px, -150px); }
+    }
+
+    /* ===== GRAIN ===== */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 99999;
+    }
+
+    /* ===== MARQUEE ===== */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll 40s linear infinite;
+    }
+    .marquee-track-reverse {
+      animation-direction: reverse;
+    }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      white-space: nowrap;
+      padding: 0 3rem;
+      font-size: clamp(4rem, 8vw, 8rem);
+      font-weight: 400;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--faint);
+      transition: all 0.3s;
+      user-select: none;
+    }
+    .marquee-item.filled {
+      color: var(--v3);
+      -webkit-text-stroke: 0;
+      filter: drop-shadow(0 0 40px rgba(167,139,250,0.3));
+    }
+
+    /* ===== GLASS CARD ===== */
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid var(--glass-border);
+    }
+
+    /* ===== GLOW TEXT ===== */
+    .glow {
+      background: linear-gradient(135deg, var(--v3), var(--blue), var(--pink), var(--v2));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: glow-move 8s ease infinite;
+    }
+    @keyframes glow-move {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000;
+      padding: 0.65rem 0.65rem 0.65rem 1.5rem;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .nav-link {
+      color: var(--dim);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: color 0.25s;
+      letter-spacing: 0.02em;
+    }
+    .nav-link:hover { color: var(--v3); }
+    .nav-cta {
+      padding: 0.55rem 1.4rem;
+      background: var(--v1);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(124,58,237,0.35);
+    }
+    .nav-cta:hover { background: var(--v2); transform: scale(1.04); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+    }
+    .hero-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid;
+      animation: ring-spin 60s linear infinite;
+    }
+    @keyframes ring-spin { to { transform: rotate(360deg); } }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+    }
+    .hero-tag .pulse-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--v3);
+      animation: blink 2s ease infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+    .hero h1 {
+      font-size: clamp(3.5rem, 9vw, 9rem);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 2rem;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--v3);
+      filter: drop-shadow(0 0 60px rgba(167,139,250,0.4));
+    }
+
+    .hero-sub {
+      max-width: 520px;
+      color: var(--dim);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+    }
+
+    .hero-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+    .btn-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--v1), var(--v5));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 60px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s;
+      box-shadow: 0 4px 30px rgba(124,58,237,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .btn-main::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+    .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 50px rgba(124,58,237,0.5); }
+    .btn-main:hover::after { transform: translateX(100%); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: transparent;
+      color: var(--v4);
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 60px;
+      text-decoration: none;
+      border: 1.5px solid rgba(124,58,237,0.25);
+      transition: all 0.3s;
+    }
+    .btn-outline:hover { border-color: var(--v2); background: rgba(124,58,237,0.06); }
+
+    .hero-proof {
+      margin-top: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .avatar-stack {
+      display: flex;
+    }
+    .avatar-stack span {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      margin-left: -10px;
+    }
+    .avatar-stack span:first-child { margin-left: 0; }
+
+    /* ===== DIAGONAL SECTION ===== */
+    .diag-section {
+      position: relative;
+      padding: 8rem 2rem;
+      background: linear-gradient(165deg, rgba(124,58,237,0.04) 0%, transparent 50%);
+    }
+    .diag-section::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 0; right: 0;
+      height: 120px;
+      background: var(--black);
+      transform: skewY(-2deg);
+    }
+    .diag-section::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: 0; right: 0;
+      height: 120px;
+      background: var(--black);
+      transform: skewY(-2deg);
+    }
+
+    /* ===== FEATURE MEGA CARDS ===== */
+    .mega-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .mega-card {
+      border-radius: 28px;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .mega-card:hover { transform: scale(0.985); }
+
+    .mega-card .card-bg-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+    }
+    .mega-card .card-num {
+      position: absolute;
+      top: 2rem; right: 2.5rem;
+      font-size: 6rem;
+      font-weight: 800;
+      line-height: 1;
+      color: rgba(167,139,250,0.06);
+    }
+    .mega-card .card-icon-lg {
+      font-size: 2.5rem;
+      margin-bottom: 1.25rem;
+      filter: drop-shadow(0 0 20px rgba(167,139,250,0.4));
+    }
+    .mega-card h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .mega-card p {
+      color: var(--dim);
+      font-size: 0.92rem;
+      line-height: 1.75;
+      max-width: 380px;
+    }
+    .mega-card.full-width {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .mega-card.full-width .card-text { display: flex; flex-direction: column; justify-content: center; }
+    .mega-card.full-width .card-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mini pipeline visual */
+    .mini-pipeline {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+    .mini-pipeline .bar {
+      width: 40px;
+      border-radius: 8px 8px 0 0;
+      transition: height 0.5s;
+    }
+
+    /* ===== STEPS HORIZONTAL ===== */
+    .steps-row {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .steps-row::before {
+      content: '';
+      position: absolute;
+      top: 44px;
+      left: 16.6%;
+      right: 16.6%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--v1), var(--v2), transparent);
+    }
+    .step-item {
+      text-align: center;
+      padding: 0 2rem;
+      position: relative;
+    }
+    .step-circle {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+    .step-circle .inner {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .step-item h4 {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .step-item p {
+      color: var(--dim);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    /* ===== PRICING ===== */
+    .price-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+    }
+    .price-col {
+      padding: 3rem 2.5rem;
+      background: var(--surface);
+      position: relative;
+      transition: background 0.3s;
+    }
+    .price-col:hover { background: rgba(12,10,24,0.9); }
+    .price-col.center {
+      background: linear-gradient(180deg, rgba(124,58,237,0.08), var(--surface));
+      border-left: 1px solid rgba(124,58,237,0.1);
+      border-right: 1px solid rgba(124,58,237,0.1);
+    }
+    .price-col .tier {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+      margin-bottom: 1rem;
+    }
+    .price-col.center .tier { color: var(--v3); }
+    .price-col .amount {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.03em;
+    }
+    .price-col .amount-sub {
+      color: var(--dim);
+      font-size: 0.82rem;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .price-col ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .price-col li {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .price-col li .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--v2);
+      flex-shrink: 0;
+    }
+    .price-col .cta-wrap { margin-top: auto; }
+
+    .center-badge {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      padding: 0.35rem 1.25rem;
+      background: var(--v1);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 0 0 10px 10px;
+    }
+
+    /* ===== TESTIMONIALS STACKED ===== */
+    .test-stack {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .test-row {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      padding: 2rem 2.5rem;
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+    .test-row:hover {
+      background: rgba(124,58,237,0.03);
+      border-color: rgba(124,58,237,0.15);
+    }
+    .test-row .test-avatar {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .test-row .test-quote {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #b8b0cc;
+      margin-bottom: 0.75rem;
+    }
+    .test-row .test-meta {
+      font-size: 0.82rem;
+      color: var(--dim);
+    }
+    .test-row .test-meta strong {
+      color: var(--v4);
+      font-weight: 600;
+    }
+
+    /* ===== CTA FINAL ===== */
+    .final-cta {
+      padding: 8rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+    }
+    .final-cta .big-ring {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(124,58,237,0.06);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .final-cta .big-ring::before {
+      content: '';
+      position: absolute;
+      inset: 60px;
+      border-radius: 50%;
+      border: 1px solid rgba(124,58,237,0.04);
+    }
+    .cta-email-row {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    .cta-email {
+      flex: 1;
+      padding: 0.95rem 1.5rem;
+      background: rgba(124,58,237,0.06);
+      border: 1.5px solid rgba(124,58,237,0.15);
+      border-radius: 50px;
+      color: var(--text);
+      font-family: 'Manrope';
+      font-size: 0.92rem;
+      outline: none;
+      transition: border 0.3s;
+    }
+    .cta-email::placeholder { color: var(--faint); }
+    .cta-email:focus { border-color: var(--v2); }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      border-top: 1px solid var(--glass-border);
+      padding: 3rem 2rem 1.5rem;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-inner p { color: var(--faint); font-size: 0.78rem; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { color: var(--faint); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--v3); }
+
+    /* ===== SECTION HEADERS ===== */
+    .sec-head { max-width: 1280px; margin: 0 auto; padding: 0 2rem; margin-bottom: 4rem; }
+    .sec-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--v3);
+      margin-bottom: 1rem;
+    }
+    .sec-title {
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 960px) {
+      .mega-grid { grid-template-columns: 1fr; }
+      .mega-card.full-width { grid-template-columns: 1fr; }
+      .steps-row { grid-template-columns: 1fr; gap: 2rem; }
+      .steps-row::before { display: none; }
+      .price-layout { grid-template-columns: 1fr; max-width: 400px; }
+      .hero h1 { font-size: clamp(2.8rem, 8vw, 5rem); }
+      .marquee-item { font-size: clamp(2.5rem, 6vw, 5rem); }
+      nav { gap: 1rem; padding: 0.5rem 0.5rem 0.5rem 1rem; }
+      .nav-link { display: none; }
+      .footer-inner { flex-direction: column; gap: 1rem; }
+      .cta-email-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAV (floating pill) ===== -->
+<nav class="glass">
+  <a href="#" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+    <span style="font-size: 1.3rem; filter: drop-shadow(0 0 10px rgba(167,139,250,0.5));">◆</span>
+    <span style="font-weight: 800; font-size: 1rem; color: #fff; letter-spacing: 0.05em;">VORTEX</span>
+  </a>
+  <a href="#features" class="nav-link">Tính năng</a>
+  <a href="#steps" class="nav-link">Quy trình</a>
+  <a href="#pricing" class="nav-link">Bảng giá</a>
+  <a href="#cta" class="nav-cta">Dùng thử →</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <!-- Decorative rings -->
+  <div class="hero-ring" style="width: 500px; height: 500px; border-color: rgba(124,58,237,0.04); animation-duration: 80s;"></div>
+  <div class="hero-ring" style="width: 700px; height: 700px; border-color: rgba(124,58,237,0.025); animation-duration: 100s; animation-direction: reverse;"></div>
+  <div class="hero-ring" style="width: 900px; height: 900px; border-color: rgba(124,58,237,0.015); animation-duration: 120s;"></div>
+
+  <div class="hero-tag glass" style="position: relative; z-index: 2;">
+    <span class="pulse-dot"></span>
+    <span class="mono" style="color: var(--v4); font-size: 0.72rem;">VERSION 3.0 — AI POWERED</span>
+  </div>
+
+  <h1 class="serif" style="position: relative; z-index: 2;">
+    Automate<br><em>every</em> sale.
+  </h1>
+
+  <p class="hero-sub" style="position: relative; z-index: 2;">
+    CRM & Marketing Automation thế hệ mới. Quản lý pipeline, nuôi dưỡng lead, và nhân doanh thu — tất cả chạy tự động.
+  </p>
+
+  <div class="hero-btns" style="position: relative; z-index: 2;">
+    <a href="#cta" class="btn-main">Bắt đầu miễn phí <span style="font-size: 1.2rem;">↗</span></a>
+    <a href="#features" class="btn-outline">Khám phá tính năng</a>
+  </div>
+
+  <div class="hero-proof" style="position: relative; z-index: 2;">
+    <div class="avatar-stack">
+      <span style="background: linear-gradient(135deg, var(--v1), var(--v5));">NT</span>
+      <span style="background: linear-gradient(135deg, var(--blue), var(--v2));">TH</span>
+      <span style="background: linear-gradient(135deg, var(--pink), var(--v1));">LM</span>
+      <span style="background: linear-gradient(135deg, var(--v2), var(--blue));">PD</span>
+      <span style="background: var(--surface); border: 1px solid var(--glass-border); color: var(--v4); font-size: 0.6rem;">2K+</span>
+    </div>
+    <span style="color: var(--dim); font-size: 0.82rem;">Trusted by 2,500+ companies</span>
+  </div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<section style="padding: 2rem 0; overflow: hidden; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+  <div class="marquee-track serif">
+    <span class="marquee-item">CRM</span>
+    <span class="marquee-item filled">Email</span>
+    <span class="marquee-item">Automation</span>
+    <span class="marquee-item filled">AI Scoring</span>
+    <span class="marquee-item">Analytics</span>
+    <span class="marquee-item filled">Pipeline</span>
+    <span class="marquee-item">Zalo</span>
+    <span class="marquee-item filled">Facebook</span>
+    <!-- duplicate for seamless -->
+    <span class="marquee-item">CRM</span>
+    <span class="marquee-item filled">Email</span>
+    <span class="marquee-item">Automation</span>
+    <span class="marquee-item filled">AI Scoring</span>
+    <span class="marquee-item">Analytics</span>
+    <span class="marquee-item filled">Pipeline</span>
+    <span class="marquee-item">Zalo</span>
+    <span class="marquee-item filled">Facebook</span>
+  </div>
+</section>
+
+<!-- ===== FEATURES (Mega cards) ===== -->
+<section id="features" style="padding: 7rem 2rem;">
+  <div class="sec-head" style="text-align: center;">
+    <div class="sec-label mono">✦ Tính năng</div>
+    <h2 class="sec-title">Mọi thứ bạn cần.<br><span class="serif" style="font-weight: 400;"><em class="glow">Không gì thừa.</em></span></h2>
+  </div>
+
+  <div class="mega-grid">
+    <!-- Card 1 - full width -->
+    <div class="mega-card full-width glass" style="border-radius: 28px;">
+      <div class="card-text">
+        <span class="card-icon-lg">📊</span>
+        <h3>Smart Pipeline</h3>
+        <p>Kanban board thông minh với AI dự đoán xác suất chốt deal. Tự động phân bổ lead, cảnh báo deal nguội, và timeline hoạt động chi tiết cho từng khách hàng.</p>
+      </div>
+      <div class="card-visual">
+        <div class="mini-pipeline">
+          <div class="bar" style="height: 60px; background: linear-gradient(180deg, var(--v5), var(--v1)); opacity: 0.4;"></div>
+          <div class="bar" style="height: 100px; background: linear-gradient(180deg, var(--v2), var(--v1)); opacity: 0.55;"></div>
+          <div class="bar" style="height: 140px; background: linear-gradient(180deg, var(--v3), var(--v2)); opacity: 0.7;"></div>
+          <div class="bar" style="height: 200px; background: linear-gradient(180deg, var(--v4), var(--v3)); opacity: 0.85;"></div>
+          <div class="bar" style="height: 170px; background: linear-gradient(180deg, var(--blue), var(--v2)); opacity: 0.75;"></div>
+          <div class="bar" style="height: 240px; background: linear-gradient(180deg, var(--pink), var(--v3)); opacity: 1;"></div>
+          <div class="bar" style="height: 190px; background: linear-gradient(180deg, var(--v3), var(--v2)); opacity: 0.8;"></div>
+          <div class="bar" style="height: 130px; background: linear-gradient(180deg, var(--v2), var(--v1)); opacity: 0.6;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="mega-card glass">
+      <div class="card-num serif">02</div>
+      <span class="card-icon-lg">✉️</span>
+      <h3>Email Automation</h3>
+      <p>Sequence cá nhân hóa, A/B test, send-time AI. Gửi đúng nội dung cho đúng người vào đúng lúc.</p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="mega-card glass">
+      <div class="card-num serif">03</div>
+      <span class="card-icon-lg">🤖</span>
+      <h3>Visual Flow Builder</h3>
+      <p>Drag & drop xây flow không giới hạn. Nurture, onboarding, upsell, win-back — zero code.</p>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="mega-card glass">
+      <div class="card-num serif">04</div>
+      <span class="card-icon-lg">🎯</span>
+      <h3>AI Lead Scoring</h3>
+      <p>Chấm điểm lead real-time dựa trên hành vi. Ưu tiên đúng khách hàng tiềm năng nhất.</p>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="mega-card glass">
+      <div class="card-num serif">05</div>
+      <span class="card-icon-lg">🔗</span>
+      <h3>Omnichannel Hub</h3>
+      <p>Zalo, Facebook, SMS, Website, 100+ apps. Mọi touchpoint hội tụ trong một dashboard.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS MARQUEE ===== -->
+<section style="padding: 1rem 0; overflow: hidden; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+  <div class="marquee-track marquee-track-reverse" style="animation-duration: 25s;">
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">3.4×</strong> conversion rate
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">85%</strong> time saved
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">50M+</strong> emails/month
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">99.9%</strong> uptime
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">2,500+</strong> companies
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <!-- dup -->
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">3.4×</strong> conversion rate
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">85%</strong> time saved
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">50M+</strong> emails/month
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">99.9%</strong> uptime
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+    <span style="white-space: nowrap; padding: 0 3rem; font-size: 1rem; color: var(--dim);">
+      <strong style="color: var(--v3); font-size: 1.3rem;">2,500+</strong> companies
+    </span>
+    <span style="white-space: nowrap; padding: 0 3rem; color: var(--faint);">◆</span>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS (Horizontal steps) ===== -->
+<section id="steps" style="padding: 7rem 2rem;">
+  <div class="sec-head" style="text-align: center;">
+    <div class="sec-label mono">✦ Quy trình</div>
+    <h2 class="sec-title">Ba bước. <span class="serif" style="font-weight: 400;"><em class="glow">Vậy thôi.</em></span></h2>
+  </div>
+
+  <div class="steps-row">
+    <div class="step-item">
+      <div class="step-circle glass">
+        <div class="inner" style="background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(99,102,241,0.1));">
+          🔌
+        </div>
+      </div>
+      <h4>Kết nối</h4>
+      <p>Import contacts, link Zalo OA, Facebook, website tracking. Vài click — done.</p>
+    </div>
+
+    <div class="step-item">
+      <div class="step-circle glass">
+        <div class="inner" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(232,121,249,0.08));">
+          ⚡
+        </div>
+      </div>
+      <h4>Tự động hóa</h4>
+      <p>50+ templates hoặc visual builder drag & drop. Không cần biết code.</p>
+    </div>
+
+    <div class="step-item">
+      <div class="step-circle glass">
+        <div class="inner" style="background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(129,140,248,0.08));">
+          📈
+        </div>
+      </div>
+      <h4>Scale</h4>
+      <p>Real-time dashboard, AI gợi ý tối ưu. Nhân chiến dịch hiệu quả × 10.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS (stacked rows) ===== -->
+<section style="padding: 7rem 2rem;">
+  <div class="sec-head" style="text-align: center;">
+    <div class="sec-label mono">✦ Reviews</div>
+    <h2 class="sec-title">Họ nói <span class="serif" style="font-weight: 400;"><em class="glow">gì?</em></span></h2>
+  </div>
+
+  <div class="test-stack">
+    <div class="test-row glass" style="border-radius: 20px;">
+      <div class="test-avatar" style="background: linear-gradient(135deg, var(--v1), var(--v5));">NT</div>
+      <div>
+        <p class="test-quote">"VORTEX giúp team sales tăng 40% conversion chỉ sau 2 tháng. Automation chạy mượt mà — tiết kiệm hàng chục giờ mỗi tuần. Best investment cho scale-up."</p>
+        <p class="test-meta"><strong>Nguyễn Thảo</strong> · CMO, TechViet JSC</p>
+      </div>
+    </div>
+
+    <div class="test-row glass" style="border-radius: 20px;">
+      <div class="test-avatar" style="background: linear-gradient(135deg, var(--blue), var(--v2));">TH</div>
+      <div>
+        <p class="test-quote">"Từ 3 ngày gửi campaign giảm còn 30 phút. ROI tăng 280%. Flow builder trực quan tới mức intern cũng setup được."</p>
+        <p class="test-meta"><strong>Trần Hùng</strong> · CEO, ShopBase Vietnam</p>
+      </div>
+    </div>
+
+    <div class="test-row glass" style="border-radius: 20px;">
+      <div class="test-avatar" style="background: linear-gradient(135deg, var(--pink), var(--v1));">LM</div>
+      <div>
+        <p class="test-quote">"Lead scoring thay đổi cách team bán hàng. Biết chính xác ai cần push, ai cần nurture. Pipeline visibility chưa bao giờ rõ ràng đến thế."</p>
+        <p class="test-meta"><strong>Lê Minh</strong> · Head of Sales, GreenFinance</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing" style="padding: 7rem 2rem;">
+  <div class="sec-head" style="text-align: center;">
+    <div class="sec-label mono">✦ Bảng giá</div>
+    <h2 class="sec-title">Minh bạch. <span class="serif" style="font-weight: 400;"><em class="glow">Không phí ẩn.</em></span></h2>
+  </div>
+
+  <div class="price-layout">
+    <!-- Starter -->
+    <div class="price-col">
+      <div class="tier mono">Starter</div>
+      <div class="amount">Free</div>
+      <div class="amount-sub">Miễn phí mãi mãi</div>
+      <ul>
+        <li><span class="dot"></span> 500 contacts</li>
+        <li><span class="dot"></span> 1,000 email/tháng</li>
+        <li><span class="dot"></span> 3 automation flows</li>
+        <li><span class="dot"></span> Báo cáo cơ bản</li>
+        <li><span class="dot"></span> Email support</li>
+      </ul>
+      <a href="#cta" class="btn-outline" style="width: 100%; justify-content: center; font-size: 0.88rem; padding: 0.8rem;">Bắt đầu miễn phí</a>
+    </div>
+
+    <!-- Pro -->
+    <div class="price-col center">
+      <div class="center-badge">★ PHỔ BIẾN NHẤT</div>
+      <div class="tier mono" style="margin-top: 0.5rem;">Professional</div>
+      <div class="amount">1.49M<span style="font-size: 1rem; color: var(--dim); font-weight: 400;">/mo</span></div>
+      <div class="amount-sub">Cho team muốn scale</div>
+      <ul>
+        <li><span class="dot"></span> 10,000 contacts</li>
+        <li><span class="dot"></span> 50,000 email/tháng</li>
+        <li><span class="dot"></span> Unlimited automation</li>
+        <li><span class="dot"></span> AI Lead Scoring</li>
+        <li><span class="dot"></span> Zalo + Facebook</li>
+        <li><span class="dot"></span> Priority support</li>
+      </ul>
+      <a href="#cta" class="btn-main" style="width: 100%; justify-content: center; font-size: 0.88rem; padding: 0.8rem;">Dùng thử 14 ngày</a>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="price-col">
+      <div class="tier mono">Enterprise</div>
+      <div class="amount">Custom</div>
+      <div class="amount-sub">Giải pháp riêng cho bạn</div>
+      <ul>
+        <li><span class="dot"></span> Unlimited everything</li>
+        <li><span class="dot"></span> Dedicated server</li>
+        <li><span class="dot"></span> Account Manager</li>
+        <li><span class="dot"></span> Custom API</li>
+        <li><span class="dot"></span> SLA 99.99%</li>
+        <li><span class="dot"></span> On-premise option</li>
+      </ul>
+      <a href="#cta" class="btn-outline" style="width: 100%; justify-content: center; font-size: 0.88rem; padding: 0.8rem;">Liên hệ tư vấn</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL CTA ===== -->
+<section id="cta" class="final-cta">
+  <div class="big-ring" aria-hidden="true"></div>
+  <div style="position: relative; z-index: 2;">
+    <h2 class="serif" style="font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 400; line-height: 1; margin-bottom: 1.5rem; letter-spacing: -0.03em;">
+      Ready to <em style="color: var(--v3); filter: drop-shadow(0 0 40px rgba(167,139,250,0.4));">scale</em>?
+    </h2>
+    <p style="color: var(--dim); font-size: 1rem; margin-bottom: 2.5rem; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.7;">
+      2,500+ doanh nghiệp đang tăng trưởng cùng VORTEX. Bắt đầu miễn phí — không cần thẻ.
+    </p>
+    <div class="cta-email-row">
+      <input type="email" class="cta-email" placeholder="email@company.vn" />
+      <a href="#" class="btn-main" style="white-space: nowrap;">Đăng ký →</a>
+    </div>
+    <p style="color: var(--faint); font-size: 0.75rem; margin-top: 1rem;">14 ngày free · Hủy bất kỳ lúc nào</p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+  <div class="footer-inner">
+    <p>
+      <span style="color: var(--v3); font-size: 0.9rem; margin-right: 0.4rem;">◆</span>
+      © 2026 VORTEX. All rights reserved.
+    </p>
+    <div class="footer-links">
+      <a href="#">Điều khoản</a>
+      <a href="#">Bảo mật</a>
+      <a href="#">Status</a>
+      <a href="#">API</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
